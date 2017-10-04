@@ -1,6 +1,6 @@
 <?php
 	//define globals
-	$GLOBALS['rootDirectory']='http://artofwineandfood.org/nbmaa3';
+	$GLOBALS['rootDirectory']='http://www.nbmaa.org';
 	$GLOBALS['adminDirectory'] = '/wazoo';
 
 	// concatenated file paths

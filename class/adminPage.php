@@ -352,7 +352,7 @@
 
 				?>		<div class="content">
 							<script type="text/javascript" src="<?php echo $GLOBALS['rootDirectory']; ?>/js/tinymce/tinymce.min.js"></script>
-							<script>tinymce.init({selector:'textarea', height : "400px", plugins: "code link wordcount", force_br_newlines : "false", block_formats: "Paragraph=p;Header 2=h2;Header 3=h3"});</script>			
+							<script>tinymce.init({selector:'textarea', height : "400px", plugins: "code link wordcount", force_br_newlines : "false", relative_urls : false, remove_script_host : false, block_formats: "Paragraph=p;Header 2=h2;Header 3=h3"});</script>			
 				<?php
 
 							if($element = queryEventPage($this->urlDetail[1])){
@@ -600,7 +600,7 @@
 
 				?>		<div class="content">
 							<script type="text/javascript" src="<?php echo $GLOBALS['rootDirectory']; ?>/js/tinymce/tinymce.min.js"></script>
-							<script>tinymce.init({selector:'textarea', height : "400px", plugins: "code link wordcount", force_br_newlines : "false", block_formats: "Paragraph=p;Header 2=h2;Header 3=h3"});</script>			
+							<script>tinymce.init({selector:'textarea', height : "400px", plugins: "code link wordcount", force_br_newlines : "false", relative_urls : false, remove_script_host : false, block_formats: "Paragraph=p;Header 2=h2;Header 3=h3"});</script>			
 				<?php
 
 							if($element = queryStaticPage($this->urlDetail[1])){

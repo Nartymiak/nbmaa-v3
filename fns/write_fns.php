@@ -54,6 +54,27 @@
 				}
 			}
 
+			if($_POST['add'])	{
+
+				$sql = 'INSERT INTO 	EVENT_DATE_TIMES (EventID, StartDate, EndDate, StartTime, EndTime)
+						VALUES 			(:eventID, :startDate, :endDate, :startTime, :endTime)';
+
+				// prepare the statement object
+				$statement = $conn->prepare($sql);
+
+				foreach($_POST['add'] as $dateTime) {				
+
+					$statement->bindValue(":eventID", $_POST['EventID'], PDO::PARAM_STR);
+					$statement->bindValue(":startDate", $dateTime['StartDate'], PDO::PARAM_STR);
+					$statement->bindValue(":endDate", $dateTime['EndDate'], PDO::PARAM_STR);
+					$statement->bindValue(":startTime", $dateTime['StartTime'], PDO::PARAM_STR);
+					$statement->bindValue(":endTime", $dateTime['EndTime'], PDO::PARAM_STR);
+					
+					$statement->execute();
+				}
+
+			}
+
 			if($_POST['delete']) {
 
 				$sql = 'DELETE
