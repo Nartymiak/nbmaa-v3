@@ -339,14 +339,14 @@
 				</div>
 			</div>
 			<!-- end -->
-			<h1 itemprop="name">NEW BRITAIN MUSEUM OF AMERICAN ART</h1>
+			<h1 id="museumName" itemprop="name">NEW BRITAIN MUSEUM OF AMERICAN ART</h1>
 		<?
 		}
 
 		/** prints the footer **/
 		protected function HTMLfooter(){
 			$todaysDate = date('Y-m-d');
-			$lastDate = '2017-01-31';
+			$lastDate = '2018-01-31';
 
 			// get the year and the month
 			if(!$_POST['month']) {
@@ -368,6 +368,7 @@
 							<a href="<?php echo $GLOBALS['rootDirectory']; ?>/museum-of-american-art/rent-the-museum">Rent the Museum</a>
 						</div>
 						<div class="columnTwo">
+							<a href="http://eepurl.com/b_hZc5">Subscribe to our e-newsletter</a>
 							<a href="<?php echo $GLOBALS['rootDirectory']; ?>/museum-of-american-art/giving">How to Donate to the Museum</a>
 							<a href="<?php echo $GLOBALS['rootDirectory']; ?>/museum-of-american-art/annual-report">Annual Report</a>
 							<a href="mailto:artymiakn@nbmaa.org">Questions about the new site?</a>
@@ -377,21 +378,16 @@
 						</div>
 						<div class="clear"></clear>
 					</div>
+
 				</footer>
-				<script type="text/javascript" src="<?php echo $GLOBALS['rootDirectory']; ?>/js/menu.js"></script>
-				<script type="text/javascript" src="<?php echo $GLOBALS['rootDirectory']; ?>/js/color.js"></script>
-				<script type="text/javascript" src="<?php echo $GLOBALS['rootDirectory']; ?>/js/adjure.js"></script>
-				<script type="text/javascript" src="<?php echo $GLOBALS['rootDirectory']; ?>/js/Vibrant.js"></script>
-				<script type="text/javascript" src="<?php echo $GLOBALS['rootDirectory']; ?>/js/easing.js"></script>
-				<script type="text/javascript" src="<?php echo $GLOBALS['rootDirectory']; ?>/js/calendar-subNav.js"></script>
-				<script type="text/javascript" src="<?php echo $GLOBALS['rootDirectory']; ?>/js/memberEmailForm.js"></script>
-				<?php 
-					if($this->pageID == 'index'){ 
-					?>
-						<script type="text/javascript" src="<?php echo $GLOBALS['rootDirectory']; ?>/js/slider.js"></script>
-					<?php
-					}
-				?>
+
+				<script type="text/javascript" src="<?php echo $GLOBALS['rootDirectory']; ?>/js/menu.js?v=1"></script>
+				<script type="text/javascript" src="<?php echo $GLOBALS['rootDirectory']; ?>/js/color.js?v=1"></script>
+				<script type="text/javascript" src="<?php echo $GLOBALS['rootDirectory']; ?>/js/adjure.js?v=1"></script>
+				<script type="text/javascript" src="<?php echo $GLOBALS['rootDirectory']; ?>/js/Vibrant.js?v=1"></script>
+				<script type="text/javascript" src="<?php echo $GLOBALS['rootDirectory']; ?>/js/easing.js?v=1"></script>
+				<script type="text/javascript" src="<?php echo $GLOBALS['rootDirectory']; ?>/js/calendar-subNav.js?v=1.3.1"></script>
+				<script type="text/javascript" src="<?php echo $GLOBALS['rootDirectory']; ?>/js/memberEmailForm.js?v=1"></script>
 				<script type="text/javascript">
 
 					$(document).ready(function() { 
@@ -413,7 +409,9 @@
 					<?php 
 						if($this->pageID == 'calendar'){ 
 						?>
+
 							makeSideNavCalendar(<?php echo $y. ", " .$m. ", '" .$lastDate. "', '" .$todaysDate. "'" ?>); // calendar.js
+
 						
 						<?php
 						}else if ($this->pageID == 'index'){
@@ -442,7 +440,7 @@
 			$image;
 
 			$link = "http://ctarttrail.org/";
-			$image = "cta-ctArtTrailPass.jpg";	 	
+			$image = "cta-art-trail-2016-logo.jpg";	 	
 	 ?>
 			<div class="cta">
 				<? 	echo "<a href=\"" .$link. "\">" ;
@@ -545,7 +543,9 @@
 					//if its the first element, add the .top class and create the image element
 					if($count==0){ 						
 						$class = "showImg";
-						$topImg = $this->toImg("exhibition-page-images", $firstExhibitionImage[0]['ImgFilePath'], $tuple['Title'], "image");
+						if (!empty($firstExhibitionImage[0]['ImgFilePath'])){
+							$topImg = $this->toImg("exhibition-page-images", $firstExhibitionImage[0]['ImgFilePath'], $tuple['Title'], "image");
+						}
 					}
 
 					array_push($returnArray, "
@@ -826,7 +826,7 @@
 			$this->pageID = "lobby";
 
 			//full-width background
-			if($this->imagePath){ 					echo "	<div id=\"background\" style=\"background-image:url('" .$this->imagePath. "');\"></div>\r\n
+			if($this->imagePath){ 				echo "	<div id=\"background\" style=\"background-image:url('" .$this->imagePath. "');\"></div>\r\n
 												<img style=\"display:none;\" id=\"logoBg\" src=\"" .$this->imagePath. "?".microtime(). "\">\r\n" ;
 			}
 
@@ -887,7 +887,7 @@
 				// build the html img element for the main image
 
 				if(!$firstExhibitionImage[0]['ImgFilePath']){
-				// handle error
+					$this->imagePath = 'http://www.nbmaa.org/images/event-page-images/the-nbmaa-in-the-spring.jpg';
 				} else {
 					//create HTML alt attribute text
 					if($firstExhibitionImage[0]['Title']){	$alt = $firstExhibitionImage[0]['Title'];}
@@ -1332,7 +1332,7 @@
 			if($this->subNavLinksQuery){
 				echo "		<h3 class=\"top\">About</h3>\r\n";
 				echo "		<a href=\"".$GLOBALS['rootDirectory']. "/classroom/" .$this->subNavLinksQuery[0][0]['Link']. "\" id=\"" .$this->subNavLinksQuery[0][0]['Link']. "\">" .$this->subNavLinksQuery[0][0]['Title']. "</a>\r\n";
-				echo "		<h3 class=\"top\">Programs</h3>\r\n";
+				echo "		<h3 class=\"top\">Register</h3>\r\n";
 				echo "		<div class=\"classLinks\">";
 				foreach ($this->subNavLinksQuery as $link) {
 					echo "		<a href=\"".$GLOBALS['rootDirectory']. "/classroom/" .$link[0]['KeywordID']. "\" id=\"" .$link[0]['KeywordID']. "\">" .$link[0]['Word']. "</a>\r\n";
@@ -1439,7 +1439,7 @@
 			if(count($this->eventDateTimes) == 1) {	
 				List($y,$m,$d) = explode("-",$this->eventDateTimes[0]['StartDate']);
 				$titleDate = mktime(0,0,0,$m,$d,$y);
-				echo " <p><span class=\"date\">" .date("l, F d, Y", $titleDate). "</span> \r\n"; 
+				echo " <p><span class=\"date\">" .date("l, F d, Y", $titleDate). "</span></p>\r\n"; 
 			} 
 			if($this->primaryImage) { 				echo "		" .$this->primaryImage.  "\r\n";}
 			if($this->imageCaption) {				echo "		<p class=\"tombstone\">" .$this->imageCaption. "</p>\r\n";}
@@ -1581,6 +1581,7 @@
 
 		private $exhibitionID;
 		private $artworkQuery;
+		private $BgArtworkQuery;
 		private $artistArtworkQuery;
 		private $exhibitionArtworksQuery;
 		private $artistsQuery;
@@ -1593,13 +1594,16 @@
 
 		private $artistNames; // artists names are stored as a single string
 		private $primaryImage;
+		private $bgImagePath;
 		private $imagePath;
 		private $tombstone;
 		private $bodyContent;
+		private $showArtists;
 		private $title;
 		private $startDate;
 		private $endDate;
 		private $gallery;
+		private $slider;
 		private $artistBios = array();
 
 
@@ -1623,8 +1627,11 @@
 			$this->pageID = "exhibition";
 
 			//full-width background
-			if($this->imagePath){ 					echo "	<div id=\"background\" style=\"background-image:url('" .$this->imagePath. "');\"></div>\r\n
-													     	<img style=\"display:none;\" id=\"logoBg\" src=\"" .$this->imagePath. "?".microtime(). "\">\r\n" ;
+			if($this->bgImagePath){ 				echo "	<div id=\"background\" style=\"background-image:url('" .$this->bgImagePath. "');\"></div>\r\n
+													     	<img style=\"display:none;\" id=\"logoBg\" src=\"" .$this->bgImagePath. "?".microtime(). "\">\r\n" ;
+			} else {
+													echo "	<div id=\"background\" style=\"background-image:url('http://www.nbmaa.org/images/event-page-images/the-nbmaa-in-the-spring.jpg');\"></div>\r\n
+													     	<img style=\"display:none;\" id=\"logoBg\" src=\"http://www.nbmaa.org/images/event-page-images/the-nbmaa-in-the-spring.jpg\">\r\n" ;
 			}
 
 			// wrapper
@@ -1635,6 +1642,11 @@
 
 			//main section
 			echo "		<div class=\"mainSection\">\r\n";
+
+			// slider section
+			if($this->slider && $this->exhibitionArtworksQuery) {
+				echo "<div  class=\"sliderContainer\"></div>";
+			}
 			
 			//sub navigation section
 			$this->makeSubNav();
@@ -1645,23 +1657,128 @@
 			if($this->title) {						echo "		<h2>" .$this->title. "</h2>\r\n"; } 
 			if($this->startDate && $this->endDate){ echo "		<p>" .$this->startDate. "&ndash;" .$this->endDate. "</p>\r\n";}
 			if($this->gallery) {					echo "		<p class=\"gallery\">" .$this->gallery. "</p>\r\n";}
-			if($this->primaryImage) { 				echo "		" .$this->primaryImage.  "\r\n";}
-			if($this->tombstone) {					echo "		<p class=\"tombstone\">" .$this->tombstone. "</p>\r\n";}
-			if($this->bodyContent) {				echo "		<div class=\"bodyContent\">" .$this->bodyContent. "		</div>\r\n";}
-			echo "		</div>\r\n";
-
-			if($this->exhibitionArtworksQuery) {
-				echo "<div id=\"exhibitionArtworks\">\r\n";
-				echo "<h2>Artwork</h2>\r\n";
-
+			if($this->slider && $this->exhibitionArtworksQuery) {
+				echo '
+						<div id="exhibitionSlider" style="max-width:100%;">
+							<ul class="bxslider">';
+				
 				foreach($this->exhibitionArtworksQuery as $row){
 					$art = queryReference('ARTWORK', 'ArtworkID', $row['ArtworkID']);
-					echo "<img src =\"" .$GLOBALS['rootDirectory']. "/images/exhibition-page-images/" .$art[0]['ImgFilePath']. "\">\r\n";
+					echo '
+							<li style="max-width:100%;">
+								<img style="border:none;margin:0 auto;max-width:100%;" alt="'.$this->tombstone[$row['ArtworkID']].'" src ="' .$GLOBALS['rootDirectory']. '/images/exhibition-page-images/' .$art[0]['ImgFilePath']. '">
+
+							</li>';
 				}
 
-				echo "</div>\r\n";
+				echo '
+							</ul>
+						<p class="tombstone"></p>
+						</div> ';
 
+				?>
+						<!-- bxSlider Javascript file -->
+						<script src="http://www.nbmaa.org/js/jquery.bxslider/jquery.bxslider.min.js"></script>
+						<!-- bxSlider CSS file -->
+						<link href="http://www.nbmaa.org/js/jquery.bxslider/jquery.bxslider.css" rel="stylesheet" />
+						<script>
+							$(document).ready(function(){
+								var tombstone = [];
+								var currentSlide = 0;
+								var backgroundImg;
+								var $_GET = {};
+								var slider = $('#exhibitionSlider');
+								var tombstoneDiv = $('.tombstone');
+								var museumName = $('#museumName');
+
+								document.location.search.replace(/\??(?:([^=]+)=([^&]*)&?)/g, function () {
+								    function decode(s) {
+								        return decodeURIComponent(s.split("+").join(" "));
+								    }
+
+								    $_GET[decode(arguments[1])] = decode(arguments[2]);
+								});
+
+
+								if($_GET.v == 2){
+									$("#background").remove();
+									$("#exhibitionSlider").remove();
+									$('.sliderContainer').append(slider);
+									$('.mainSection').css('top', 12);
+									$('#museumName').remove();
+									$('#mainNav').before(museumName);
+									$('header .logo').css('width', 91);
+									$('#mainNav').css('margin-left', 120);
+									//$('nav .dropDown').css('top', $('#museumName').height());
+									$('#museumName').css({
+										'position': 'absolute',
+										'margin': '0 0 0 ' + ($('.logo').width()+10 + 20),
+    									'padding': '10 0 0 0',
+    									'color': '#000000',
+    									'text-shadow' : 'none'
+									});
+									$('nav .menuItem').css({
+										'margin-top': '10px'
+									});
+								}
+
+
+								var slider = $(".bxslider").bxSlider({
+								  	adaptiveHeight: true,
+								  	captions: true,
+								  	controls:false,
+								  	auto: true,
+								  	onSliderLoad: function(){
+								  		$('.bxslider li img').each(function(){
+								  			tombstone.push($(this).attr('alt'));
+								  		});
+										if($_GET.v == 2){
+											$('.todaysDate').remove();
+											$('.bx-pager').after(tombstoneDiv);
+										}
+										$('.tombstone').empty();
+										$('.tombstone').html(tombstone[currentSlide+1]);								
+  									},
+
+								  	onSlideAfter: function(){
+								  		currentSlide = slider.getCurrentSlide();
+								  		backgroundImg = $('.bxslider li img').eq(currentSlide + 1).attr('src');
+										$('.tombstone').empty();
+										$('.tombstone').html(tombstone[currentSlide+1]);
+										$('#background').fadeOut(400, function(){
+											$(this).css('background-image', 'url("' +backgroundImg+ '")');
+											$('#logoBg').attr('src', backgroundImg);
+											$(this).fadeIn(400)[0];
+										});
+
+										if($_GET.v == 2){
+											$('#logoBg').attr('src', backgroundImg);
+										}
+
+										var sliderVibrant = new Vibrant(document.getElementById("logoBg"));
+			    						var sliderSwatches = sliderVibrant.swatches();
+
+										//$('.logo').css('background-color', sliderSwatches['DarkMuted'].getHex());
+										//$('#navAnnouncement').css('background-color', sliderSwatches['DarkMuted'].getHex());
+										$('.bx-wrapper .bx-pager').css('color', sliderSwatches['DarkMuted'].getHex());
+
+										if($_GET.v == 2){
+											$('#museumName').css('color', sliderSwatches['DarkMuted'].getHex());
+										}
+									}
+								});
+
+							});
+						</script>
+				<?php
+
+														
+			} else {
+				if($this->primaryImage) { 			echo "		" .$this->primaryImage.  "\r\n";}
+				if($this->tombstone) {				echo "		<p class=\"tombstone\">" .$this->tombstone. "</p>\r\n";}
 			}
+			if($this->bodyContent) {				echo "		<div class=\"bodyContent\">" .$this->bodyContent. "		</div>\r\n";}
+			echo "		</div>\r\n";
 
 			if($this->artistBios){
 				echo "<div id=\"artists\" class=\"idartists\">\r\n";
@@ -1690,8 +1807,6 @@
 
 			if($this->eventQuery){
 
-
-
 				foreach($this->eventQuery as $event){
 
 					$dateTime = queryReference('EVENT_DATE_TIMES', 'EventID', $event[0]['EventID']);
@@ -1700,7 +1815,11 @@
 					List($y,$m,$d) = explode("-",$dateTime[0]['StartDate']);
 					$timestamp = mktime(0,0,0,$m,$d,$y);
 
-					$topImg = $this->toImg("event-page-images", $event[0]['ImgFilePath'], $event[0]['Title'], NULL); 
+					if($event[0]['ImgFilePath'] != NULL){
+						$topImg = $this->toImg("event-page-images", $event[0]['ImgFilePath'], $event[0]['Title'], NULL);
+					} else {
+						$topImg = '';
+					}
 					$class = "showImg";
 					
 					echo "<div class=\"exhibitionEvent id" .$event[0]['EventTypeID']. "\">";
@@ -1745,10 +1864,11 @@
 				echo "		<h3 class=\"top\">About the Exhibition</h3>\r\n";
 				echo "		<div class=\"display\">";
 				echo "		<a class=\"about current\">About</a>";
-				if($this->exhibitionArtworksQuery){		echo "		<a id=\"" .$this->exhibitionArtworksQuery[0]['ExhibitionID']. "\" class=\"exhibitionArtworks\">Artwork</a>\r\n";}
-				if(count($this->artistBios) == 1  ){ 		echo "		<a id=\"" .$this->artistsQuery[0]['ArtistID']. "\" class=\"artists\">Artist Bio</a>\r\n";}
-				if(count($this->artistBios) > 1){ 		echo "		<a id=\"" .$this->artistsQuery[0]['ArtistID']. "\" class=\"artists\">Artists</a>\r\n";}
-				if($this->exhibitionVideoQuery){ 		echo "		<a id=\"" .$this->artistsQuery[0]['ExhibitionID']. "\" class=\"videos\">Videos</a>\r\n";}
+				if($this->showArtists == '1'){
+					if(count($this->artistBios) == 1  ){ 	echo "		<a id=\"" .$this->artistsQuery[0]['ArtistID']. "\" class=\"artists\">Artist Bio</a>\r\n";}
+					if(count($this->artistBios) > 1){ 		echo "		<a id=\"" .$this->artistsQuery[0]['ArtistID']. "\" class=\"artists\">Artists</a>\r\n";}
+				}
+				if($this->exhibitionVideoQuery){ 			echo "		<a id=\"" .$this->artistsQuery[0]['ExhibitionID']. "\" class=\"videos\">Videos</a>\r\n";}
 			
 
 				if($this->exhibitionEventsQuery && $eventLinks = $this->makeEventLinks()){
@@ -1810,20 +1930,113 @@
 		*/
 		protected function makeHTMLElements($result){
 
+			// handle error
 			if(!$result){
-				// handle error
+				
 			}else{
 
-				// build the exhibition artworks table query
-				if($this->exhibitionArtworksQuery = queryReference('EXHIBITION_ARTWORKS', 'ExhibitionID', $result['ExhibitionID'])){
-					//everything is good!
+				
+				if($result['Slider'] === '1'){
+
+					$this->slider = 1;
+
+					// build the exhibition artworks table query
+					if($this->exhibitionArtworksQuery = queryReference('EXHIBITION_ARTWORKS', 'ExhibitionID', $result['ExhibitionID'])){
+
+						$this->tombstone = array();
+
+						shuffle($this->exhibitionArtworksQuery);
+
+						foreach($this->exhibitionArtworksQuery as $exhibtionArtwork){
+							$artistID = 	queryReference('ARTIST_ARTWORKS', 'ArtworkID', $exhibtionArtwork['ArtworkID']);
+							$tempArtist =  	queryReference('ARTIST', 'ArtistID', $artistID[0]['ArtistID']);
+							$tempArtistName = buildArtistName($tempArtist[0]);
+							$tempArtwork = 	queryReference('ARTWORK', 'ArtworkID', $exhibtionArtwork['ArtworkID']);
+
+							$tombstoneString = $this->buildTombstone($tempArtistName, $tempArtwork[0], FALSE);
+							$exha = $exhibtionArtwork['ArtworkID'];
+							$this->tombstone[$exha] = $tombstoneString;
+						}
+					}
+
+					// build hero image (by querying ARTWORK with artworkReferenceNo in the EXHIBITION table)
+					if($this->bgArtworkQuery = queryReference('ARTWORK', 'ArtworkID', $this->exhibitionArtworksQuery[0]['ArtworkID'])){
+						$this->bgImagePath = $GLOBALS['rootDirectory']. "/images/exhibition-page-images/" .$this->bgArtworkQuery[0]['ImgFilePath'];
+					}
+
+				} else {
+
+					// build main image artist name (by querying ARTWORK with MainArtworkReferenceNo in the EXHIBITION table)
+					if($this->artworkQuery = queryReference('ARTWORK', 'ArtworkID', $result['MainArtworkReferenceNo'])){
+
+						// check if artist_artwork table gets referenced
+						if($this->artistArtworkQuery = queryReference('ARTIST_ARTWORKS', 'ArtworkID', $this->artworkQuery[0]['ArtworkID'])){
+
+							// build the artistNames string
+							$this->artistNames ="";
+
+							// loop through the artwork query
+							foreach($this->artistArtworkQuery as $artist){
+
+								// query the ARTIST table with corresponding ID
+								if($this->artistsQuery = queryReference('ARTIST', 'ArtistID', $artist['ArtistID'])){
+
+									// build name and concatenate each return string
+									$this->artistNames .= buildArtistName($this->artistsQuery[0]);
+
+								}
+							}
+
+						}
+					}
+
+					// build the html img element for the main image
+					if(!$this->artworkQuery[0]['ImgFilePath']){
+					//handle error
+					} else {
+						$alt = $this->artistNames. " " .$this->artworkQuery[0]['Title'];
+						$this->primaryImage=$this->toImg("exhibition-page-images", $this->artworkQuery[0]['ImgFilePath'], $alt, "primaryImageOfPage" );			
+					
+						$this->imagePath = $GLOBALS['rootDirectory']. "/images/exhibition-page-images/" .$this->artworkQuery[0]['ImgFilePath'];
+					}
+
+					// buld tombstone
+					$this->tombstone = $this->buildTombstone($this->artistNames, $this->artworkQuery[0], FALSE);
+
+					// build hero image (by querying ARTWORK with artworkReferenceNo in the EXHIBITION table)
+					if($this->bgArtworkQuery = queryReference('ARTWORK', 'ArtworkID', $result['ArtworkReferenceNo'])){
+						$this->bgImagePath = $GLOBALS['rootDirectory']. "/images/exhibition-page-images/" .$this->bgArtworkQuery[0]['ImgFilePath'];
+					}
+
+
 				}
+
 
 				// build the videos query
 				if($this->exhibitionVideosQuery = queryReference('EXHIBITION_VIDEOS', 'ExhibitionID', $result['ExhibitionID'])){
 					if($this->exhibitionVideoQuery = queryReference('VIDEO', 'VideoID', $this->exhibitionVideosQuery[0]['VideoID'])){
-
 					}
+				}
+
+
+				//build gallery
+				if ($this->gallery = queryReference('GALLERY', 'GalleryID', $result['GalleryReferenceNo'])[0]['Title']){
+					// then everything is grand!
+				}
+
+				//body content
+				if(!$result['BodyContent']){
+					//handle error
+				} else {
+					$this->bodyContent = nl2p($result['BodyContent']);
+				}
+				//build title
+				if($result['Title']){ $this->title = nl2br($result['Title']);}
+
+				//build start date and end date
+				if($result['StartDate'] && $result['EndDate']){ 
+					$this->startDate = date('F d, Y', strtotime($result['StartDate']));
+					$this->endDate = date('F d, Y', strtotime($result['EndDate']));
 				}
 
 				// build the events query
@@ -1842,65 +2055,11 @@
 
 				}
 
-				// build main image artist name (by querying ARTWORK with artworkReferenceNo in the EXHIBITION table)
-				if($this->artworkQuery = queryReference('ARTWORK', 'ArtworkID', $result['ArtworkReferenceNo'])){
-
-					// check if artist_artwork table gets referenced
-					if($this->artistArtworkQuery = queryReference('ARTIST_ARTWORKS', 'ArtworkID', $this->artworkQuery[0]['ArtworkID'])){
-
-						// build the artistNames string
-						$this->artistNames ="";
-
-						// loop through the artwork query
-						foreach($this->artistArtworkQuery as $artist){
-
-							// query the ARTIST table with corresponding ID
-							if($this->artistsQuery = queryReference('ARTIST', 'ArtistID', $artist['ArtistID'])){
-
-								// build name and concatenate each return string
-								$this->artistNames .= buildArtistName($this->artistsQuery[0]);
-
-							}
-						}
-
-					}
-				}
-
-				//build gallery
-				if ($this->gallery = queryReference('GALLERY', 'GalleryID', $result['GalleryReferenceNo'])[0]['Title']){
-					// then everything is grand!
-				}
-
-				// build the html img element for the main image
-				if(!$this->artworkQuery[0]['ImgFilePath']){
-				//handle error
-				} else {
-					$alt = $this->artistNames. " " .$this->artworkQuery[0]['Title'];
-					$this->primaryImage=$this->toImg("exhibition-page-images", $this->artworkQuery[0]['ImgFilePath'], $alt, "primaryImageOfPage" );			
-				
-					$this->imagePath = $GLOBALS['rootDirectory']. "/images/exhibition-page-images/" .$this->artworkQuery[0]['ImgFilePath'];
-				}
-
-				// buld tombstone
-				$this->tombstone = $this->buildTombstone($this->artistNames, $this->artworkQuery[0], FALSE);
-
-				//body content
-				if(!$result['BodyContent']){
-					//handle error
-				} else {
-					$this->bodyContent = nl2p($result['BodyContent']);
-				}
-				//build title
-				if($result['Title']){ $this->title = nl2br($result['Title']);}
-
-				//build start date and end date
-				if($result['StartDate'] && $result['EndDate']){ 
-					$this->startDate = date('F d, Y', strtotime($result['StartDate']));
-					$this->endDate = date('F d, Y', strtotime($result['EndDate']));
-				}
-
 				// build the artist bios section
 				if($this->artistBiosQuery = queryReference('EXHIBITION_ARTISTS', 'ExhibitionID', $result['ExhibitionID'])){
+					
+					$this->showArtists=$result['ShowArtists'];
+
 					foreach($this->artistBiosQuery as $artist){
 						$info = queryReference('ARTIST', 'ArtistID', $artist['ArtistID']);
 						array_push($this->artistBios, $info[0]);
@@ -1987,7 +2146,7 @@
 		protected function makeSingleSlide(){
 			?>
 				<!-- logo bg -->
-				<img style="display:none;" id="logoBg" src="http://www.nbmaa.org/images/front-page-images/von-metzch-title.jpg?<?php  echo microtime() ?>">
+				<img style="display:none;" id="logoBg" src="http://www.nbmaa.org/images/front-page-images/frederic-edwin-church-cotopaxi.jpg?<?php  echo microtime() ?>">
 
 				<!-- <div id="communityDayNutcracker">
 					<div class="wrapper">
@@ -2003,10 +2162,10 @@
 
 				<div class="wrapper" style="top:40px;max-width:75vw;">
 					<ul class="bxslider">
-						<li style="height:75vh"><img style="max-height:75vh;margin:0 auto;position:absolute;top: 50%;transform: translate(-50%, -50%);left: 50%;" src="http://www.nbmaa.org/images/front-page-images/von-metzch-title.jpg" /></li>
-						<li style="height:75vh"><img style="max-height:75vh;margin:0 auto;position:absolute;top: 50%;transform: translate(-50%, -50%);left: 50%;" title='George Nick, "Joe’s American Bar and Grill," 2008, Oil on linen, 50 x 40 in., Courtesy of Gail and Ernst von Metzsch' style="max-height:75vh;margin:0 auto;" src="http://www.nbmaa.org/images/front-page-images/george-nick-joes-american-bar-and-grill.jpg" /></li>
-						<li style="height:75vh"><img style="max-height:75vh;margin:0 auto;position:absolute;top: 50%;transform: translate(-50%, -50%);left: 50%;" title='Janet Monafo, "Open Heart," 1994, Pastel on paper, 46 x 58 in., Courtesy of Gail and Ernst von Metzsch' style="max-height:75vh;margin:0 auto;" src="http://www.nbmaa.org/images/front-page-images/janet-monafo-open-heart.jpg" /></li>
-					 	<li style="height:75vh"><img style="max-height:75vh;margin:0 auto;position:absolute;top: 50%;transform: translate(-50%, -50%);left: 50%;" title='Paul Rahilly, "The Violinist," 1980, Oil on canvas, 60 x 40 in., Courtesy of Gail and Ernst von Metzsch' style="max-height:75vh;margin:0 auto;" src="http://www.nbmaa.org/images/front-page-images/paul-rahilly-the-violinist.jpg" /></li>
+						<li style="height:75vh"><a href="http://www.nbmaa.org/exhibition/vistas-del-sur-traveler-artists-landscapes-of-latin-america-from-the-patricia-phelps-de-cisneros-collection"><img style="max-height:75vh;margin:0 auto;position:absolute;top: 50%;transform: translate(-50%, -50%);left: 50%;" src="http://www.nbmaa.org/images/front-page-images/vista-del-sur-exhibition-title.jpg" /></a></li>
+						<li style="height:75vh"><img style="max-height:75vh;margin:0 auto;position:absolute;top: 50%;transform: translate(-50%, -50%);left: 50%;" title='Frederic Edwin Church, "Cotopaxi," 1853, Oil on canvas, 9 3/4 x 14 1/2 inches, Colección Patricia Phelps de Cisneros'  src="http://www.nbmaa.org/images/front-page-images/frederic-edwin-church-cotopaxi.jpg" /></li>
+						<li style="height:75vh"><img style="max-height:75vh;margin:0 auto;position:absolute;top: 50%;transform: translate(-50%, -50%);left: 50%;" title='Alessandro Ciccarelli, "View of Rio de Janeiro," ca. 1840, 22 1/4 x 32 inches, Colección Patricia Phelps de Cisneros'  src="http://www.nbmaa.org/images/front-page-images/alessandro-ciccarelli-view-of-rio-de-janeiro.jpg" /></li>
+					 	<li style="height:75vh"><img style="max-height:75vh;margin:0 auto;position:absolute;top: 50%;transform: translate(-50%, -50%);left: 50%;" title='Ernest Charton de Treville, "The Road from Valparaíso to Santiago," 1849, 22 1/8 x 34 1/2 inches, Colección Patricia Phelps de Cisneros'  src="http://www.nbmaa.org/images/front-page-images/ernest-charton-de-treville-the-road-from-valparaiso-to-santiago.jpg" /></li>
 					</ul>
 				</div>
 

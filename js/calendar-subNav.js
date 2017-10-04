@@ -61,7 +61,11 @@
 
 	var displayMonth = function(y, m) {
 
+		var dayOfWeekInt = (dayOfWeek(y,m,1) | 0);
+		if(y==2017){ dayOfWeekInt=dayOfWeekInt+1; }
+
 		var month = y + "-" + pad(m);
+
 
 		$('#sideNavCalendar').append('<div class=\"calendar ' + month + '\"><div class=\"calendarHeader\"><h5 class=\"month\" id=\"' + month + '\""> ' + dateToMonth[m] + ' ' + y + '</h5></div></div>');
 
@@ -72,8 +76,13 @@
 
 		// figure out how many days in the week appear before
 		// and print out empty squares for each one
-		for(var i=1;i<(dayOfWeek(y,m,1) | 0);i++){   // simply or 0 the float to truncate to integer
-			$("." + month ).append("<div class=\"calSquare empty\"></div>");
+		if(dayOfWeekInt != 1 && dayOfWeekInt!= 8){
+
+			for(var i=1;i<dayOfWeekInt;i++){   // simply or 0 the float to truncate to integer
+				
+				$("." + month ).append("<div class=\"calSquare empty\"></div>");
+			}
+
 		}
 
 		// print out the number of days the correct month has
@@ -86,15 +95,18 @@
 	var makeSideNavCalendar = function(y, m, lastDate, todaysDate){
 
 		var startYear = 2015;
-		var startMonth =3;
+		var startMonth = 3;
 		var endMonth = new Date(lastDate).getMonth()+2;
 		var endYear = new Date(lastDate).getFullYear();
 		var todaysCalOffset;
 		
-		// create all the calendars in the scrolling div
-		while(startMonth != endMonth || startYear != endYear){
+
+		 //create all the calendars in the scrolling div
+		while(startMonth != endMonth || startYear != endYear)
+		{
 
 			displayMonth(startYear, startMonth);
+			
 			startMonth++;
 
 			if(startMonth==13){
@@ -104,7 +116,7 @@
 		}
 
 		var container = document.getElementById('sideNavCalendar');
-		var rowToScrollTo = document.getElementsByClassName('2016-12')[0];
+		var rowToScrollTo = document.getElementsByClassName('2017-04')[0];
 
 		container.scrollTop = rowToScrollTo.offsetTop;
 
