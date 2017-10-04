@@ -17,12 +17,12 @@
 			<html>
 				<!DOCTYPE html>
 				<head>
-					<?php //var_dump($this->metaOG); ?>
 					<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+					<meta name=viewport content="width=device-width, initial-scale=1"> 
 
 					<title id="<?php echo str_replace(array("\r", "\n"), '',$title); ?>"> NBMAA | <?php echo str_replace(array("\r", "\n"), '',$title); ?></title>
 					<!-- css -->
-					<link href="<? echo $GLOBALS['rootDirectory'] ?>/css/nbmaa3.css" rel="stylesheet" type="text/css" />
+							<link href="<? echo $GLOBALS['rootDirectory'] ?>/css/nbmaa3.css" rel="stylesheet" type="text/css" />
 					<!-- font -->
 					<link href='http://fonts.googleapis.com/css?family=Lato:100,400,700,100italic,400italic,700italic' rel='stylesheet' type='text/css'>
 					<link rel="stylesheet" href="<? echo $GLOBALS['rootDirectory'] ?>/css/font-awesome.min.css">
@@ -39,19 +39,32 @@
 						<meta property="og:image"         content="<?php echo $this->metaOG['img']; ?>" />
 
 					<?php } ?>
-				</head>
-			<body>
-				<!--<div id="grid"></div>-->
-				<!-- social media -->
-				<div id="fb-root"></div>
-					<script>(function(d, s, id) {
-					  var js, fjs = d.getElementsByTagName(s)[0];
-					  if (d.getElementById(id)) return;
-					  js = d.createElement(s); js.id = id;
-					  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.3";
-					  fjs.parentNode.insertBefore(js, fjs);
-					}(document, 'script', 'facebook-jssdk'));
+					<!-- google analytics -->
+					<script>
+						(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+						(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+						m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+						})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+						ga('create', 'UA-47285500-1', 'auto');
+						ga('send', 'pageview');
+
 					</script>
+
+				</head>
+			<body itemscope itemtype="http://schema.org/Museum">
+				<div id="siteWrapper">
+					<div class="wrapper"><div id="grid"></div></div>
+					<!-- social media -->
+					<div id="fb-root"></div>
+						<script>(function(d, s, id) {
+						  var js, fjs = d.getElementsByTagName(s)[0];
+						  if (d.getElementById(id)) return;
+						  js = d.createElement(s); js.id = id;
+						  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.3";
+						  fjs.parentNode.insertBefore(js, fjs);
+						}(document, 'script', 'facebook-jssdk'));
+						</script>
 		<?
 		}
 
@@ -81,8 +94,9 @@
 				// retrieve the links in the categories
 				foreach ($this->navCategories as $category) {
 					foreach($category as $categoryLink) {
-					if($temp = queryReference("NAV_CATEGORY_LINK", "NavCategoryID", $categoryLink['NavCategoryID'])){
-						array_push($this->navCategoryLinks, $temp);
+						if($temp = queryReference("NAV_CATEGORY_LINK", "NavCategoryID", $categoryLink['NavCategoryID'])){
+							usort($temp, "nav_id_sort");
+							array_push($this->navCategoryLinks, $temp);
 						}
 					}
 				}
@@ -102,15 +116,17 @@
 
 			?>
 			<header>
-				<div id="header-content">
-					<a href="<? echo $GLOBALS['rootDirectory'] ?>">
-						<div class="logo" style="background-color:<?php echo $logoBGColor ?>;"><? echo $this->toImg("logos", $logoFile, "new britain museum of american art logo"); ?></div>
+				<div id="header-content">					
+					<div class="logo" style="background-color:<?php echo $logoBGColor ?>;">
+					<a itemprop="url" href="<? echo $GLOBALS['rootDirectory'] ?>">
+							<? echo $this->toImg("logos", $logoFile, "new britain museum of american art logo", "logo"); ?>
 					</a>
+					</div>
 				<nav id="mainNav">
 					<div class="menuItem visitLink">
 						<a>VISIT</a>
 
-						<div class="dropDown">
+						<div class="dropDown" aria-haspopup="true">
 							<div class="logoSpace"><!-- place holder for under the logo --></div>
 							<div class="left">
 							
@@ -155,7 +171,7 @@
 					<div class="menuItem exhibitionLink">
 						<a>EXHIBITION</a>
 
-						<div class="dropDown">
+						<div class="dropDown" aria-haspopup="true">
 							<div class="logoSpace"><!-- place holder for under the logo --></div>
 							<div class="left">
 
@@ -179,13 +195,11 @@
 									// write the caption for the exhibition in a floating div
 									if($exhibitionsResult[0] != NULL && $exhibitionImage != NULL) {
 
-										echo 	"<a href=\"" .$GLOBALS['rootDirectory']. "/exhibition/" .$exhibitionsResult[$randomInt]['Link']. "\">
-												<div class=\"exhibitonCaption\">
+										echo 	"<a class=\"exhibitionCaption\" href=\"" .$GLOBALS['rootDirectory']. "/exhibition/" .$exhibitionsResult[$randomInt]['Link']. "\">
 													<div class=\"inner\">
 														<h6>" .$exhibitionsResult[$randomInt]['Title']. "</h6>
 														<p class=\"title\">" .$exhibitonGallery[0]['NickName']. "</p>
 													</div>
-												</div>
 												</a>";
 									}
 								}
@@ -212,9 +226,9 @@
 					
 					<!-- calendar link -->
 					<div class="menuItem calendarLink">
-						<a href="<? echo $GLOBALS['rootDirectory'] ?>/calendar/Today">CALENDAR</a>
+						<a>CALENDAR</a>
 						
-						<div class="dropDown">
+						<div class="dropDown" aria-haspopup="true">
 							<div class="logoSpace"><!-- place holder for under the logo --></div>
 							<div class="middle">
 								<div class="calendarWrapper">
@@ -260,6 +274,7 @@
 								}
 								?>
 									<a href="<?php echo $GLOBALS['rootDirectory']; ?>/calendar/Today"><label>All</label></a>
+									<?php if($this->pageID == 'calendar'){ echo "<a id=\"calendarGo\"><label>Go</label></a>"; } ?>
 								<div class="clear"></div>
 							</div>
 							<div class="clear"></div>
@@ -269,7 +284,7 @@
 					<div class="menuItem educationLink">
 						<a>EDUCATION</a>
 
-						<div class="dropDown">
+						<div class="dropDown" aria-haspopup="true">
 							<div class="logoSpace"><!-- place holder for under the logo --></div>
 							<div class="left">
 							
@@ -314,7 +329,7 @@
 					<div class="menuItem supportLink">
 						<a>SUPPORT US</a>
 
-						<div class="dropDown">
+						<div class="dropDown" aria-haspopup="true">
 							<div class="logoSpace"><!-- place holder for under the logo --></div>
 							<div class="left">
 							
@@ -357,9 +372,15 @@
 					</div>
 					<a href="http://nbmaashop.com/">SHOP</a>
 				</nav>
+				<div id="menuButton">MENU <i class="fa fa-bars"></i></div>
 			</div>
 			</header>
-			<h1>NEW BRITAIN MUSEUM OF AMERICAN ART</h1>
+			<!-- uncomment to add special nav announce across top
+			<div id="navAnnouncement">
+				<p><strong>Special notice:</strong> Today, October 15, 2015, we are closed at 2 p.m.</p>
+			</div>
+			-->
+			<h1 itemprop="name">NEW BRITAIN MUSEUM OF AMERICAN ART</h1>
 		<?
 		}
 
@@ -373,70 +394,69 @@
 				List($m,$y) = explode("-", $_POST['month']);
 			}
 		?>
-			<footer>
-				<div class="wrapper">
-					<div class="column">
-						<a href="<?php echo $GLOBALS['rootDirectory']; ?>/museum-of-american-art/about">About</a>
-						<a href="<?php echo $GLOBALS['rootDirectory']; ?>/museum-of-american-art/contact-us">Contact</a>
-						<a href="<?php echo $GLOBALS['rootDirectory']; ?>/museum-of-american-art/employment">Employment</a>
+				<footer>
+					<div class="wrapper">
+						<div class="column">
+							<a href="<?php echo $GLOBALS['rootDirectory']; ?>/museum-of-american-art/about">About the Museum</a>
+							<a href="<?php echo $GLOBALS['rootDirectory']; ?>/museum-of-american-art/contact-us">Contact</a>
+							<a href="<?php echo $GLOBALS['rootDirectory']; ?>/museum-of-american-art/employment">Employment</a>
+						</div>
+						<div class="column right">
+							<a href="<?php echo $GLOBALS['rootDirectory']; ?>/museum-of-american-art/opportunities-for-artists">Opportunities for Artists</a>
+							<a href="<?php echo $GLOBALS['rootDirectory']; ?>/museum-of-american-art/rent-the-museum">Rent the Museum</a>
+							<a href="<?php echo $GLOBALS['rootDirectory']; ?>/museum-of-american-art/accessibility">Accessibility</a>
+						</div>
+						<div class="columnTwo">
+							<a href="<?php echo $GLOBALS['rootDirectory']; ?>/museum-of-american-art/giving">How to Donate to the Museum</a>
+							<a href="<?php echo $GLOBALS['rootDirectory']; ?>/museum-of-american-art/annual-report">Annual Report</a>
+							<a href="mailto:artymiakn@nbmaa.org">Questions about the new site?</a>
+						</div>
+						<div class="columnTwo">
+							<a href="http://www.ctvisit.com/"><img src="<? echo $GLOBALS['rootDirectory']. "/images/sponsors/CT-Logo-DECD-Left-OOTA-RGB_R.jpg" ?>"></a>
+						</div>
+						<div class="clear"></clear>
 					</div>
-					<div class="column right">
-						<a href="<?php echo $GLOBALS['rootDirectory']; ?>/museum-of-american-art/opportunities-for-artists">Opportunities for Artist</a>
-						<a href="<?php echo $GLOBALS['rootDirectory']; ?>/museum-of-american-art/accessibility">Accessibility</a>
-						<a href="<?php echo $GLOBALS['rootDirectory']; ?>/museum-of-american-art/media">Marketing Material</a>
-					</div>
-					<div class="columnTwo">
-						<a href="<?php echo $GLOBALS['rootDirectory']; ?>/museum-of-american-art/giving">How to Donate to the Museum</a>
-						<a href="<?php echo $GLOBALS['rootDirectory']; ?>/museum-of-american-art/annual-report">Annual Report</a>
-						<a href="mailto:artymiakn@nbmaa.org">Questions about the new site?</a>
-					</div>
-					<div class="columnTwo">
-						<a href="http://www.ctvisit.com/"><img src="<? echo $GLOBALS['rootDirectory']. "/images/sponsors/CT-Logo-DECD-Left-OOTA-RGB_R.jpg" ?>"></a>
-					</div>
-					<div class="clear"></clear>
-				</div>
-			</footer>
-			<script type="text/javascript" src="<?php echo $GLOBALS['rootDirectory']; ?>/js/menu.js"></script>
-			<script type="text/javascript" src="<?php echo $GLOBALS['rootDirectory']; ?>/js/calendar.js"></script>
-			<script type="text/javascript" src="<?php echo $GLOBALS['rootDirectory']; ?>/js/color.js"></script>
-			<script type="text/javascript" src="<?php echo $GLOBALS['rootDirectory']; ?>/js/adjure.js"></script>
-			<?php 
-				if($this->pageID == 'index'){ 
+				</footer>
+				<script type="text/javascript" src="<?php echo $GLOBALS['rootDirectory']; ?>/js/menu.js"></script>
+				<script type="text/javascript" src="<?php echo $GLOBALS['rootDirectory']; ?>/js/calendar.js"></script>
+				<script type="text/javascript" src="<?php echo $GLOBALS['rootDirectory']; ?>/js/color.js"></script>
+				<script type="text/javascript" src="<?php echo $GLOBALS['rootDirectory']; ?>/js/adjure.js"></script>
+				<script type="text/javascript" src="<?php echo $GLOBALS['rootDirectory']; ?>/js/Vibrant.js"></script>
+				<script type="text/javascript" src="<?php echo $GLOBALS['rootDirectory']; ?>/js/easing.js"></script>
+				<?php 
+					if($this->pageID == 'index'){ 
+					?>
+						<script type="text/javascript" src="<?php echo $GLOBALS['rootDirectory']; ?>/js/slider.js"></script>
+					<?php
+					}
 				?>
-					<script type="text/javascript" src="<?php echo $GLOBALS['rootDirectory']; ?>/js/slider.js"></script>
-				<?php
-				}
-			?>
-			<script type="text/javascript">
+				<script type="text/javascript">
 
-				$(document).ready(function() { 
+					$(document).ready(function() { 
 
-					menu(); // menu.js
-					makeCalendar(<?php echo $y. ", " .$m ?>); // calendar.js
-					logo();
-					adjure();
-					<?php if($this->pageID == 'index'){ echo "slider();"; } ?>
+						menu(); // menu.js
+						makeCalendar(<?php echo $y. ", " .$m ?>); // calendar.js
+						logo();
+						adjure();
+						<?php if($this->pageID == 'index'){ echo "slider();"; } ?>
 
-					$(document.getElementById("logoBg")).load(function() {
-						getAverageRGB(document.getElementById("logoBg"));
+						$(document.getElementById("logoBg")).load(function() {
+
+							//getAverageRGB(document.getElementById("logoBg"));
+							var vibrant = new Vibrant(document.getElementById("logoBg"));
+    						var swatches = vibrant.swatches();
+							$('.logo').css('background-color', swatches['DarkVibrant'].getHex());
+						});
+
+						
+
 					});
 
-				});
-
-			</script>
-			<!-- share on google plus -->
-			<!-- Place this tag in your head or just before your close body tag. -->
-			<script src="https://apis.google.com/js/platform.js" async defer></script>
-			<!-- google analytics -->
-			<script>
-				(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-				(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-				m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-				})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-				ga('create', 'UA-47285500-1', 'auto');
-				ga('send', 'pageview');
-			</script>
+				</script>
+				<!-- share on google plus -->
+				<!-- Place this tag in your head or just before your close body tag. -->
+				<script src="https://apis.google.com/js/platform.js" async defer></script>
+			</div><!-- siteWrapper-->
 		</body>
 	</html>
 		<?
@@ -446,7 +466,7 @@
 		protected function cta($link){ ?>
 			<div class="cta">
 				<? 	echo "<a href=\"" .$link. "\">" ;
-					echo $this->toImg("cta-images", "cta-expansion.jpg", "nbmaa-cta");
+					echo $this->toImg("cta-images", "cta-expansion.jpg", "nbmaa-cta", NULL);
 					echo "</a>\r\n"; 
 				?>
 			</div>
@@ -460,36 +480,15 @@
 		* @param 	alt 		The data for alt attribute
 		* @return 	String 		String representing an img element
 		*/
-		protected function toImg($dir, $fileName, $alt){
+		protected function toImg($dir, $fileName, $alt, $itemprop){
 
 			if($alt==NULL || $alt==""){	$alt = "The New Britain Museum of American Art";}
-			$string = "<img src=\"" .$GLOBALS['rootDirectory']. "/images/" .$dir. "/" .$fileName. "\" title=\"" .$alt. "\"> ";
+			if($itemprop == NULL || $itemprop ==""){  $writeItemProp = NULL; }
+			else { $writeItemProp = "itemprop=\"" .$itemprop. "\""; }
+			$string = "<img ".$writeItemProp." src=\"" .$GLOBALS['rootDirectory']. "/images/" .$dir. "/" .$fileName. "\" title=\"" .$alt. "\"> ";
 
 			return $string;
 
-		}
-
-		/**
-		*Builds an artist's name 
-		*@param a result from querying the ARTIST table
-		*@return String artist name
-		**/
-		protected function buildArtistName($artistsQuery){
-
-			$artistName ="";
-
-			if(!$artistsQuery){
-					//handle error
-			} else {
-
-				if($artistsQuery['Fname'] || $artistsQuery['Mname'] || $artistsQuery['Lname']){
-					if($artistsQuery['Fname']){ $artistName.= $artistsQuery['Fname']; }
-					if($artistsQuery['Mname']){ $artistName.=  " " .$artistsQuery['Mname']; }
-					if($artistsQuery['Lname']){ $artistName.=  " " .$artistsQuery['Lname']; }
-				}
-			}
-
-			return $artistName;
 		}
 
 		protected function writeNavLinks($navCategoryID){
@@ -505,21 +504,22 @@
 			echo "</div>";
 		}
 
-		protected function buildTombstone($artwork, $artistNames, $artworkQuery){
+		protected function buildTombstone($artistNames, $artworkQuery, $detail){
 
 			$result;
 
 			// buld tombstone
-			if($artwork['TombstoneOverride']){
-				$result .= $TombstoneOverride;
+			if($artworkQuery['TombstoneOverride']){
+				$result .= $artworkQuery['TombstoneOverride'];
 			} else {
-				if($artistNames){							$result  .= $artistNames. ", "; }
-				if($artworkQuery['Title']){ 				$result  .= "<i> " .$artworkQuery['Title']. "</i>, "; }
-				if($artworkQuery['DateCreated']){ 			$result  .= " " .$artworkQuery['DateCreated']. ", ";}
-				if($artworkQuery['Medium']){ 				$result  .= " " .ucfirst(strtolower($artworkQuery['Medium'])). ", ";}
-				if($artworkQuery['Dimensions']){ 			$result  .= " " .$artworkQuery['Dimensions']. ", ";}
-				if($artworkQuery['CourtesyStatement']){ 	$result  .= " " .$artworkQuery['CourtesyStatement']. " ";}
-				if($artworkQuery['Location']){ 				$result  .= " " .$artworkQuery['Location']. " ";}
+				if($artistNames){							$result  .= $artistNames; }
+				if($artworkQuery['Title']){ 				$result  .= ", <i> " .$artworkQuery['Title']. "</i>"; }
+				if($detail == TRUE){					$result  .= ", detail"; }
+				if($artworkQuery['DateCreated']){ 			$result  .= ", " .$artworkQuery['DateCreated'];}
+				if($artworkQuery['Medium']){ 				$result  .= ", " .ucfirst(strtolower($artworkQuery['Medium']));}
+				if($artworkQuery['Dimensions']){ 			$result  .= ", " .$artworkQuery['Dimensions'];}
+				if($artworkQuery['Location']){ 				$result  .= ", " .$artworkQuery['Location'];}
+				if($artworkQuery['CourtesyStatement']){ 	$result  .= ", " .$artworkQuery['CourtesyStatement'];}
 			}
 
 			return $result;
@@ -565,17 +565,18 @@
 					//if its the first element, add the .top class and create the image element
 					if($count==0){ 						
 						$class = "showImg";
-						$topImg = $this->toImg("exhibition-page-images", $firstExhibitionImage[0]['ImgFilePath'], $tuple['Title']);
+						$topImg = $this->toImg("exhibition-page-images", $firstExhibitionImage[0]['ImgFilePath'], $tuple['Title'], "image");
 					}
 
 					array_push($returnArray, "
 				
-						<div class=\"calendarEventsWrapper\">
-							<a href=\"" .$GLOBALS['rootDirectory']. "/exhibition/" .$tuple['Link']. "\">
+						<div itemscope itemtype=\"http://schema.org/VisualArtsEvent\" class=\"calendarEventsWrapper\">
+							<a itemprop=\"url\" href=\"" .$GLOBALS['rootDirectory']. "/exhibition/" .$tuple['Link']. "\">
 								<div class=\"calendarExhibitionElement ".$class."\">
 									".$topImg."
-									<h3>" .$tuple['Title']. "</h3>
-									<p>" .shortenText($tuple['BodyContent']). "</p>
+									<h3 itemprop=\"name\" >" .$tuple['Title']. "</h3>
+									<p itemprop=\"description\">" .shortenText($tuple['BodyContent']). "</p>
+									<meta itemprop=\"startdate\" content=\"".$tuple['StartDate']."\">
 								</div>
 							</a>
 						</div>
@@ -626,8 +627,33 @@
 						</div>";
 			echo "		</div>";
 
+		}
 
+		function buildFeaturedEvent(){
 
+			echo 	"<h5><i class=\"fa fa-heart\"> </i> Special Event</h5>
+					<span itemprop = \"Event\" itemscope itemtype=\"http://schema.org/Event\">
+
+						<a href=\"http://www.nbmaauncorked.org\" itemprop=\"url\">
+							<div class=\"calendarExhibitionElement\">
+								<img itemprop=\"image\" src=\"" .$GLOBALS['rootDirectory']. "/images/event-page-images/nbmaa-uncorked2.jpg\" title =\"NBMAA Uncorked: Cheer's to Sixteen Years\">
+								<h3 itemprop=\"name\">NBMAA Uncorked</h3>
+								<p>Enjoy a vast selection of wine and delicious bites from top chefs at our special fundraiser event.</p>
+								<p style=\"color:blue;\"> Learn more.</p>
+							</div>
+						</a>
+						<meta itemprop=\"startdate\" content=\"2015-10-15\">
+						<span itemprop=\"location\" itemscope itemtype=\"http://schema.org/Place\">
+							<meta itemprop=\"name\" content=\"New Britain Museum of American Art\">
+							<address itemprop=\"address\" itemscope itemtype=\"http://schema.org/PostalAddress\">
+								<span itemprop=\"name\">New Britain Museum of American Art</span>
+								<span itemprop=\"streetAddress\">56 Lexington Street</span>
+								<span itemprop=\"addressLocality\">New Britain</span>
+								<span itemprop=\"addressRegion\">CT</span>, <span itemprop=\"addressCountry\">USA</span>
+							</address>
+						</span>
+
+					</span>";
 		}
 
 	}
@@ -713,7 +739,7 @@
 					//create HTML alt attribute text
 					if($result['Title']){	$alt = $result['Title'];}
 					//create primary image
-					$this->primaryImage=$this->toImg("static-page-images", $result['ImgFilePath'], $alt );
+					$this->primaryImage=$this->toImg("static-page-images", $result['ImgFilePath'], $alt, "primaryImageOfPage" );
 					//create image path for background
 					$this->imagePath = $GLOBALS['rootDirectory']. "/images/static-page-images/" .$result['ImgFilePath'];
 				}
@@ -728,7 +754,7 @@
 					//create HTML alt attribute text
 					if($result['Title']){	$alt = $result['Title'];}
 					//create primary image
-					$this->primaryImage=$this->toImg("static-page-images", $result['ImgFilePath'], $alt );
+					$this->primaryImage=$this->toImg("static-page-images", $result['ImgFilePath'], $alt, "primaryImageOfPage" );
 					//create image path for background
 					$this->imagePath = $GLOBALS['rootDirectory']. "/images/static-page-images/" .$result['ImgFilePath'];
 				}
@@ -747,14 +773,45 @@
 
 			echo "		<nav class=\"subNav\">\r\n";
 
-			if($this->subNavLinksQuery){
+			// Quick Hack to add subpage to subpage. Affects "Individual Members Page only"
+			if 	(
+				$this->title == "How to Join" ||
+				$this->title == "Basic Benefits for All" ||
+				$this->title == "Basic Level Membership" ||
+				$this->title == "Circle Level Membership" ||
+				$this->title == "Premier Circle Level Membership" ||
+				$this->title == "John Butler Talcott Society Level Membership" ||
+				$this->title == "Young Adult Level Membership" ||
+				$this->title == "What is NARM?"
+			){
+				
+				echo "<h3 class=\"top\">Individual Membership</h3>\r\n";
+				echo "<a href=\"" .$GLOBALS['rootDirectory']. "/museum-of-american-art/individual-members\">How to Join</a>\r\n";
+				echo "<a href=\"" .$GLOBALS['rootDirectory']. "/museum-of-american-art/basic-benefits-for-all\">Basic Benefits for All</a>\r\n";
+				echo "<a href=\"" .$GLOBALS['rootDirectory']. "/museum-of-american-art/what-is-narm\">What is NARM?</a>\r\n";
+				echo "<h3 class=\"top\">Membership Types</h3>\r\n";
+				echo "<a href=\"" .$GLOBALS['rootDirectory']. "/museum-of-american-art/basic-level-membership\">Basic Level Membership</a>\r\n";
+				echo "<a href=\"" .$GLOBALS['rootDirectory']. "/museum-of-american-art/circle-level-membership\">Circle Level Membership</a>\r\n";
+				echo "<a href=\"" .$GLOBALS['rootDirectory']. "/museum-of-american-art/premier-circle-level-membership\">Premier Circle Level Membership</a>\r\n";
+				echo "<a href=\"" .$GLOBALS['rootDirectory']. "/museum-of-american-art/john-butler-talcott-society-level-membership\">John Butler Talcott Society Level Membership</a>\r\n";
+				echo "<a href=\"" .$GLOBALS['rootDirectory']. "/museum-of-american-art/young-adult-level-membership\">Young Adult Level Membership</a>\r\n";
 
-				echo "		<h3 class=\"top\">More</h3>\r\n";
+			// end Quick Hack
+			} else {
 
-				foreach ($this->subNavLinksQuery as $link) {
-					echo "		<a href=\"" .$GLOBALS['rootDirectory']. "/museum-of-american-art/" .$link['Link']. "\">" .$link['Title']. "</a>\r\n";
+				if($this->subNavLinksQuery){
+
+					echo "		<h3 class=\"top\">More</h3>\r\n";
+
+					foreach ($this->subNavLinksQuery as $link) {
+						if($link['OutsideLink']=="0"){
+							echo "		<a href=\"" .$GLOBALS['rootDirectory']. "/museum-of-american-art/" .$link['Link']. "\">" .$link['Title']. "</a>\r\n";
+						} else {
+							echo "		<a href=\"" .$link['Link']. "\">" .$link['Title']. "</a>\r\n";
+						}
+					}
 				}
-			}
+			} // end quick Hack else{}
 
 			$this->makeConsistentLinks();
 
@@ -904,13 +961,13 @@
 		private $calendarEvents = array();
 		private $currentExhibitons = array();
 		private $events;
+		private $featuredEvent;
 
 		function __construct($url){
 
-			echo $url;
 			//first, query the db
 			$result = queryCalendarPageEvents($url);
-			$this->HTMLheader(linkToString($url));
+			$this->HTMLheader("Calendar " .linkToString($url));
 			$this->makeHTMLElements($result);
 			$this->makeBody();
 			$this->HTMLfooter();
@@ -939,8 +996,13 @@
 
 			// left column
 			echo "		<div class=\"leftColumn\">\r\n";
-			echo "		<h2>CURRENT EXHIBITIONS</h2>";
-			echo "		<h5><i class=\"fa fa-search\"> </i> On View Today</h5>";
+			
+			// featured event cta
+			//$this->buildFeaturedEvent();
+
+			// current exhibition section
+			echo "		<div id=\"calendarCurrentExhibitions\">";
+			echo "		<h5><i class=\"fa fa-eye\"> </i> Current Exhibitions</h5>";
 			// print current exhibitions
 			if(!$this->currentExhibitons){
 				//handle error
@@ -952,13 +1014,13 @@
 					echo $element;
 				}
 			}
+			echo "		</div><!-- end calendarCurrentExhibitions -->\r\n";
 			
 			echo "		</div><!-- end left -->\r\n";
 
 			//right column
 			echo "		<div class=\"rightColumn\">\r\n";
-			echo "		<h2>EVENTS</h2>";
-			
+
 			// print calendar events
 			if(!$this->calendarEvents){
 				//handle error
@@ -1013,11 +1075,19 @@
 
 					$class = "";
 					$topImg = "";
+					$eventLink ="";
 					
 
 					if($doNextImage == true && !in_array($tuple['ImgFilePath'], $alreadyHasImage)){
 						$nextImage = true;
 						$doNextImage = false;
+					}
+
+					// set up outside link or not
+					if($tuple['OutsideLink'] == true){
+						$eventLink = $tuple['Link'];
+					} else {
+						$eventLink = "" .$GLOBALS['rootDirectory']. "/event/" .$tuple['Link']. "";
 					}
 
 					//print the date for each section
@@ -1056,7 +1126,7 @@
 
 					// if its the first in the section and has not been used or the first one has already been used
 					if( $tuple['ImgFilePath'] && $nextImage == true){	
-						$topImg = $this->toImg("event-page-images", $tuple['ImgFilePath'], $tuple['Title']); 
+						$topImg = $this->toImg("event-page-images", $tuple['ImgFilePath'], $tuple['Title'], "image"); 
 						$class = "showImg";
 						array_push($alreadyHasImage, $tuple['ImgFilePath']);
 					
@@ -1068,16 +1138,24 @@
 					// print each element
 					array_push($this->calendarEvents, "
 
-						<div class=\"calendarEventsWrapper\">
-							<a href=\"" .$GLOBALS['rootDirectory']. "/event/" .$tuple['Link']. "\">
+						<div class=\"calendarEventsWrapper\" itemprop = \"Event\" itemscope itemtype=\"http://schema.org/Event\">
+							<a href=\"" .$eventLink. "\" itemprop=\"url\">
 								<div class=\"calendarElement ".$class."\">
 									".$topImg."
-									<h3>" .$tuple['EventTitle']. "</h3>
+									<h3 itemprop=\"name\">" .$tuple['EventTitle']. "</h3>
 									<h4>" .$tuple['TypeTitle']. "</h4>
 									<p>" .date("g:i a", strtotime($tuple['StartTime'])). " to " .date("g:i a", strtotime($tuple['EndTime'])). "</p>
-									<p>" .shortenText($tuple['Description']). "</p>
-									<div class=\"startDate\">" .$tuple['StartDate']. "</div>
-
+									<p itemprop=\"description\">" .shortenText($tuple['Description']). "</p>
+									<meta itemprop=\"startdate\" content=\"".$tuple['StartDate']."T".$tuple['StartTime']."\"><time class=\"startDate\">" .$tuple['StartDate']. "</time>
+									<span itemprop=\"location\" itemscope itemtype=\"http://schema.org/Place\">
+										<meta itemprop=\"name\" content=\"New Britain Museum of American Art\">
+										<address itemprop=\"address\" itemscope itemtype=\"http://schema.org/PostalAddress\">
+											<span itemprop=\"name\">New Britain Museum of American Art</span>
+											<span itemprop=\"streetAddress\">56 Lexington Street</span>,
+											<span itemprop=\"addressLocality\">New Britain</span>,
+											<span itemprop=\"addressRegion\">CT</span>, <span itemprop=\"addressCountry\">USA</span>
+										</address>
+									</span>
 								</div>
 							</a>
 						</div>
@@ -1128,20 +1206,20 @@
 		private $calendarEvents = array();
 		private $currentExhibitons = array();
 		private $events;
-
 		private $title;
 		private $primaryImage;
 		private $imagePath;
 		private $imageCaption;
 		private $bodyContent;
+		private $keywordDescription;
 		private $subNavLinksQuery;
 
 		function __construct($url){
 
 			//first, query the db
 			$result = queryClassroomPage($url);
-			$this->HTMLheader(linkToString($result['Title']));
 			$this->makeHTMLElements($result);
+			$this->HTMLheader($this->title);
 			$this->makeBody();
 			$this->HTMLfooter();
 			
@@ -1173,9 +1251,14 @@
 			// right column
 			echo "		<div class=\"rightColumn\">\r\n";
 			if($this->title) {						echo "		<h2>" .$this->title. "</h2>\r\n"; } 
-			if($this->primaryImage) { 				echo "		" .$this->primaryImage.  "\r\n";}
-			if($this->imageCaption) {				echo "		<p class=\"tombstone\">" .$this->imageCaption. "</p>\r\n";}
-			if($this->bodyContent) {				echo "		<div class=\"bodyContent\">" .$this->bodyContent. "		</div>\r\n";}
+			if($this->primaryImage) { 				echo "		" .$this->primaryImage.  "\r\n"; }
+			if($this->imageCaption) {				echo "		<p class=\"tombstone\">" .$this->imageCaption. "</p>\r\n"; }
+													echo "		<div class=\"bodyContent\">\r\n";
+			if($this->bodyContent) {				echo "		" .$this->bodyContent; }
+			if($this->keywordDescription) {			echo "		" .$this->keywordDescription; }
+			if($this->events) {						echo "		<h3>Select a studio class below</h3> \r\n ";
+													echo "		" .$this->makeClassroomEvents($this->events); }
+			echo "		</div>\r\n";
 			echo "		</div><!-- end rightColumn -->\r\n";
 			echo "		<div class=\"clear\"></div>\r\n";
 			echo "		</div><!-- end mainSection -->\r\n";
@@ -1191,9 +1274,41 @@
 
 			if(!$result){
 				// handle error
+
 			} else {
 
-				$this->subNavLinksQuery = queryClassRoomKeywords($result['ClassroomPageID']);
+				// if result is of the main classroom page
+				if($result[0] == "main-page"){
+
+					// subnav links
+					if($result['ClassroomPageID']){ $this->subNavLinksQuery = queryClassRoomKeywords($result['ClassroomPageID']); }
+
+					// title
+					if($result['Title']){ $this->title = nl2br($result['Title']);}
+
+					// caption
+					if($result['ImgCaption']) {	$this->imageCaption = nl2br($result['ImgCaption']);}
+
+					// body content (called Body in STATIC_PAGE table)
+					if($result['Body']){ $this->bodyContent = $result['Body'];}
+
+				} else {
+
+					// if the url is for listing events
+					$this->subNavLinksQuery = queryClassRoomKeywords($result[1]['ClassroomPageID']);
+
+					// keyword Description
+					$this->keywordDescription = $result[1]['Description'];
+					
+					// title
+					if($result[1]['Word']){ $this->title = $result[1]['Word'];}
+
+					// events array
+					if($result[2]) { $this->events = $result[2];}
+
+
+				}
+
 
 				// build the html img element for the main image
 				if(!$result['ImgFilePath']){
@@ -1204,34 +1319,16 @@
 					$this->imagePath = $GLOBALS['rootDirectory']. "/images/static-page-images/" .$imgFile[$randomInt];
 
 				} else {
+
 					//create HTML alt attribute text
 					if($result['Title']){	$alt = $result['Title'];}
 					//create primary image
-					$this->primaryImage=$this->toImg("classroom-page-images", $result['ImgFilePath'], $alt );
+					$this->primaryImage=$this->toImg("classroom-page-images", $result['ImgFilePath'], $alt, "primaryImageOfPage" );
 					//create image path for background
 					$this->imagePath = $GLOBALS['rootDirectory']. "/images/classroom-page-images/" .$result['ImgFilePath'];
+
+
 				}
-
-				// title
-				if($result['Title']){ $this->title = nl2br($result['Title']);}
-
-				// build the html img element for the main image
-				if(!$result['ImgFilePath']){
-				// handle error
-				} else {
-					//create HTML alt attribute text
-					if($result['Title']){	$alt = $result['Title'];}
-					//create primary image
-					$this->primaryImage=$this->toImg("static-page-images", $result['ImgFilePath'], $alt );
-					//create image path for background
-					$this->imagePath = $GLOBALS['rootDirectory']. "/images/static-page-images/" .$result['ImgFilePath'];
-				}
-
-				// caption
-				if($result['ImgCaption']) {	$this->imageCaption = nl2br($result['ImgCaption']);}
-
-				// body content (called Body in STATIC_PAGE table)
-				if($result['Body']){ $this->bodyContent = $result['Body'];}
 
 			}
 
@@ -1240,12 +1337,15 @@
 		protected function makeSubNav(){ 
 			echo "		<nav class=\"subNav\">\r\n";
 
-			if($this->subNavLinksQuery){
+			//var_dump($this->subNavLinksQuery);
 
-				echo "		<h3 class=\"top\">Classes</h3>\r\n";
+			if($this->subNavLinksQuery){
+				echo "		<h3 class=\"top\">About</h3>\r\n";
+				echo "		<a href=\"".$GLOBALS['rootDirectory']. "/classroom/" .$this->subNavLinksQuery[0][0]['Link']. "\" id=\"" .$this->subNavLinksQuery[0][0]['Link']. "\">" .$this->subNavLinksQuery[0][0]['Title']. "</a>\r\n";
+				echo "		<h3 class=\"top\">Programs</h3>\r\n";
 				echo "		<div class=\"classLinks\">";
 				foreach ($this->subNavLinksQuery as $link) {
-					echo "		<a id=\"" .$link[0]['KeywordID']. "\">" .$link[0]['Word']. "</a>\r\n";
+					echo "		<a href=\"".$GLOBALS['rootDirectory']. "/classroom/" .$link[0]['KeywordID']. "\" id=\"" .$link[0]['KeywordID']. "\">" .$link[0]['Word']. "</a>\r\n";
 				}
 				echo "		</div>";
 			}
@@ -1255,6 +1355,34 @@
 			echo "		</nav>\r\n";
 		}
 
+		/**
+		*@param  an array of arrays (filled with events)
+		*/
+		protected function makeClassroomEvents($events){
+
+			if(!$events){
+				// handle error
+			} else {
+
+				foreach($events as $event){
+
+					echo 	"<div class=\"calendarEventsWrapper\">";
+
+					if($event['Link']){ 
+						echo		"<a href=\"".$GLOBALS['rootDirectory']. "/event/" .$event['Link']. "\">\r\n"; 
+						echo		"<div class=\"calendarElement\">";
+						if($event['EventTitle']){ 			echo 	"<h3>" .$event['EventTitle']. "</h3>\r\n"; }
+						if($event['StartDate']){			echo 	"<p>Starts: " .date("F d, Y", strtotime($event['StartDate'])). "</p>\r\n"; }
+						if($event['RegistrationEndDate']){	echo 	"<p class=\"registration\">Preregistration ends: " .date("F d, Y", strtotime($event['RegistrationEndDate'])). "</p>\r\n"; }
+							else {							echo 	"<p class=\"registration\">Preregistration not required</p>";}
+						if($event['StartDate']){			echo 	"<div class=\"startDate\">" .$event['StartDate']. "</div>\r\n"; }
+						echo 	"</div>\r\n
+								</a>\r\n";
+					}
+					echo "</div>\r\n";
+				}
+			}
+		}
 	}
 
 
@@ -1269,6 +1397,8 @@
 		private $eventType;
 		private $eventArtistQuery;
 		private $artistsQuery;
+		private $exhibitionQuery;
+		private $exhibitionLink;
 		private $eventDateTimes;
 		
 		function __construct($url){
@@ -1329,7 +1459,7 @@
 			if($this->artistsQuery){
 				echo "<div id=\"artists\">\r\n";
 				foreach($this->artistsQuery as $artist){
-					echo "<h2>".$this->buildArtistName($artist). "</h2>\r\n";
+					echo "<h2>".buildArtistName($artist). "</h2>\r\n";
 					echo "<p>";
 					echo $artist['Bio'];
 					echo "</p>\r\n";
@@ -1357,12 +1487,20 @@
 				echo "		<a class=\"about current\">About</a>\r\n";
 
 				if(count($this->artistsQuery)==1){ 				
-					$artistName = $this->buildArtistName($this->artistsQuery[0]);
+					$artistName = buildArtistName($this->artistsQuery[0]);
 					echo "		<a id=\"" .$this->artistsQuery[0]['ArtistID']. "\" class=\"artists\">" .$artistName. "</a>\r\n";
 				} else {
 					echo "		<a id=\"" .$this->artistsQuery[0]['ArtistID']. "\" class=\"artists\">Artists' Bio</a>\r\n";
 				}
+
 				echo "		</div>";
+			}
+
+			if($this->exhibitionQuery){
+				
+				echo "		<h3>Related Exhibition</h3>\r\n";
+				echo "		<a href=\"" .$GLOBALS['rootDirectory']. "/exhibition/" .$this->exhibitionLink[0]['Link']. "\"> " .$this->exhibitionLink[0]['Title']. " </a>";
+
 			}
 
 			$this->makeConsistentLinks();
@@ -1391,7 +1529,7 @@
 					//create HTML alt attribute text
 					if($result['Title']){	$alt = $result['Title'];}
 					//create primary image
-					$this->primaryImage=$this->toImg("event-page-images", $result['ImgFilePath'], $alt );
+					$this->primaryImage=$this->toImg("event-page-images", $result['ImgFilePath'], $alt, "primaryImageOfPage" );
 					//create image path for background
 					$this->imagePath = $GLOBALS['rootDirectory']. "/images/event-page-images/" .$result['ImgFilePath'];
 				}
@@ -1400,7 +1538,7 @@
 				if($result['ImgCaption']) {	$this->imageCaption = nl2br($result['ImgCaption']);}
 
 				// body content (called Description in EVENT table)
-				if($result['Description']){ $this->bodyContent = nl2p($result['Description']);}
+				if($result['Description']){ $this->bodyContent = $result['Description'];}
 
 				//admission charge
 				if($result['AdmissionCharge']){ $this->admissionCharge = $result['AdmissionCharge']; }
@@ -1414,6 +1552,10 @@
 							// everything is gravy!
 						}
 					}
+				}
+
+				if($this->exhibitionQuery = queryReference('EXHIBITION_EVENTS', 'EventID', $result['EventID'])){
+					$this->exhibitionLink = queryReference('EXHIBITION', 'ExhibitionID', $this->exhibitionQuery[0]['ExhibitionID']);
 				}
 
 				if($this->eventDateTimes = queryEventDateTimes($result['EventID'])){
@@ -1439,6 +1581,7 @@
 		private $artistsQuery;
 		private $exhibitionEventsQuery;
 		private $eventQuery;
+		private $artistBiosQuery;
 		private $lecturesArray;
 
 		private $artistNames; // artists names are stored as a single string
@@ -1450,6 +1593,7 @@
 		private $startDate;
 		private $endDate;
 		private $gallery;
+		private $artistBios = array();
 
 
 		function __construct($url){
@@ -1497,30 +1641,32 @@
 			if($this->primaryImage) { 				echo "		" .$this->primaryImage.  "\r\n";}
 			if($this->tombstone) {					echo "		<p class=\"tombstone\">" .$this->tombstone. "</p>\r\n";}
 			if($this->bodyContent) {				echo "		<div class=\"bodyContent\">" .$this->bodyContent. "		</div>\r\n";}
-			echo "		</div>";
+			echo "		</div>\r\n";
 
 			if($this->exhibitionArtworksQuery) {
 				echo "<div id=\"exhibitionArtworks\">";
-				echo "<h2>Gallery</h2>";
+				echo "<h2>Artwork</h2>";
 
 				foreach($this->exhibitionArtworksQuery as $row){
 					$art = queryReference('ARTWORK', 'ArtworkID', $row['ArtworkID']);
 					echo "<img src =\"" .$GLOBALS['rootDirectory']. "/images/exhibition-page-images/" .$art[0]['ImgFilePath']. "\">";
 				}
 
-				echo "</div>";
+				echo "</div>\r\n";
 
 			}
 
-			if($this->artistsQuery){
+			if($this->artistBios){
 				echo "<div id=\"artists\">";
-				foreach($this->artistsQuery as $artist){
-					echo "<h2>".$this->buildArtistName($artist). "</h2>\r\n";
+				foreach($this->artistBios as $artist){
+					echo "<h2>".buildArtistName($artist). "</h2>\r\n";
 					echo "<p>";
-					echo $artist['Bio'];
+					if($artist['Bio']) {	
+						echo nl2p($artist['Bio']);
+					}
 					echo "</p>";
 				}
-				echo "</div>";
+				echo "</div>\r\n";
 			}
 
 			if($this->eventQuery){
@@ -1533,7 +1679,7 @@
 					List($y,$m,$d) = explode("-",$dateTime[0]['StartDate']);
 					$timestamp = mktime(0,0,0,$m,$d,$y);
 
-					$topImg = $this->toImg("event-page-images", $event[0]['ImgFilePath'], $event[0]['Title']); 
+					$topImg = $this->toImg("event-page-images", $event[0]['ImgFilePath'], $event[0]['Title'], NULL); 
 					$class = "showImg";
 					
 					echo "<div class=\"exhibitionEvent\" id=\"" .$event[0]['EventTypeID']. "\">";
@@ -1574,12 +1720,13 @@
 
 			
 			echo "		<nav class=\"subNav\">\r\n";
-			if($this->exhibitionArtworksQuery || $this->artistsQuery || $this->exhibitionVideoQuery ){
+			if($this->exhibitionArtworksQuery || $this->artistsQuery || $this->exhibitionVideoQuery || $this->exhibitionEventsQuery){
 				echo "		<h3 class=\"top\">About the Exhibition</h3>\r\n";
 				echo "		<div class=\"display\">";
 				echo "		<a class=\"about current\">About</a>";
 				if($this->exhibitionArtworksQuery){		echo "		<a id=\"" .$this->exhibitionArtworksQuery[0]['ExhibitionID']. "\" class=\"exhibitionArtworks\">Artwork</a>\r\n";}
-				if($this->artistsQuery){ 				echo "		<a id=\"" .$this->artistsQuery[0]['ArtistID']. "\" class=\"artists\">Artist Bio</a>\r\n";}
+				if(count($this->artistBios) == 1){ 		echo "		<a id=\"" .$this->artistsQuery[0]['ArtistID']. "\" class=\"artists\">Artist Bio</a>\r\n";}
+				if(count($this->artistBios) > 1){ 		echo "		<a id=\"" .$this->artistsQuery[0]['ArtistID']. "\" class=\"artists\">Artists</a>\r\n";}
 				if($this->exhibitionVideoQuery){ 		echo "		<a id=\"" .$this->artistsQuery[0]['ExhibitionID']. "\" class=\"videos\">Videos</a>\r\n";}
 			
 
@@ -1632,6 +1779,7 @@
 				}
 
 			}
+
 			return $returnString;
 		}
 
@@ -1661,8 +1809,9 @@
 					$count = 0;
 					// loop through exhibitionEvent query and get the matching event
 					foreach($this->exhibitionEventsQuery as $row){
-						// add to eventQuery 
+						// add to eventQuery
 						if($this->eventQuery[$count] = queryReference('EVENT', 'EventID', $row['EventID'])){
+
 							$count++;
 						}
 						
@@ -1686,7 +1835,7 @@
 							if($this->artistsQuery = queryReference('ARTIST', 'ArtistID', $artist['ArtistID'])){
 
 								// build name and concatenate each return string
-								$this->artistNames .= $this->buildArtistName($this->artistsQuery[0]);
+								$this->artistNames .= buildArtistName($this->artistsQuery[0]);
 
 							}
 						}
@@ -1704,13 +1853,13 @@
 				//handle error
 				} else {
 					$alt = $this->artistNames. " " .$this->artworkQuery[0]['Title'];
-					$this->primaryImage=$this->toImg("exhibition-page-images", $this->artworkQuery[0]['ImgFilePath'], $alt );			
+					$this->primaryImage=$this->toImg("exhibition-page-images", $this->artworkQuery[0]['ImgFilePath'], $alt, "primaryImageOfPage" );			
 				
 					$this->imagePath = $GLOBALS['rootDirectory']. "/images/exhibition-page-images/" .$this->artworkQuery[0]['ImgFilePath'];
 				}
 
 				// buld tombstone
-				$this->tombstone = $this->buildTombstone($this->artwork[0], $this->artistNames, $this->artworkQuery[0]);
+				$this->tombstone = $this->buildTombstone($this->artistNames, $this->artworkQuery[0], FALSE);
 
 				//body content
 				if(!$result['BodyContent']){
@@ -1725,40 +1874,47 @@
 				if($result['StartDate'] && $result['EndDate']){ 
 					$this->startDate = date('F d, Y', strtotime($result['StartDate']));
 					$this->endDate = date('F d, Y', strtotime($result['EndDate']));
+				}
+
+				// build the artist bios section
+				if($this->artistBiosQuery = queryReference('EXHIBITION_ARTISTS', 'ExhibitionID', $result['ExhibitionID'])){
+					foreach($this->artistBiosQuery as $artist){
+						$info = queryReference('ARTIST', 'ArtistID', $artist['ArtistID']);
+						array_push($this->artistBios, $info[0]);
+					}
+
 				}				
 			}
 		}
 	}
 
 	class IndexPage extends Page{
+
+		private $currentExhibitons = array();
+		private $collectionArtwork = array();
+		private $currentExhibitionArtwork = array();
+		private $slides = array();
+		private $miniCTAs = array();
+		private $currentExhibitionMiniCTAs = array();
+		private $specialAnnouncement;
+		private $randomCollectionIndexes;
+		private $randomCurrentExhibitionIndex;
+		
+		// number of images to display from our collection on the front page
+		private $numberOfCollectionImages = 5;
 		
 		function __construct(){
 
 			//first, query the db
-			$this->HTMLheader('Welcome');
+			$result = queryFrontPageArtwork();
+
+			$this->HTMLheader('The New Britain Museum of American Art');
 			$this->makeHTMLElements($result);
 			$this->makeBody();
 			$this->HTMLfooter();
 		}
 
 		protected function makeBody(){ // INDEX PAGE function
-
-			$specialAnnouncement = "
-
-							<a href=\"" .$GLOBALS['rootDirectory']. "/exhibition/21st-century-works\">
-								<div class=\"infoContent\">
-									<div class=\"left\">
-										<h2>Special Announcement</h2>
-										<p>We will be closed due to construction from Monday August 3 to Saturday August 8.</p>
-									</div>
-									<div class=\"right\">
-										<h3 style=\"padding:10px 0;\">We reopen Sunday, August 9<h3> <p>With the opening reception of <i>ART TODAY: 2000–Present</i></p>
-									</div>
-									<div class=\"clear\"></div>
-								</div>
-							</a>
-
-			";
 
 			// write the pageID in the parent class
 			$this->pageID = "index";
@@ -1771,125 +1927,80 @@
 
 			//main section
 
-
+			$this->makeSingleSlide();
 			?>
+				
+				<!-- slider commented out for single slide grand opening announcement 
 				<div id="slider">
 
+					<?php 
+				
+					// count is used for the logo bg color.js
+					//$count =0;
+					//foreach($this->randomCollectionIndexes as $i){
+						//$this->printSlide($count, $this->collectionArtwork[$i]['artwork'], $this->collectionArtwork[$i]['artists'], $this->miniCTAs[rand(0, count($this->miniCTAs)-1)]);
+						//$count++;
+					//}
+
+					//$this->printSlide(5, $this->currentExhibitionArtwork[$this->randomCurrentExhibitionIndex]['artwork'], $this->currentExhibitionArtwork[$this->randomCurrentExhibitionIndex]['artists'], $this->currentExhibitionMiniCTAs[$this->randomCurrentExhibitionIndex]); 
+
+					?>
+
 					
-					
-					<div class="slide" style="background-image:url('images/front-page-images/edward-austin-abbey-in-the-choir.jpg');">
-						<div class="info">
-
-							<a href="<?php echo $GLOBALS['rootDirectory'] ?>/museum-of-american-art/rent-the-museum">
-								<div class="infoContent">
-									<div class="left">
-										<h2>New Britain Museum of American Art</h2>
-										<p>Edward Austin Abbey, <i>In the Choir (Organist at the Gloucester Catheral),</i> detail, 1901, Oil on canvas, Gift of the Harrison Cady Estate</p>
-									</div>
-									<div class="right">
-										<img src="<?php echo $GLOBALS['rootDirectory'] ?>/images/misc/building-white.png">
-										<p>Special Occasion?<br>Rent the Museum</p>
-									</div>
-									<div class="clear"></div>
-								</div>
-							</a>
-
-							<?php echo $specialAnnouncement; ?>
-
-						</div>
-					</div>
-
-					<div class="slide" style="background-image:url('images/front-page-images/thomas-moran-the-wilds-of-lake-superior.jpg');">
-						<div class="info">
-							<a target="_blank" href="https://www.facebook.com/NBMAA">
-								<div class="infoContent">
-									<div class="left">
-										<h2>New Britain Museum of American Art</h2>
-										<p>Thomas Moran, <i>The Wilds of Lake Superior,</i> detail, 1864, Oil on canvas, Charles F. Smith Fund</p>
-									</div>
-									<div class="right">
-										<i class="fa fa-facebook-official"></i><br>
-										<p>Like our page?<br>Follow us on facebook</p>
-									</div>
-									<div class="clear"></div>
-								</div>
-							</a>
-
-							<?php echo $specialAnnouncement; ?>
-
-						</div>
-					</div>
-
-					<div class="slide" style="background-image:url('images/front-page-images/johann-mengels-culverhouse.jpg');">
-						<div class="info">
-							<a target="_blank" href="http://eepurl.com/bgHJt1">
-								<div class="infoContent">
-									<div class="left">
-										<h2>New Britain Museum of American Art</h2>
-										<p>Johann Mengels Culverhouse, <i>The Death of de Soto,</i> detail, 1873, Oil on canvas, Gift of Mr. John Cotter Jr. and Mrs. Anne C. Cotter</p>
-									</div>
-									<div class="right">
-										<i class="fa fa-envelope-o"></i>
-										<p>Curious about upcoming events?<br>Join our email list</p>
-									</div>
-									<div class="clear"></div>
-								</div>
-							</a>
-
-							<?php echo $specialAnnouncement; ?>
-
-						</div>
-					</div>
-
-					<div class="slide" style="background-image:url('images/front-page-images/tom-yost-lone-tree.jpg');">
-						<div class="info">
-							<a href="<?php echo $GLOBALS['rootDirectory'] ?>/exhibition/tom-yost-a-modern-realist">
-								<div class="infoContent">
-									<div class="left">
-										<h2>New Britain Museum of American Art</h2>
-										<p>Tom Yost, <i>Lone Tree,</i> 2005, detail, Oil on linen, Courtesy of a Connecticut Collection</p>
-									</div>
-									<div class="right">
-										<img src="<?php echo $GLOBALS['rootDirectory'] ?>/images/misc/building-white.png">
-										<p>Want to see more?<br>Tom Yost: A Modern Realist</p>
-							
-									</div>
-									<div class="clear"></div>
-								</div>
-							</a>
-
-							<?php echo $specialAnnouncement; ?>
-
-						</div>
-					</div>
-
-					<div class="slide" style="background-image:url('images/front-page-images/william-lamb-picknell-the-grand-canal-with-sangiorgio-maggiore.jpg');">
-						<div class="info">
-							<a href="<?php echo $GLOBALS['rootDirectory'] ?>/museum-of-american-art/membership">
-								<div class="infoContent">
-									<div class="left">
-										<h2>New Britain Museum of American Art</h2>
-										<p>William Lamb Picknell, <i>The Grand Canal with San Giorgio Maggiore,</i> detail, 1875, Oil on canvas, Gift from Juan and Frederick Baekland in honor of Douglas Hyland</p>
-									</div>
-									<div class="right">
-										<i class="fa fa-users"></i>
-										<p>Visit us often?<br>Become a member</p>
-									</div>
-									<div class="clear"></div>
-								</div>
-							</a>
-
-							<?php echo $specialAnnouncement; ?>
-
-						</div>
-					</div>
 
 				</div><!-- end slider -->
-						
-			
+
 			<?php	
 			echo "</div><!-- end index -->\r\n";
 			
+		}
+
+		protected function makeSingleSlide(){
+			?>
+				<div id="opening-announcement">
+					<div id="openingContainer">
+						<div id="messageOne"><h2>Now Open: Art &amp; Education Building</h2></div>
+						<div id="messageTwo"><h3>Seven new galleries and three new art studios</h3></div>
+						<div id="messageThree">
+							<p><span style="font-weight:700;">Current Exhibitions</span><br><a href="http://www.nbmaa.org/lobby/current">Learn more</a></p>
+							<p><span style="font-weight:700;">Nurture Through Art</span><br><a href="http://www.nbmaa.org/classroom/youth-studio-classes">Learn more</a></p>
+							<div class="clear"></div>
+						</div>
+					</div>
+
+					<div id="singleSlide" style="background-image:url('images/front-page-images/nbmaa-art-and-education-opening.jpg');">
+
+						<img style="display:none;" id="logoBg" src="images/front-page-images/nbmaa-art-and-education-opening.jpg?<?php  echo microtime() ?>">
+				</div>
+				<script>
+					$(document).ready(function() { 
+						var delay = 1500;
+						var leftOffset = $('#header-content').offset().left;
+						var buttonWidth = $('#messageButton').outerWidth(true);
+						var bodyWidth = $('#header-content').width();
+						var pOffset = $()
+
+						setTimeout(function() {
+							$('#messageOne').animate({ left: leftOffset, opacity: 1 }, {duration: 1600, easing: 'easeInExpo'});
+						}, delay * .5);
+
+						setTimeout(function() {
+							$('#messageTwo').animate({ left: leftOffset, opacity: 1 }, {duration: 2000, easing: 'easeInExpo'});
+						}, delay * 1.45);
+
+						setTimeout(function() {
+							$('#messageThree').animate({ left: leftOffset, opacity: 1 }, {duration: 4000, easing: 'easeInExpo'});
+						}, delay * 1.45);
+
+						setTimeout(function() {
+							$('#messageButton').animate({ left: bodyWidth + leftOffset - buttonWidth, opacity: 1 }, {duration: 2000, easing: 'easeOutElastic'});
+						}, delay * 3);
+
+					});
+
+				</script>
+
+			<?php
 		}
 
 		protected function makeSubNav(){ // INDEX PAGE function
@@ -1898,7 +2009,141 @@
 
 		protected function makeHTMLElements($result){ // INDEX PAGE function
 
+			$this->specialAnnouncement = "
 
+							<a href=\"" .$GLOBALS['rootDirectory']. "/classroom/family-programs\">
+								<div class=\"infoContent\">
+									<div class=\"left\">
+										<h2>Studio Class Members</h2>
+										<p>Due to construction, all studio classes have temporarily been moved from our studio to the Lindquist Building</p>
+									</div>
+									<div class=\"right\">
+										<i class=\"fa fa-hand-o-up\"></i><p>Find out more about the move</p>
+									</div>
+									<div class=\"clear\"></div>
+								</div>
+							</a>
+
+			";
+
+			if(!$result){
+				// handle error
+			}else{
+
+				// build $collectionArtwork array
+				foreach($result as $art){	array_push($this->collectionArtwork, queryArtworkArtistInfo($art)); }
+
+				// build $currentExhibitionArtwork and  $currentExhibitionMiniCTAs
+				if($this->currentExhibitons = queryFrontPageExhibitions()){
+					
+					// use query
+					foreach($this->currentExhibitons as $art){	
+
+						// for storing the next query
+						$artworkArtistInfo="";
+
+						if($artworkArtistInfo = queryArtworkArtistInfo($art)){
+
+							//append exhibition-page-images folder name for exhibition images
+							$artworkArtistInfo['artwork'][0]['ImgFilePath'] = "exhibition-page-images/" .$artworkArtistInfo['artwork'][0]['ImgFilePath']. "";
+							
+							// push final product onto array
+							array_push($this->currentExhibitionArtwork, $artworkArtistInfo );
+						}
+					}
+
+					// build $currentExhibitionMiniCTAs
+					foreach($this->currentExhibitons as $exhibition){
+						array_push($this->currentExhibitionMiniCTAs, array(
+							"icon" => "<img src=\"" .$GLOBALS['rootDirectory']. "/images/misc/building-white.png\">",
+							"text" => "<p>Want to see more?<br><i>" .$exhibition['Title']. "</i></p>",
+							"link" => $GLOBALS['rootDirectory']. "/exhibition/" .$exhibition['Link'],
+							"target" => "_self"
+							)
+						);
+					}
+				}
+
+				// build the randomCollectionIndexes array
+				for($i = 0; $i < $this->numberOfCollectionImages; $i++ ){
+					$this->randomCollectionIndexes[$i] = rand( 0, (count($this->collectionArtwork)-1));
+				}
+
+				// select a random currentCollectionImage
+				$this->randomCurrentExhibitionIndex = rand(0, count($this->currentExhibitionArtwork)-1);
+
+				//build $miniCTA's
+				$this->miniCTAs = array(
+
+					0 => array(
+						"icon" => "<img src=\"" .$GLOBALS['rootDirectory']. "/images/misc/building-white.png\">",
+						"text" => "<p>Planning a wedding or event?<br>Rent the Museum</p>",
+						"link" => "" .$GLOBALS['rootDirectory']. "/museum-of-american-art/rent-the-museum",
+						"target" => "_self"
+					),
+
+
+					1 => array(
+						"icon" => "<i class=\"fa fa-facebook-official\"></i>",
+						"text" => "<p>Like our page?<br>Follow us on facebook</p>",
+						"link" => "https://www.facebook.com/NBMAA",
+						"target" => "_blank"
+					),
+
+					2 => array(
+						"icon" => "<i class=\"fa fa-envelope-o\"></i>",
+						"text" => "<p>Curious about upcoming events?<br>Join our e-mail list</p>",
+						"link" => "http://eepurl.com/bgHJt1",
+						"target" => "_blank"
+					),
+
+					3 => array(
+						"icon" => "<i class=\"fa fa-users\"></i>",
+						"text" => "<p>Visit us often?<br>Become a member</p>",
+						"link" => "" .$GLOBALS['rootDirectory']. "/museum-of-american-art/membership",
+						"target" => "_self"
+					),
+
+					4 => array(
+						"icon" => "<img src=\"" .$GLOBALS['rootDirectory']. "/images/misc/building-white.png\">",
+						"text" => "<p>Want to make a donation?<br>Support the Art &amp; Education Expansion Project</p>",
+						"link" => "http://www.nbmaa.org/expansion/index.html",
+						"target" => "_self"
+					)
+				);
+
+
+			}
+		}
+
+		protected function printSlide($sliderindex, $artwork, $artists, $cta){ // INDEX PAGE function
+
+			$tombstone = $this->buildTombstone($artists, $artwork[0], TRUE);
+
+		 ?>
+					<div class="slide" style="background-image:url('images/<?php echo $artwork[0]['ImgFilePath'] ?>');">
+						<img style="display:none;" id="logoBg<?php echo $sliderindex ?>" src="images/<?php echo $artwork[0]['ImgFilePath']. "?" .microtime() ?>">
+						<div class="info">
+
+							<a href="<?php echo $cta['link'] ?>" target ="<?php echo $cta['target'] ?>">
+								<div class="infoContent">
+									<div class="left">
+										<h2>New Britain Museum of American Art</h2>
+										<p><?php echo $tombstone ?></p>
+									</div>
+									<div class="right">
+										<?php echo $cta['icon'] ?>
+										<?php echo $cta['text'] ?>
+									</div>
+									<div class="clear"></div>
+								</div>
+							</a>
+
+							<?php echo $this->specialAnnouncement; ?>
+
+						</div>
+					</div>
+		<?php
 		}
 	}
 

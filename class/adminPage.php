@@ -465,7 +465,7 @@
 			<script type="text/javascript">
 			<?php 
 
-			echo "var startDate = new Date(\"" .$this->getStartDate(). "\");\r\n";
+			echo "  var startDate = new Date(\"" .$this->getStartDate(). "\");\r\n";
 			echo "	var endDate = new Date(\"" .$endDate. "\");\r\n";
 			echo "	var startTime = \"" .$this->getStartTime(). "\";\r\n";
 			echo "	var endTime = \"" .$this->getEndTime(). "\";\r\n";
@@ -473,6 +473,7 @@
 			?>
 				//index for add elements
 				var i =0;
+				var firstClick = 0;
 
 				function dateToString(Date){
 				
@@ -503,11 +504,12 @@
 
 				$('#addTime').on('click', function(){
 
-					startDate.setDate(startDate.getDate()+7);
-					endDate.setDate(endDate.getDate()+7);
+					startDate.setDate(startDate.getDate()+8-firstClick);
+					endDate.setDate(endDate.getDate()+8-firstClick);
 					
 					($(this).after('<div class="dateTime"><label class="date"><input class="startDateInput" type="date" name ="add['+i+'][StartDate]" value="'+dateToString(startDate)+'"></label><label class="date"><input class="endDateInput" type="date" name ="add['+i+'][EndDate]" value="'+dateToString(endDate)+'"></label><label class="time"><input type="time" name ="add['+i+'][StartTime]" value="'+startTime+'"></label><label class="time"><input type="time" name ="add['+i+'][EndTime]" value="'+endTime+'"></label><label class="delete deleteAdd"><i class="fa fa-times"></i></label></div>'));
 					i++;
+					firstClick = 1;
 
 				});
 
@@ -548,6 +550,7 @@
 			$this->mainWindow();
 			$this->script();
 			$this->HTMLfooter();
+
 		}
 
 		protected function mainWindow(){

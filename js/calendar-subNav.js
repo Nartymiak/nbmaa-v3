@@ -1,50 +1,33 @@
-	var date = {}; 
-	date.month = "";
-	date.day = "";
-	date.date = "";
-	date.daysAddress;
-	date.temp;
-
+	// for ajax call
 	var showDates = [];
 	var showKeywords = [];
 
+	// store initial values, then adjust when user clicks arrows
 	var monthOnView;
 	var yearOnView;
 
+	// scrollCal elements
+	var dateOffsets=[];
+	var navHeight;
+	var currentCalDate;
+	var currentCalDateIndex = 0;
+	var prevCalDateIndex = 0;
+	var currentCalMonth;
+	var subNavOffset;
+	var mainSectionOffset;
+	// binary search
+	var startIndex;
+	var stopIndex;
+	var middle;
+
+	// find the width, then use to determine other css values...
 	var calendarOuterWidth = $('.calendar').outerWidth(true);
 
+	// calendar algorithm variables
 	var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 	var day = ["S", "M", "T", "W", "T", "F", "S"];
 	var dateToMonth = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-
-	var newDays = new Array(7);
-
-	for (var i=0;i<days.length;i++){
-		// get days[] address of day
-		if (days[i]==date.day){
-		date.daysAddress = i;
-		}
-	}
-
-
-	for (var i=0;i<7;i++){
-		if(date.daysAddress==i){
-			newDays[6] = days[i];
-
-		}
-		else if(date.daysAddress+i < 7){
-			newDays[i]=days[date.daysAddress+i];
-
-		}else{
-			newDays[i]=days[i-date.daysAddress];
-
-		}
-	}
-
 	var daysInGregorianMonths = [31,28,31,30,31,30,31,31,30,31,30,31];
-
-	// stores page id
-	var pageID;
 
 	var isGregorianLeapYear = function(year) {
 		var isLeap = false;
@@ -90,9 +73,7 @@
 		w = (w-1)%7 + 1;
 		return w;
 	}
-
 		
-
 	var calendar = function(y,m, className) {
 
 		$('.'+ className).prepend('<div class=\"calendarHeader\"><h5 class=\"month\"> ' + dateToMonth[m-1] + ' ' + y + '</h5></div>');
@@ -107,23 +88,17 @@
 			$('.'+ className).append("<div class=\"calSquare empty\"></div>");
 		}
 
-		if (pageID == 'calendar'){
-			// print out the number of days the correct month has
-			for(var i=1;i<=daysInGregorianMonth(y,m);i++){
-				$('.'+ className).append("<label class=\"calSquare filled\"><input class=\"calInput\" type=\"checkbox\" name=\"days[]\" value=\"" + y  + "-"+ pad(m)  + "-" + pad(i) + "\">" + i +"</label>");
-			}
-
-		} else {
-			for(var i=1;i<=daysInGregorianMonth(y,m);i++){
-				$('.'+ className).append("<a href=\"http://www.nbmaa.org/calendar/" + y  + "-"+ pad(m)  + "-" + pad(i) + "\"><label class=\"calSquare filled\">" + i +"</label></a>");
-			}
+		// print out the number of days the correct month has
+		for(var i=1;i<=daysInGregorianMonth(y,m);i++){
+			$('.'+ className).append("<label class=\"calSquare filled\"><input class=\"calInput\" type=\"checkbox\" name=\"days[]\" value=\"" + y  + "-"+ pad(m)  + "-" + pad(i) + "\">" + i +"</label>");
 		}
 
 	}
 
 	var makeCalendar = function(y, m) {
 
-		pageID = $('.mainSection').parents().attr("id");
+		navHeight = $("#mainNav").height();
+		mainSectionOffset = $(".mainSection").offset().top;
 
 		$('.container').css('width', calendarOuterWidth);
 
@@ -139,21 +114,127 @@
 		monthOnView = m;
 		yearOnView = y;
 
-		if(pageID == 'calendar'){
-			$('.threeCalendars').on("click",'.calSquare .calInput', function(){
-				markClicked($(this));
-				show($(this).val(), 'date');
-			});
+		$('.threeCalendars').on("click",'.calSquare .calInput', function(){
+			markClicked($(this));
+			
+			//if(show($(this).val(), 'date')){
+				scrollToDate($(this));
+			//}
+		});
 
-			$('.keyword .calInput').on("click", function(){
-				markClicked($(this));
-				show($(this).val(), 'keyword');
-			});
-		}
+		$('.keyword .calInput').on("click", function(){
+			markClicked($(this));
+			show($(this).val(), 'keyword');
+		});
 
 		$('#selectMonth').on("click", function(){
 			selectMonth();
 		});
+
+		dateOffsets = updateDateOffsets();
+		subNavOffset = $('.stopSubNav').offset().top - navHeight;
+
+		//this gets the date highlighted when page is loaded
+		currentCalDate = $(".date").eq(currentCalDateIndex).children(".startDate").html();
+		prevCalDateIndex = currentCalDateIndex;
+		updateCalendarMarks();
+
+		// call the function with the scroll trigger
+		$('.rightColumn').scroll(function(){
+			scrollCal();
+		});
+
+		// calendar image scripts
+		showImage();
+		buildEventViewPort();
+
+	}
+
+	function scrollToDate(obj){
+
+		var id = obj.attr("value");
+		var target;
+
+		if (!$("#"+id).offset()){
+			
+		} else {
+
+			$('.rightColumn').animate({
+        		scrollTop: $("#"+id).position().top + $(".rightColumn").scrollTop()
+    		}, 1000);
+ 
+		}
+
+	}
+
+	// finds the date element offset values in calendar page
+	function updateDateOffsets(){
+		var result=[];
+
+		currentCalDate = $(".date").each(function(index){
+			result[index] = $(this).offset().top - mainSectionOffset;
+		});
+
+		return result;
+	}
+
+	function scrollCal(){
+
+		//asign some variables
+		position = $('.rightCol').scrollTop();
+		currentCalDateIndex = binarySearch(dateOffsets, position);
+		//console.log(currentCalDateIndex);
+
+		// check if the viewer scrolled past date section
+		if(currentCalDateIndex != prevCalDateIndex){
+
+			// get date data and update mark
+			currentCalDate = $(".date").eq(currentCalDateIndex).children(".startDate").html();
+			prevCalDateIndex = currentCalDateIndex;
+			updateCalendarMarks();
+		}
+
+		
+
+		dateOffsets = updateDateOffsets();
+		//currentCalMonth; 
+
+		// this holds the subnav when user scrolls
+		stopSubNav(position);
+		
+	}
+
+	function stopSubNav(pos){
+
+		var width = $('.stopSubNav').width();
+
+		if(pos > subNavOffset){
+
+			$('.stopSubNav').css({
+				"position": "fixed",
+				"top": navHeight,
+				"width": width
+			});
+
+		} else {
+
+			$('.stopSubNav').css({
+				"position": "relative",
+				"top": 0
+			});
+		}
+	}
+
+	function updateCalendarMarks(){
+
+		$('.calSquare').each(function(){
+			if($(this).children().attr("value")==currentCalDate) {
+				$(this).css("background-color", "rgba(0, 0, 0, .3)");
+			} else {
+				$(this).css("background-color", "transparent");
+			}
+		});
+
 	}
 
 	function markClicked(obj) {
@@ -165,7 +246,7 @@
 			$(obj).removeClass('changed');
 
 		}else if($(obj).attr('class') != 'calInput changed') {
-			$(obj).parent().css("background-color", "rgba(255, 255, 255, .3)");
+			$(obj).parent().css("background-color", "rgba(0, 0, 0, .3)");
 			$(obj).addClass('changed');
 		}
 
@@ -273,12 +354,29 @@
 		}());
 	}
 
+	function showImage() {
+		//$('.calendarElement > img').css("display", "none");
+		//$('.calendarElement .description').css("display", "none");
+	}
+
+	function buildEventViewPort() {
+		
+		var windowHeight =window.innerHeight;
+		var rightColumnHeight = windowHeight - mainSectionOffset;
+
+		$('#calendar .rightColumn').css({
+			height: rightColumnHeight,
+			overflow: "scroll"
+		});
+	}
+
 	// pads a given number with 0 if size is less than 2. ex. 01, 02, 03 etc.
 	function pad(num) {  	
     	var s = "0" + num;
     	return s.substr(s.length-2);
 	}
 
+	// ajax call
 	function show(data, type){
 		
 		if(type == 'date') {
@@ -293,7 +391,7 @@
 		$.ajax({
  
 		    // The URL for the request
-		    url: "http://www.nbmaa.org/adjure/events.php",
+		    url: "http://www.nbmaa.org/adjure/calendarEvents.php",
 		 
 		    // The data to send (will be converted to a query string)
 		    data: {
@@ -330,6 +428,8 @@
 		        //alert( "The request is complete!" );
 		    }
 		});
+
+		return true;
 	}
 
 	function CheckAndAddData(data, array){
@@ -353,6 +453,36 @@
 
 		return array;
 
+	}
+
+	// modified to fit the arrays used
+	function binarySearch(items, value){
+
+	   	startIndex  = 0;
+	    stopIndex   = items.length - 1;
+	    middle      = ((stopIndex + startIndex)/2) | 0;
+
+	    (function(){ 
+
+	    	while(!(items[middle] <= value && value <= items[middle + 1]) && startIndex < stopIndex){
+
+		        //adjust search area
+		        (function(){
+		        	if (value < items[middle]){
+			            stopIndex = middle - 1;
+			        } else if (value > items[middle]){
+			            startIndex = middle + 1;
+			        }
+			    }());
+
+		        //recalculate middle
+		        middle = ((stopIndex + startIndex)/2) | 0;
+	    	}
+
+	    }());
+
+	    //make sure it's the right value
+	    return middle;
 	}
 
 	// bind the event listeners

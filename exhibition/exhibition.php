@@ -5,6 +5,8 @@
 	//exhibition
 	$getName = explode("/",$_SERVER['REQUEST_URI']);
 
-	$page = new ExhibitionPage($getName[2]); 
+	$link = explode("?", $getName[2]);
+
+	$page = new ExhibitionPage($link[0]);
 
 ?>

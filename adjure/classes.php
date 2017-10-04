@@ -32,6 +32,14 @@
 
 				$class = "";
 				$topImg = "";
+				$eventLink = "";
+
+				// set up outside link or not
+				if($tuple['OutsideLink'] == true){
+					$eventLink = $tuple['Link'];
+				} else {
+					$eventLink = "" .$GLOBALS['rootDirectory']. "/event/" .$tuple['Link']. "";
+				}	
 					
 
 				if($doNextImage == true && !in_array($tuple['ImgFilePath'], $alreadyHasImage)){
@@ -87,7 +95,7 @@
 				array_push($calendarEvents, "
 
 					<div class=\"calendarEventsWrapper\">
-						<a href=\"" .$GLOBALS['rootDirectory']. "/event/" .$tuple['Link']. "\">
+						<a href=\"" .$eventLink. "\">
 							<div class=\"calendarElement ".$class."\">
 								".$topImg."
 								<h3>" .$tuple['EventTitle']. "</h3>
