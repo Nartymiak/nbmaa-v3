@@ -1,0 +1,465 @@
+/* CSS designed by Nick Artymiak
+supports IE8
+
+
+
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+.clear {
+	clear: both;
+}
+/* ---------------------- end reset */
+
+img {
+	max-width: 100%;
+}
+
+/* fonts */
+@font-face {
+	font-family: muli;
+	src: url(../fonts/Muli-Light.ttf);
+}
+
+@font-face {
+	font-family: muli-bold;
+	src: url(../fonts/Muli-Regular.ttf);
+}
+
+/* ~~~ fonts ~~~*/
+body {
+	color:#473d36;
+	font-family: muli;
+}
+
+h1, .header a {
+	color:#f2f2f2;
+	font-family: muli;
+}
+
+.header h1 {
+	font-size:20px;
+}
+
+h2 {
+	font-size:20px;
+}
+
+h3 {
+	font-size:20px;
+}
+
+h4 { 
+	font-size:14px;
+}
+
+.filter {
+	font-size:20px;
+	line-height: 1.5em;
+}
+
+.article h4 {
+	font-weight: 900;
+	font-family: muli-bold;
+}
+
+p {
+	font-size:14px;
+}
+
+
+.article:hover, .filter a:hover {
+	color: #E36F1E; /* match season color */
+	cursor: pointer;
+}
+
+.main-nav a:hover {
+	color:#fff;
+	background-color: #E36F1E; /* match season color */
+	cursor: pointer;
+}
+
+.sub-nav a:hover {
+	color:#bb5107;
+	cursor:pointer;
+}
+
+.selected {  /* activated when nav links are hovered over */
+	color:#fff;
+	background-color: #E36F1E; /* match season color */
+	cursor: pointer;
+}
+
+#visit-sub-nav, #exhibitions-sub-nav {
+	color:#fff;
+	background-color: #ff9c57; /* match season color */
+}
+
+.header-wrapper, .wrapper {
+	background-color: rgba(71, 61, 54, .03); /* that light grey color though */
+}
+
+
+/* ~~~~~~~~~~~~ */
+
+body {
+	width:100%;
+	position:relative;
+}
+
+.wrapper {
+	width:85%;
+	max-width: 1020px; /* 12 columns, 13 margins ||  column = 72px, margin = 12px */ 
+	margin:0 auto;
+	position: relative;
+}
+
+.left-column{
+	float:left;
+	width:25.882352941%; /* 3 columns, 4 margins */
+	margin:216px 7.058823529% 0 0; /* margin-right 1 column */
+}
+
+.main-column {
+	width:42.352941176%; /* 5 columns, 6 margins */
+	float:left;
+	padding:144px 0 0 0;
+}
+
+/* ~~~~~~~~~~~~ */
+
+.background {
+	position: absolute;
+	height: 264px;
+	width: 100%;
+	z-index: -1;
+}
+
+.horizontal-background-header {
+	width:100%;
+	height:128px;
+	background-color:#6f6862;
+}
+
+.horizontal-background-1 {
+	width:100%;
+	height:405px; /*should be set by jquery to div height*/
+	background-color:#fff;
+}
+
+.horizontal-background-2 {
+	width:100%;
+	height:710px; /*should be set by jquery to div height*/
+	background-color:#e7e6e5;
+}
+
+/* ~~~~~~~~~~~~ */
+
+.header-wrapper {
+	height:128px;
+	padding:0 7.5%;
+	width:85%;
+	position:fixed;
+	z-index:10;
+}
+
+.header {
+	position: relative;
+	max-width: 1020px;
+	height:128px;
+	width:100%;
+	margin:0 auto;
+	background: rgba(71, 61, 54, 0.73);
+	z-index:9;
+}
+
+.header .logo {
+	float:left;
+	width:23.529411764%;
+	margin:0 1.176470588%;
+	-moz-box-shadow: 0px 0px 8px rgba(68,68,68,0.8);
+	-webkit-box-shadow: 0px 0px 8px rgba(68,68,68,0.8);
+	box-shadow: 0px 0px 8px rgba(68,68,68,0.8);
+}
+
+.header .inner-wrapper {
+	width:65.882352941%;
+	float:left;
+	margin: 0 1.176470588% 0 7.058823529%;
+}
+
+.header .top {
+	height:60px;
+	border-bottom: 1px solid #dfdedc;
+	position: relative;
+}
+
+.header h1 {
+	display: block;
+	position:absolute;
+	bottom:11px;
+}
+
+.header .bottom {
+	padding:0 0 0 0;
+}
+
+/* ~~~~~~~~~~~~ */
+
+.small-nav {
+	position:absolute;
+	bottom:12px;
+	right:0;
+}
+
+.main-nav {
+	display:block;
+	margin:0 0 0 -2.013422818%;
+}
+
+.main-nav a {
+	padding:12px 2.352941176% 39px 2.352941176%;
+	display:inline-block;
+	margin:0 0 0 0;
+}
+
+/* ~~~~~~ */
+
+.sub-nav {
+	max-width: 1020px;
+	width:100%;
+	margin:0 auto;
+	position: relative;
+
+}
+
+#map_canvas, .right-column img {
+	width: 100%;
+	height: 300px;
+	overflow: hidden;
+}
+
+.sub-nav a {
+	line-height: 1.5em;
+	display: block;
+}
+
+.sub-nav .left-column {
+	float:left;
+	width:22.147651006%;
+	margin:0 7.046979865% 0 8.235294117%;
+}
+
+.sub-nav .right-column {
+	float:right;
+	width:42.352941176%;
+	margin:0 8.235294117% 0 0;
+}
+
+.sub-nav p {
+	line-height: 1.5em;
+}
+
+#visit-sub-nav, #exhibitions-sub-nav {
+	position:absolute;
+	width:100%;
+	max-width: 1024px;
+	padding:24px 0 24px 0;
+	display:none;
+	overflow: hidden;
+}
+
+/* ~~~~~~~~~~~~ */
+
+.slider {
+	position:fixed;
+	top:0;
+	left:0;
+	width:100%;
+	height:100%;
+	overflow: hidden;
+}
+
+.slider img {
+	width:100%;
+	height:auto;
+	max-width: none;
+	position:absolute;
+	opacity:0;
+	z-index: 0;
+}
+
+/* ~~~~~~~~~~~~ */
+
+.calendar {
+	width:240px;
+	margin:0 auto;
+	overflow:auto;
+}
+
+.calSquare-empty{
+	float:left;
+	width:34px;
+	height:34px;
+}
+.calSquare {
+	float:left;
+	width:33px;
+	height:33px;
+	border-bottom:1px solid #eee;
+	border-right:1px solid #eee;
+	vertical-align: middle;
+}
+
+.calSquare:hover {
+	background-color: #eee;
+	cursor:pointer;
+}
+
+.calendar h2 {
+	margin:0 0 27px 0;
+}
+
+.filter {
+	width:100%;
+	padding:12px 4.545454545% 12px 4.545454545%;
+	background-color: #fff;
+	display:block;
+	box-sizing: border-box;
+	-moz-box-shadow: 0px 0px 8px rgba(68,68,68,0.6);
+	-webkit-box-shadow: 0px 0px 8px rgba(68,68,68,0.6);
+	box-shadow: 0px 0px 8px rgba(68,68,68,0.6);
+}
+
+.filter a {
+	display:block;
+}
+
+h2.filter {
+	margin:36px 0 0 0;
+	-moz-box-shadow: none;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+}
+
+/* ~~~~~~~~~~~~ */
+
+.activities {
+	padding:27px 0 0 0;
+}
+
+.main-column h2 {
+	border-bottom: 1px solid #b8b4b1;
+	margin:0 0 15px 0;
+	padding:0 2.777777777% 12 2.777777777%;
+	box-sizing: border-box;
+}
+
+.article {
+	margin:0 0 30px 0;
+	padding:0 2.777777777% 0 2.777777777%;
+	box-sizing: border-box;
+}
+
+.article:hover {
+	cursor:pointer;
+}
+
+.major {
+	background:white;
+	width:100%;
+	padding:12px 2.777777777% 12px 2.777777777%;
+	-moz-box-shadow: 0px 0px 8px rgba(68,68,68,0.6);
+	-webkit-box-shadow: 0px 0px 8px rgba(68,68,68,0.6);
+	box-shadow: 0px 0px 8px rgba(68,68,68,0.6);
+
+}
+
+.major:hover {
+	-moz-box-shadow: 0px 0px 12px rgba(68,68,68,0.6);
+	-webkit-box-shadow: 0px 0px 12px rgba(68,68,68,0.6);
+	box-shadow: 0px 0px 12px rgba(68,68,68,0.6);
+}
+
+.major img {
+	padding:0 0 12px 0;
+}
+
+@media screen and (max-width: 1175px) {
+	.wrapper {
+		width:95%;
+	}
+
+	.header-wrapper {
+		width:95%;
+		padding:0 2.5%;
+	}
+}
+
+@media screen and (max-width: 1025px) {
+	.wrapper {
+		width:98%;
+	}
+
+	.header-wrapper {
+		width:100%;
+		padding:0 0;
+	}
+}
+
+@media screen and (max-width: 960px) {
+	.wrapper {
+		width:98%;
+	}
+
+	.header-wrapper {
+		width:100%;
+		padding:0 0;
+	}
+}

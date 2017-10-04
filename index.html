@@ -1,0 +1,236 @@
+<html>
+	<head>
+		<title>New Britain Museum of American Art</title>
+		<script type="text/javascript" src="js/jquery-1.11.1.js"></script>
+		<link rel="stylesheet" type="text/css" href="css/nbmaa.css">
+		<meta name="viewport" content="initial-scale=1.0, width=device-width" />
+
+		<!-- google map -->
+		<script src="https://maps.googleapis.com/maps/api/js"></script>
+		<script src="js/calendar.js"></script>
+		<script>
+			function initialize() {
+				var myLatLng = new google.maps.LatLng(41.664347, -72.791545);
+				var map_canvas = document.getElementById('map_canvas');
+				var map_options = {
+					center: myLatLng,
+					zoom: 15,
+					mapTypeId: google.maps.MapTypeId.ROADMAP
+				}
+				var map = new google.maps.Map(map_canvas, map_options)
+			}
+      		google.maps.event.addDomListener(window, 'load', initialize);
+    	</script>
+
+	</head>
+	<body>
+		<div class="header-wrapper"> <!-- position fixed -->
+			<div class="header">
+			<!--<div id="grid" style="position:absolute;width:100%;"><img src="images/grid.png"></div>-->
+				<div class="logo">
+					<img src="images/fall-logo.jpg">
+				</div>
+				<div class="inner-wrapper">
+					<div class="top">
+						<h1>NEW BRITAIN MUSEUM OF AMERICAN ART</h1>
+						<div class="small-nav">
+							<a>Tickets</a>
+							<a>Shop</a>
+						</div>
+					</div>
+							
+					<div class="bottom">
+						<div class="main-nav">
+							<a class="visit-link">VISIT</a>
+							<a class="exhibitions-link">EXHIBITIONS</a>
+							<a class="calendar-link">CALENDAR</a>
+							<a>EDUCATION</a>
+							<a>SUPPORT</a>
+						</div>
+					</div>
+				</div>
+				<div class="clear"></div> <!-- clears floating logo and inner wrapper -->
+			</div>
+
+			<!-- begin sub nav sections -->
+			<div class="sub-nav">
+				<div id="visit-sub-nav">
+					<div class="left-column">
+						<h3 style="border-bottom:1px solid #bb5107;padding-bottom:24px;margin-bottom:24px;">Visit the Museum</h3>
+						<div style="border-bottom:1px solid #bb5107;padding-bottom:24px;margin-bottom:24px;"><!-- remove when finalizing!!! -->
+							<a>Hours &amp; admission</a>
+							<a>Directions</a>
+							<a>Accessability</a>
+							<a>Collections</a>
+						</div><!-- remove when finalizing!!! -->
+						<p>56 Lexington Street</p>
+						<p>New Britain, CT</p>
+						<p>Open Today: 11:00 a.m. - 8:00 p.m.</p>
+					</div>
+					<div class="right-column">
+						<div id="map_canvas"></div>
+					</div>
+					<div class="clear"></div>
+				</div>
+
+				<div id="exhibitions-sub-nav">
+					<div class="left-column">
+						<h3 style="border-bottom:1px solid #E36F1E;padding-bottom:24px;margin-bottom:24px;">Exhibitions</h3>
+						<div style="border-bottom:1px solid #E36F1E;padding-bottom:24px;margin-bottom:24px;"><!-- remove when finalizing!!! -->
+							<a>Upcoming</a>
+							<a>Current</a>
+							<a>Recently Off the Wall</a>
+						</div><!-- remove when finalizing!!! -->
+							<a>Openings</a>
+							<a>Programs</a>
+							<a>Lectures</a>
+					</div>
+					<div class="right-column">
+						<img src="images/quilt.jpg">
+						<p>Some Artist's Name, "Quilts", fabric, 2010</p>
+					</div>
+					<div class="clear"></div>
+				</div>
+			</div>
+		</div><!-- end header section-->
+		
+
+		<div class="slider">
+			<!-- Begin main body section -->
+			<img src="images/Moore,NelsonAugustus,SummerCalm,UpperPond,1867.jpg">
+			<img src="images/f64.jpg">
+
+
+		</div><!-- end slider -->
+		
+		<script type="text/javascript">
+
+			var width = $(window).width();
+			var height = $(window).height();
+
+			if ((width/height) > 1.77777777778) {
+				$('.slider img').css({
+					'width': '100%',
+					'height': 'auto' 
+				});
+			} else {
+				$('.slider img').css({
+					'width': 'auto',
+					'height': '100%'
+				});
+			}
+
+			var kenburns = function() {
+			}
+
+			$('.slider img').eq(0).css('opacity', 1);
+			var sliderIndex = 0;
+			var slider = function() {
+
+				$('.slider img').eq(sliderIndex).animate({
+					opacity: '1'
+				}).delay(5000).animate({
+					opacity:'0'
+				});
+
+				if(sliderIndex==$('.slider img').length-1){
+					sliderIndex=0;
+				}
+				else {
+					sliderIndex++;
+				}
+				setTimeout( slider, 5000);
+			
+			}
+
+			var showSubNav = function() {
+				//$('#visit' ).animate({
+				//	height: '400px'
+				//}, 200);
+				$('#visit-sub-nav').css('display', 'block');
+			}
+
+			var hideSubNav = function() {
+				//$('#visit' ).animate({
+				//	height: '0'
+				//}, 200);
+				$('#visit-sub-nav').css('display', 'none');
+			}
+
+			$(window).resize(function() {
+
+				width = $(window).width();
+				height = $(window).height();
+
+				if ((width/height) > 1.77777777778) {
+					$('.slider img').css({
+						'width': '100%',
+						'height': 'auto',
+						'left': 0
+					});
+				} else {
+					$('.slider img').css({
+						'width': 'auto',
+						'height': '100%',
+						'left': 0
+					});
+					if(width < 780){
+						$('.slider img').css({
+							'left': width/2 * -1 
+						});
+					}
+				}
+			});
+
+			$(document).ready(function() { 
+				calendar(); //calendar.js
+				slider();
+				$(".visit-link").mouseenter( function() {
+					showSubNav() // nav link is a class
+					$(this).attr('class','visit-link selected');
+					// revert exhibitions
+					$('.exhibitions-link').attr('class','exhibitions-link');
+					$('#exhibitions-sub-nav').css('display', 'none'); 
+				});
+				
+				$("#visit-sub-nav").mouseleave( function() {
+					hideSubNav() // hidden sub menu is a div
+					$('.visit-link').attr('class','visit-link');
+				});
+
+
+				// this is crap:
+
+				$(".education-link").mouseenter( function() {
+					$('#education-sub-nav').css('display', 'block'); // nav link is a class
+				});
+				
+				$("#education-sub-nav").mouseleave( function() {
+					$('#education-sub-nav').css('display', 'none'); // hidden sub menu is a div
+				});
+
+
+				$(".exhibitions-link").mouseenter( function() {
+					$(this).attr('class','exhibitions-link selected');
+					$('#exhibitions-sub-nav').css('display', 'block'); // nav link is a class
+					// revert visit sub nav
+					hideSubNav() // hidden sub menu is a div
+					$('.visit-link').attr('class','visit-link');
+				});
+				
+				$("#exhibitions-sub-nav").mouseleave( function() {
+					$('.exhibitions-link').attr('class','exhibitions-link');
+					$('#exhibitions-sub-nav').css('display', 'none'); // hidden sub menu is a div
+				});
+
+				$(".calendar-link").mouseenter( function() {
+					// revert exhibitions
+					$('.exhibitions-link').attr('class','exhibitions-link');
+					$('#exhibitions-sub-nav').css('display', 'none'); 
+				});
+
+			});
+
+
+		</script>
+	</body>

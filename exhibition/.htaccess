@@ -1,0 +1,8 @@
+# Use PHP54 as default
+AddHandler application/x-httpd-php54 .php
+<IfModule mod_suphp.c>
+    suPHP_ConfigPath /opt/php54/lib
+</IfModule>
+
+RewriteEngine on
+RewriteRule ^([A-Za-z0-9\._\-]+)+[^\.php]$ exhibition.php?&amp;uri=$0 [NC]

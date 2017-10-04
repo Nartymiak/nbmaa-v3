@@ -1,0 +1,422 @@
+/* CSS designed by Nick Artymiak
+supports IE8
+
+
+
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+.clear {
+	clear: both;
+}
+/* ---------------------- end reset */
+
+img {
+	max-width: 100%;
+}
+
+/* fonts */
+@font-face {
+	font-family: eaves;
+	src: url(../fonts/MrsEavRom.ttf);
+}
+
+/* ~~~ fonts ~~~*/
+body {
+	color:#473d36;
+	font-family: 'Lato', sans-serif;
+	font-weight: 100;
+	-webkit-text-stroke: 0.5px;
+}
+
+h1 {
+	color:#f2f2f2;
+	font-family: eaves;
+	font-size: 24px;
+	text-shadow: 0px 0px 5px #484848;
+
+}
+
+h2 {
+	font-size:24px;
+}
+
+.rightColumn h2 {
+	color:#473d36;
+	line-height: 1.3em;
+}
+
+p {
+	line-height: 1.7em;
+}
+
+.rightColumn p.tombstone {
+	font-size: 10px;
+}
+
+.subNav a, footer a{
+	color: #473d36;
+	text-decoration: none;
+}
+
+footer {
+	font-size: 80%;
+	line-height: 1.7;
+}
+
+
+
+
+/* ~~~~~~~~~~~~ */
+
+body {
+	width:100%;
+	position:relative;
+}
+
+#grid {
+	position: absolute;
+	width:100%;
+	height:2000px;
+	display:block;
+	z-index: 9999;
+	background: url(../images/11-col-grid.png) center center;
+	background-repeat: no-repeat;
+}
+
+
+.wrapper {
+	width:85%;
+	max-width: 1002px; /* 11 columns (858px), 12 margins (144px) ||  column = 78px, margin = 12px */ 
+	margin:0 auto;
+	position: relative;
+}
+
+/* ~~~~~~ header ~~~~~~ */
+
+#mainNav {
+	height:71px;
+	margin:0 0 0 28.143712574%;
+}
+
+header h1{
+	margin:20px 0 0 28.143712574%;
+}
+
+header .logo {
+	width:240px;
+	position: absolute;
+}
+
+header a {
+	color:#373535;
+	text-decoration: none;
+	font-size: 14px;
+	margin:0 40px 0 0;
+}
+
+header nav {
+	line-height: 71px;
+}
+
+/* ~~~~~ footer ~~~~~ */
+footer {
+	position: relative;
+	top:365px; /* matches the top definition for the mainSection so it gets pushed down correctly */
+	padding:25px 0 20px 0;
+	background-color: #f5f5f5;
+	border-top:1px solid #e2e2e2;
+}
+
+footer .column {
+	width:16.766467065%;
+	margin:0 0 0 1.19760479%;
+	float:left;
+}
+
+footer .columnTwo {
+	width:25.748502994%;
+	margin:0 1.19760479% 0 0;
+	float:left;
+}
+
+footer a {
+	display:block;
+}
+
+footer .right { /* only applies to right column in footer */
+	margin-right:10.179640718%;
+}
+
+/* ~~~~~ sub nav ~~~~~ */
+
+.subNav {
+	width:16.766467065%;
+	float:left;
+	padding:41px 0 0 0; /* should be 35px 0 0 0 so can line up with right column header... */
+	margin:0 17.964071856% 0 10.179640718%;
+}
+
+.subNav h3 {
+	border-bottom: 1px solid #b8b8b8;
+	padding:30px 0 7px 0;
+	margin:0 0 15px 0;
+}
+
+.subNav h3.top {
+	padding-top:0px;
+}
+
+.subNav a {
+	display:block;
+	padding:0 0 10px 0;
+}
+
+/* ~~~~~ call to action (CTA) ~~~~~ */
+
+.cta {
+	position: relative;
+	top:365px; /* matches the top definition for the mainSection so it gets pushed down correctly */
+	text-align: center;
+	padding:44px 0;
+}
+
+.cta a {
+	display: block;
+}
+
+
+/* ~~~~~ exhibition page ~~~~~ */
+
+#background {
+	width:100%;
+	height:535px;
+	background-position: 50% 60%;
+	background-size: cover;
+	background-repeat: no-repeat;
+	position:absolute;
+	top:71px;
+	left:0;
+}
+
+.mainSection {
+	position: relative;
+	top: 365px;
+	background-color: white;
+}
+
+.rightColumn {
+	width:43.71257485%;
+	background-color:#f5f5f5;
+	float:left;
+	padding: 35px 1.19760479% 0 1.19760479%;
+
+}
+
+.rightColumn img {
+	padding:20px 0 8px 0;
+}
+
+.bodyContent p {
+	padding:10px 0;
+}
+
+.rightColumn p.tombstone {
+	padding: 0 0 10px 0;
+}
+
+
+/* ~~~~~~~~~~~~ */
+
+.slider {
+	position:fixed;
+	top:0;
+	left:0;
+	width:100%;
+	height:100%;
+	overflow: hidden;
+}
+
+.slider img {
+	width:100%;
+	height:auto;
+	max-width: none;
+	position:absolute;
+	opacity:0;
+	z-index: 0;
+}
+
+/* ~~~~~~~~~~~~ */
+
+.calendar {
+	width:240px;
+	margin:0 auto;
+	overflow:auto;
+}
+
+.calSquare-empty{
+	float:left;
+	width:34px;
+	height:34px;
+}
+.calSquare {
+	float:left;
+	width:33px;
+	height:33px;
+	border-bottom:1px solid #eee;
+	border-right:1px solid #eee;
+	vertical-align: middle;
+}
+
+.calSquare:hover {
+	background-color: #eee;
+	cursor:pointer;
+}
+
+.calendar h2 {
+	margin:0 0 27px 0;
+}
+
+.filter {
+	width:100%;
+	padding:12px 4.545454545% 12px 4.545454545%;
+	background-color: #fff;
+	display:block;
+	box-sizing: border-box;
+	-moz-box-shadow: 0px 0px 8px rgba(68,68,68,0.6);
+	-webkit-box-shadow: 0px 0px 8px rgba(68,68,68,0.6);
+	box-shadow: 0px 0px 8px rgba(68,68,68,0.6);
+}
+
+.filter a {
+	display:block;
+}
+
+h2.filter {
+	margin:36px 0 0 0;
+	-moz-box-shadow: none;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+}
+
+/* ~~~~~~~~~~~~ */
+
+.activities {
+	padding:27px 0 0 0;
+}
+
+.main-column h2 {
+	border-bottom: 1px solid #b8b4b1;
+	margin:0 0 15px 0;
+	padding:0 2.777777777% 12 2.777777777%;
+	box-sizing: border-box;
+}
+
+.article {
+	margin:0 0 30px 0;
+	padding:0 2.777777777% 0 2.777777777%;
+	box-sizing: border-box;
+}
+
+.article:hover {
+	cursor:pointer;
+}
+
+.major {
+	background:white;
+	width:100%;
+	padding:12px 2.777777777% 12px 2.777777777%;
+	-moz-box-shadow: 0px 0px 8px rgba(68,68,68,0.6);
+	-webkit-box-shadow: 0px 0px 8px rgba(68,68,68,0.6);
+	box-shadow: 0px 0px 8px rgba(68,68,68,0.6);
+
+}
+
+.major:hover {
+	-moz-box-shadow: 0px 0px 12px rgba(68,68,68,0.6);
+	-webkit-box-shadow: 0px 0px 12px rgba(68,68,68,0.6);
+	box-shadow: 0px 0px 12px rgba(68,68,68,0.6);
+}
+
+.major img {
+	padding:0 0 12px 0;
+}
+
+@media screen and (max-width: 1175px) {
+	.wrapper {
+		width:95%;
+	}
+
+	.header-wrapper {
+		width:95%;
+		padding:0 2.5%;
+	}
+}
+
+@media screen and (max-width: 1025px) {
+	.wrapper {
+		width:98%;
+	}
+
+	.header-wrapper {
+		width:100%;
+		padding:0 0;
+	}
+}
+
+@media screen and (max-width: 960px) {
+	.wrapper {
+		width:98%;
+	}
+
+	.header-wrapper {
+		width:100%;
+		padding:0 0;
+	}
+}
