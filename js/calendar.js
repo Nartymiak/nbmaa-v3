@@ -5,6 +5,9 @@
 	date.daysAddress;
 	date.temp;
 
+	var showDates = [];
+	var showKeywords = [];
+
 	var monthOnView;
 	var yearOnView;
 
@@ -43,6 +46,9 @@
 	}
 
 	var daysInGregorianMonths = [31,28,31,30,31,30,31,31,30,31,30,31];
+
+	// stores page id
+	var pageID;
 
 	var isGregorianLeapYear = function(year) {
 		var isLeap = false;
@@ -105,16 +111,23 @@
 			$('.'+ className).append("<div class=\"calSquare empty\"></div>");
 		}
 
-		// print out the number of days the correct month has
-		for(var i=1;i<=daysInGregorianMonth(y,m);i++){
-			$('.'+ className).append("<label class=\"calSquare filled\"><input class=\"calInput\" type=\"checkbox\" name=\"days[]\" value=\"" + y  + "-"+ pad(m)  + "-" + pad(i) + "\">" + i +"</label>");
-		}
+		if (pageID == 'calendar'){
+			// print out the number of days the correct month has
+			for(var i=1;i<=daysInGregorianMonth(y,m);i++){
+				$('.'+ className).append("<label class=\"calSquare filled\"><input class=\"calInput\" type=\"checkbox\" name=\"days[]\" value=\"" + y  + "-"+ pad(m)  + "-" + pad(i) + "\">" + i +"</label>");
+			}
 
-		$('.'+ className).append("<input style=\"display:none;\" type=\"checkbox\" name=\"month\" checked=\"checked\" value=\"" + (m-1) + "-" + y + "\">");
+		} else {
+			for(var i=1;i<=daysInGregorianMonth(y,m);i++){
+				$('.'+ className).append("<a href=\"http://www.nbmaa.org/calendar/" + y  + "-"+ pad(m)  + "-" + pad(i) + "\"><label class=\"calSquare filled\">" + i +"</label></a>");
+			}
+		}
 
 	}
 
 	var makeCalendar = function(y, m) {
+
+		pageID = $('.mainSection').parents().attr("id");
 
 		$('.container').css('width', calendarOuterWidth);
 
@@ -130,28 +143,73 @@
 		monthOnView = m;
 		yearOnView = y;
 
-		$('.threeCalendars').on("click",'.calSquare .calInput', function(){
-			markClicked($(this));
-		});
+		if(pageID == 'calendar'){
+			$('.threeCalendars').on("click",'.calSquare .calInput', function(){
+				markClicked($(this));
+				show($(this).val(), 'date');
+			});
 
-		$('.keyword .calInput').on("click", function(){
-			markClicked($(this));
-		});
+			$('.keyword .calInput').on("click", function(){
+				markClicked($(this));
+				show($(this).val(), 'keyword');
+			});
+		}
 
+		$('#selectMonth').on("click", function(){
+			selectMonth();
+		});
 	}
 
 	function markClicked(obj) {
 
-			if($(obj).attr('class') == 'calInput changed') {
-				$(obj).parent().removeAttr("style");
-				$(obj).removeClass('changed');
+		var count = 0;
 
-			}else if($(obj).attr('class') != 'calInput changed') {
-				$(obj).parent().css("background-color", "rgba(255, 255, 255, .3)");
-				$(obj).addClass('changed');
+		if($(obj).attr('class') == 'calInput changed') {
+			$(obj).parent().removeAttr("style");
+			$(obj).removeClass('changed');
+
+		}else if($(obj).attr('class') != 'calInput changed') {
+			$(obj).parent().css("background-color", "rgba(255, 255, 255, .3)");
+			$(obj).addClass('changed');
+		}
+
+		$('.keyword .calInput').each( function(){
+
+			if($(this).attr('class') != 'calInput changed'){
+				$(this).parent().css("opacity", ".3");
+				count++;
+			} else {
+				$(this).parent().css("opacity", "1");
 
 			}
 
+		});
+
+		if(count == $('.keyword .calInput').size()){
+
+			$('.keyword .calInput').each( function(){
+				$(this).parent().css("opacity", "1");
+			});
+		}
+
+	}
+
+	function markFilterClicked(obj) {
+
+		$('.keyword .calInput').each( function(){
+			if($(this).parent().html() != obj.parent().html()){
+				$(this).parent().css("opacity", ".3");
+			}
+
+		})
+	}
+
+	function selectMonth() {
+
+		$('.calendar .calSquare .calInput').each( function(){
+			 markClicked($(this));
+			 show($(this).val(), 'date');
+		});
 	}
 
 	function rightClick() {
@@ -223,6 +281,82 @@
 	function pad(num) {  	
     	var s = "0" + num;
     	return s.substr(s.length-2);
+	}
+
+	function show(data, type){
+		
+		if(type == 'date') {
+			showDates == CheckAndAddData(data, showDates);
+		} else if(type == 'keyword'){
+			showKeywords == CheckAndAddData(data, showKeywords);
+		} else {
+			console.log("Error: element clicked has wrong type");
+		}
+
+		// the server request
+		$.ajax({
+ 
+		    // The URL for the request
+		    url: "http://www.nbmaa.org/adjure/events.php",
+		 
+		    // The data to send (will be converted to a query string)
+		    data: {
+		         "date": showDates.toString(),
+		          "keywordID": showKeywords.toString(),  
+		 	},
+		    // Whether this is a POST or GET request
+		    type: "GET",
+		 
+		    // The type of data we expect back
+		    dataType : "text",
+		 
+		    // Code to run if the request succeeds;
+		    // the response is passed to the function
+		    success: function( text ) {
+
+		    	$(".rightColumn").empty();
+
+		    	$( ".rightColumn").html( text );
+			    
+		    },
+		 
+		    // Code to run if the request fails; the raw request and
+		    // status codes are passed to the function
+		    error: function( xhr, status, errorThrown ) {
+		        alert( "Sorry, there was a problem!" );
+		        console.log( "Error: " + errorThrown );
+		        console.log( "Status: " + status );
+		        console.dir( xhr );
+		    },
+		 
+		    // Code to run regardless of success or failure
+		    complete: function( xhr, status ) {
+		        //alert( "The request is complete!" );
+		    }
+		});
+	}
+
+	function CheckAndAddData(data, array){
+
+		var flag = false;
+
+		// check if data was already clicked, if not: add, if it was: delete
+		for(i=0;i<array.length;i++){
+
+			if(array[i] == data){
+				array.splice(i, 1);
+				var flag = true;
+			} 
+		}
+				
+		if(flag == false){
+			array.push(data);
+		}
+
+		flag = false;
+
+		return array;
+
 	}
 
 	// bind the event listeners

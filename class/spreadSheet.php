@@ -330,11 +330,10 @@
 	      		// attributes in the table that can be diferent (or are not to be compared)
 	      		$existFilter = array('ExhibitionReferenceNo','EventReferenceNo','ArtistReferenceNo', 'ReceptionReferenceNo', 'BodyContent');
 	      		$insertFilter= array('ExhibitionReferenceNo','EventReferenceNo','ArtistReferenceNo', 'ReceptionReferenceNo', 'GalleryID', 
-	      							 'EmployeeID', 'DepartmentID', 'KeywordID', 'StaticPageID', 'DepartmentReferenceNo', 'SubNavLinkID', 'NavID'
+	      							 'EmployeeID', 'DepartmentID', 'KeywordID', 'StaticPageID', 'ClassroomPageID', 'DepartmentReferenceNo', 'SubNavLinkID', 'NavID', 'FooterLinkID'
 	      							);
 	      		$artworkFilter = array('ArtworkReferenceNo');
 	      		$artworkExistFilter = array('ArtworkReferenceNo', 'Title');
-	      		$eventTypeFilter = array('EventTypeID');
 	      		$eventExistFilter = array('StartDate', 'EndDate', 'StartTime', 'EndTime', 'Canceled(bool)', 'Description','RegistrationFull(bool)');
 	      		$eventInsertFilter = array('StartDate', 'EndDate', 'StartTime', 'EndTime', 'Canceled(bool)', 'RegistrationFull(bool)');
 	      		$navCategoryFilter = array('NavCategoryID');
@@ -348,10 +347,6 @@
       			if($table->getTableName()=='ARTWORK'){
       				$existFilter =  array_merge($existFilter, $artworkExistFilter);
       				$insertFilter = array_merge($insertFilter, $artworkFilter);
-      			}
-
-      			if($table->getTableName() == 'EVENT_TYPE'){
-      				$insertFilter = array_merge($insertFilter, $eventTypeFilter);
       			}
 
       			if($table->getTableName() == 'NAV_CATEGORY'){
@@ -584,7 +579,7 @@
 	      				$attributeString.= $attribute. ', ';
 
 						if($data != NULL ){
-				            $valueString .= '\''.$data. '\', ';
+				            $valueString .= '\''.mb_convert_encoding($data, "HTML-ENTITIES", "UTF-8"). '\', ';
 				        }
 				        else if($data == NULL) {
 				        	$valueString .= 'NULL, ';

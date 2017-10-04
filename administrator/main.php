@@ -9,7 +9,7 @@
 	//admin
 	// get the third string from the url and break out string after "?"
 	$url = explode("/",$_SERVER['REQUEST_URI']);
-	$urlDetail = explode("?",$url[3]);
+	$urlDetail = explode("?",$url[2]);
 
 	// check the third string from the url
 	switch ($urlDetail[0]) {

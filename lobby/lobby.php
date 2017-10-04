@@ -5,6 +5,6 @@
 	//exhibition
 	$getName = explode("/",$_SERVER['REQUEST_URI']);
 
-	$page = new EventPage($getName[2]);
+	$page = new LobbyPage($getName[2]); 
 
 ?>

@@ -69,6 +69,7 @@
     //$result now contains the entire resultset from the query.
 
     //$result contain
+
     $result = $result[0];
 
     return $result;
@@ -82,7 +83,7 @@
 
     //Prepare the statement.
     $statement = $conn->prepare(" SELECT  E.EventID, E.Title, E.Description, E.Blurb, E.AdmissionCharge, E.RegistrationBeginDate, 
-                                          E. RegistrationEndDate, E.eventTypeID, E.Canceled, E.RegistrationFull, E.ImgFilePath, 
+                                          E. RegistrationEndDate, E.EventTypeID, E.Canceled, E.RegistrationFull, E.ImgFilePath, 
                                           E.ImgCaption, E.Link
                                   FROM    EVENT E
                                   WHERE   E.Link = :link");
@@ -124,6 +125,70 @@
 
     return $result;
 
+  }
+
+  function queryClassroomPage($url){
+
+    $conn = pdo_connect();
+
+    //Prepare the statement.
+    $statement = $conn->prepare(" SELECT  C.ClassroomPageID, C.Title, C.Body, C.ImgFilePath, C.ImgCaption, C.Link
+                                  FROM    CLASSROOM_PAGE C
+                                  WHERE   C.Link = :link");
+    //Bind the Value, binding parameters should be used when the same query is run repeatedly with different parameters.
+    $statement->bindValue(":link", $url, PDO::PARAM_STR);
+    //Execute the query
+    $statement->execute();
+
+    //Fetch all of the results.
+    $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+    //$result now contains the entire resultset from the query.
+
+    //$result contain
+    $result = $result[0];
+
+    return $result;
+
+  }
+
+
+  // called only on LobbyPage Class, only for exhibitions
+  function queryLobbyPage($url){
+
+    switch($url) {
+      
+      case "current":
+        $sql = 'SELECT * FROM EXHIBITION WHERE :date BETWEEN StartDate AND EndDate ORDER BY Rank';
+        break;
+
+      case "upcoming":
+        $sql = 'SELECT * FROM EXHIBITION WHERE StartDate > :date ORDER BY StartDate';
+        break;
+      
+      case "recently-off-the-wall":
+        $sql = 'SELECT * FROM EXHIBITION WHERE EndDate < :date ORDER BY EndDate DESC';
+        break;
+      
+      default:
+        $sql = 'SELECT * FROM EXHIBITION WHERE :date BETWEEN StartDate AND EndDate ORDER BY Rank';
+    }
+
+    // today's date
+    $date = date("Y-m-d");
+
+    $conn = pdo_connect();
+
+    $statement = $conn->prepare($sql);
+
+    $statement->bindValue(":date", $date, PDO::PARAM_STR);
+
+    $statement->execute();
+
+    //Fetch all of the results.
+    $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+    //$result now contains the entire resultset from the query.
+    
+    return $result;
   }
 
   // VIP! Do not use when accepting parameters from a user <form> or url
@@ -186,55 +251,187 @@
     return $result;
   }
 
+  function queryEventDateTimes($eventID){
+
+    $conn = pdo_connect();
+    // today's date
+    $date = date("Y-m-d");
+
+    $sql = 'SELECT * FROM EVENT_DATE_TIMES WHERE EventID = :value AND StartDate >= :date ORDER BY StartDate';
+
+    $statement = $conn->prepare($sql);
+
+    $statement->bindValue(":value", $eventID, PDO::PARAM_STR);
+
+    $statement->bindValue(":date", $date, PDO::PARAM_STR);
+
+    $statement->execute();
+
+    //Fetch all of the results.
+    $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+    //$result now contains the entire resultset from the query.
+      
+    return $result;
+  }
+
   /** 
   *Queries the database according to the user's input from the calendar
   *@param None, but function uses global $_POST value ( if $_POST is null, runs a default query)
   *@return associative query result
   **/
-  function queryCalendarPageEvents(){
+  function ajaxQueryCalendarPageEvents($dates){
 
-    $result = array();
+    if(empty($dates)){
 
-    //if user selected a month or nothing only
-    if($_POST['days']==null && $_POST['keyword'] == null){
-      
-      $result = queryCalendarPageEventsByMonth();
+      return queryCalendarPageEvents("today");
     
-    // if user selected days and not keywords
-    } else if($_POST['days']!=null && $_POST['keyword'] == null) {
+    } else {
 
-      $result = queryCalendarPageEventsByDays();
-      
-    // if user selected keywords and not days
-    } else if($_POST['days']==null && $_POST['keyword'] != null){
+      $result = array();
 
-      $result = queryCalendarPageEventsByKeywords();
+      // create the connection
+      $conn = pdo_connect();
 
-    //if user selects keywords and days
-    } else if($_POST['days']!=null && $_POST['keyword'] != null) {
+      // write the generic statement
+      $sql = 'SELECT  StartDate, EndDate, StartTime, EndTime, E.Title as EventTitle, E.Description, E.ImgFilePath, E.EventTypeID, ImgCaption, Link, K.Word as TypeTitle
+              FROM    EVENT_DATE_TIMES ED, EVENT E, KEYWORD K
+              WHERE   E.EventTypeID = K.KeywordID AND ED.EventID = E.EventID AND ED.StartDate = :startDate ORDER BY ED.StartDate';
+          
+      // for each day selected by the user, bind $day value to the statement, excecute the statement and build the result
+      foreach($dates as $day){
 
-      $result = queryCalendarPageEventsByKeywords();
+        // prepare the statement object
+        $statement = $conn->prepare($sql);
 
-      // now remove elements that were not selected by day by the user
-      foreach($result as $key=>$tuple){
+        $statement->bindValue(":startDate", $day, PDO::PARAM_STR);
 
-        $flag=false;
+        $statement->execute();
 
-        foreach ($_POST['days'] as $day) {
+        //Fetch all of the results.
+        $tuples = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-          if($tuple['StartDate'] == $day) {
-            $flag=true;
+        //pre-organize result array by breaking out elements and push to result
+        foreach ($tuples as $tuple) { array_push($result, $tuple); }
+      }
+
+      // sort result by date
+      usort($result, 'date_compare');
+
+      return $result;
+    }
+  }
+
+  /** 
+  *Queries the database according to the user's input from the calendar
+  *@param None, but function uses global $_POST value ( if $_POST is null, runs a default query)
+  *@return associative query result
+  **/
+  function queryCalendarPageEvents($url){
+
+    $query = array();
+    $result = array();
+    $keywordIDs = array();
+
+    // if user selected date and not keyword    
+    if(DateTime::createFromFormat('Y-m-d', $url) !== FALSE) {
+
+      $result = queryCalendarPageEventsByDays($url);
+
+    } else {
+
+      $query = queryCalendarPageEventsToday();
+
+      // if user selected keyword and not day
+      if($url != "Today" && $url != "events"){
+
+        switch($url){
+          case "family-programs":
+            $parentKeywordID = "31";
+            break;
+          case "adult-studio-classes":
+            $parentKeywordID = "12";
+            break;
+          case "tours":
+            $parentKeywordID = "23";
+            break;
+          case "travel-programs":
+            $parentKeywordID = "24";
+            break;
+          case "openings":
+            $parentKeywordID = "28";
+            break;
+          case "programs":
+            $parentKeywordID = "35";
+            break;
+          default:
+            $parentKeywordID = $url;
+        }
+
+          // query db against array elements, get the child keywords of parent keyword
+          $queriedKeywords = queryParentKeyword($parentKeywordID);
+
+          // add the result to the keywords array
+          foreach($queriedKeywords as $key => $el) {
+
+            array_push($keywordIDs, array("KeywordID"=>$el['KeywordID']));
+          
+          }
+
+        foreach($query as $key => $event){
+
+          foreach($keywordIDs as $key => $keywordID){
+          
+            if($event['EventTypeID'] == $keywordID['KeywordID']){
+
+              array_push($result, $event);
+            }
           }
         }
-        
-        if($flag==false) {
+      } else {
 
-        //delete this particular object from the array
-        unset($result[$key]);
-        }
+        $result = $query;
       }
     }
     return $result;
+  }
+
+  /** 
+  *Queries the database for events and according to today's date
+  *@param None
+  *@return associative array query result
+  **/
+  function queryCalendarPageEventsToday(){
+
+    $result = array();
+
+    $dateRange = buildThirtyDayDateRange();
+
+    $conn = pdo_connect();
+
+    // write the generic statement
+    $sql = '  SELECT  StartDate, EndDate, StartTime, EndTime, E.Title as EventTitle, E.Description, E.ImgFilePath, E.EventTypeID, ImgCaption, Link, K.Word as TypeTitle
+              FROM    EVENT_DATE_TIMES ED, EVENT E, KEYWORD K
+              WHERE   E.EventTypeID = K.KeywordID AND ED.EventID = E.EventID AND ED.StartDate BETWEEN :startDate AND :endDate ORDER BY ED.StartDate';        
+              
+    // prepare the statement object
+    $statement = $conn->prepare($sql);
+
+    $statement->bindValue(":startDate", $dateRange[0], PDO::PARAM_STR);
+    $statement->bindValue(":endDate", $dateRange[1], PDO::PARAM_STR);
+
+    $statement->execute();
+
+    //Fetch all of the results.
+    $tuples = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+    //pre-organize result array by breaking out elements and push to result
+    foreach ($tuples as $tuple) { array_push($result, $tuple); } 
+    
+    // sort result by date
+    usort($result, 'date_compare');
+    
+    return $result;
+
   }
 
   function queryCalendarPageExhibitions(){
@@ -260,7 +457,7 @@
   }
 
   function queryKeywords(){
-      $query = 'SELECT KeywordID, Word FROM KEYWORD ORDER BY DisplayOrder';
+      $query = 'SELECT KeywordID, Word, ParentKeywordID FROM KEYWORD';
       $conn = db_connect();
 
       $result = @$conn->query($query);
@@ -279,13 +476,13 @@
       return $result;    
   }
 
-  function queryEventTypesByKeywords(){
+  function queryEventTypesByKeywords($keywords){
 
     $returnResult = array();
     
     $conn = db_connect();
 
-    foreach ($_POST['keyword'] as $keyword){
+    foreach ($keywords as $keyword){
       
       $query = 'SELECT EventTypeID FROM KEYWORD_EVENT_TYPE WHERE KeywordID = ' .$keyword. '';
       
@@ -309,6 +506,37 @@
 
   }
 
+  function queryParentKeyword($parentKeywordID){
+
+    $result;
+
+    $conn = pdo_connect();
+
+    //Prepare the statement.
+    $statement = $conn->prepare(" SELECT  KeywordID
+                                  FROM    KEYWORD 
+                                  WHERE   ParentKeywordID = :parentKeywordID");
+
+    //Bind the Value, binding parameters should be used when the same query is run repeatedly with different parameters.
+    $statement->bindValue(":parentKeywordID", $parentKeywordID, PDO::PARAM_STR);
+    //Execute the query
+    $statement->execute();
+    //Fetch all of the results.
+    $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+    if(empty($result)){
+
+      $result[0] = array("KeywordID" => $parentKeywordID);
+      return $result;
+
+    } else {
+
+      return $result;
+    }
+
+  }
+
+
   // helper function for queryCalendarPageEvents()
   function queryCalendarPageEventsByMonth() {
 
@@ -330,9 +558,9 @@
     }
 
     // write the generic statement
-    $sql = '  SELECT  StartDate, EndDate, StartTime, EndTime, E.Title as EventTitle, E.Description, E.ImgFilePath, ImgCaption, Link, ET.Title as TypeTitle
-              FROM    EVENT_DATE_TIMES ED, EVENT E, EVENT_TYPE ET
-              WHERE   E.EventTypeID = ET.EventTypeID AND ED.EventID = E.EventID AND ED.StartDate BETWEEN :startDate AND :endDate ORDER BY ED.StartDate';        
+    $sql = '  SELECT  StartDate, EndDate, StartTime, EndTime, E.Title as EventTitle, E.Description, E.ImgFilePath, ImgCaption, Link, K.Word as TypeTitle
+              FROM    EVENT_DATE_TIMES ED, EVENT E, KEYWORD K
+              WHERE   E.EventTypeID = K.KeywordID AND ED.EventID = E.EventID AND ED.StartDate BETWEEN :startDate AND :endDate ORDER BY ED.StartDate';        
               
     // prepare the statement object
     $statement = $conn->prepare($sql);
@@ -355,7 +583,7 @@
   }
 
   // helper function for queryCalendarPageEvents()
-  function queryCalendarPageEventsByDays() {
+  function queryCalendarPageEventsByDays($url) {
 
     $result = array();
 
@@ -363,96 +591,96 @@
     $conn = pdo_connect();
 
     // write the generic statement
-    $sql = 'SELECT  StartDate, EndDate, StartTime, EndTime, E.Title as EventTitle, E.Description, E.ImgFilePath, ImgCaption, Link, ET.Title as TypeTitle
-            FROM    EVENT_DATE_TIMES ED, EVENT E, EVENT_TYPE ET
-            WHERE   E.EventTypeID = ET.EventTypeID AND ED.EventID = E.EventID AND ED.StartDate = :startDate ORDER BY ED.StartDate';
+    $sql = 'SELECT  StartDate, EndDate, StartTime, EndTime, E.Title as EventTitle, E.Description, E.ImgFilePath, ImgCaption, Link, K.Word as TypeTitle
+            FROM    EVENT_DATE_TIMES ED, EVENT E, KEYWORD K
+            WHERE   E.EventTypeID = K.KeywordID AND ED.EventID = E.EventID AND ED.StartDate = :startDate ORDER BY ED.StartDate';
 
-        
-    // for each day selected by the user, bind $_POST value to the statement, excecute the statement and build the result
-    foreach($_POST['days'] as $day){
+    // prepare the statement object
+    $statement = $conn->prepare($sql);
 
-      // prepare the statement object
-      $statement = $conn->prepare($sql);
+    $statement->bindValue(":startDate", $url, PDO::PARAM_STR);
 
-      $statement->bindValue(":startDate", $day, PDO::PARAM_STR);
+    $statement->execute();
 
-      $statement->execute();
-
-      //Fetch all of the results.
-      $tuples = $statement->fetchAll(PDO::FETCH_ASSOC);
-
-      //pre-organize result array by breaking out elements and push to result
-      foreach ($tuples as $tuple) { array_push($result, $tuple); }
-    }
+    //Fetch the result.
+    $result = $statement->fetchAll(PDO::FETCH_ASSOC);
   
     return $result;
   }
 
   // helper function for queryCalendarPageEvents()
-  function queryCalendarPageEventsByKeywords() {
+  function queryCalendarPageEventsByKeyword($url) {
+
+    $tuples = array();
 
     $result = array();
     
     // create the connection
     $conn = pdo_connect();
 
-    if($_POST['month'] != null) {
-      List($m,$y) = explode("-",$_POST['month']);
+    $dateRange = buildThirtyDayDateRange();
+
+    $keywordIDs = queryParentKeyword($url);
+
+    // write the generic statement
+    $sql = '  SELECT StartDate, EndDate, StartTime, EndTime, E.Title as EventTitle, E.Description, E.ImgFilePath, ImgCaption, Link, K.Word as TypeTitle
+              FROM EVENT_DATE_TIMES ED, EVENT E, KEYWORD K
+              WHERE E.EventTypeID = :eventType AND E.EventTypeID = K.KeywordID AND ED.EventID = E.EventID AND ED.StartDate BETWEEN :startDate AND :endDate ORDER BY ED.StartTime';            
         
-      $dateRange[0] = $y. "-" .$m. "-01";
+    // prepare the statement object
+    $statement = $conn->prepare($sql);
 
-      
-      $dateRange[1] = date("y-m-t", strtotime($y. "-" .$m. "-01"));
+    foreach($keywordIDs as $key=>$el){
 
-    } else {
+      $statement->bindValue(":eventType", $el['KeywordID'], PDO::PARAM_STR);
+      $statement->bindValue(":startDate", $dateRange[0], PDO::PARAM_STR);
+      $statement->bindValue(":endDate", $dateRange[1], PDO::PARAM_STR);
 
-      $dateRange = buildDateRange();
+      $statement->execute();
 
+      //Fetch all of the results.
+      array_push($tuples, $statement->fetchAll(PDO::FETCH_ASSOC));
     }
 
-    $eventTypes = queryEventTypesByKeywords();
-
-    if( $eventTypes != null){
-
-      foreach ($eventTypes as $eventType) {
-
-        if( $eventType == 'Exhibition') {
-
-          // write the generic statement
-          //$sql = '  SELECT StartDate, EndDate, StartTime, EndTime, E.Title as EventTitle, E.Description, E.ImgFilePath, ImgCaption, Link, ET.Title as TypeTitle
-          //          FROM EVENT_DATE_TIMES ED, EVENT E, EVENT_TYPE ET
-          //          WHERE E.EventTypeID = :eventType AND E.EventTypeID = ET.EventTypeID AND ED.EventID = E.EventID AND ED.StartDate BETWEEN :startDate AND :endDate ORDER BY ED.StartTime';    
-
-        }
-
-        else {
-
-          // write the generic statement
-          $sql = '  SELECT StartDate, EndDate, StartTime, EndTime, E.Title as EventTitle, E.Description, E.ImgFilePath, ImgCaption, Link, ET.Title as TypeTitle
-                    FROM EVENT_DATE_TIMES ED, EVENT E, EVENT_TYPE ET
-                    WHERE E.EventTypeID = :eventType AND E.EventTypeID = ET.EventTypeID AND ED.EventID = E.EventID AND ED.StartDate BETWEEN :startDate AND :endDate ORDER BY ED.StartTime';        
-        }    
-        
-        // prepare the statement object
-        $statement = $conn->prepare($sql);
-
-        $statement->bindValue(":eventType", $eventType['EventTypeID'], PDO::PARAM_STR);
-        $statement->bindValue(":startDate", $dateRange[0], PDO::PARAM_STR);
-        $statement->bindValue(":endDate", $dateRange[1], PDO::PARAM_STR);
-
-        $statement->execute();
-
-        //Fetch all of the results.
-        $tuples = $statement->fetchAll(PDO::FETCH_ASSOC);
-
-        //pre-organize result array by breaking out elements and push to result
-        foreach ($tuples as $tuple) { array_push($result, $tuple); } 
+    //pre-organize result array by breaking out elements and push to result
+    foreach ($tuples as $tuple) { 
+      if(!empty($tuple[0])){
+        array_push($result, $tuple[0]);
       }
-      // sort result by date
-      usort($result, 'date_compare');
-    }
-        
+    } 
+    
+    // sort result by date
+    usort($result, 'date_compare');
+      
     return $result;
+  }
+
+  function ajaxQueryClasses($keywordID){
+
+    $conn = pdo_connect();
+
+    $dateRange = buildThreeMonthDateRange();
+
+    // write the generic statement
+    $sql = '  SELECT StartDate, EndDate, StartTime, EndTime, E.Title as EventTitle, E.Description, E.ImgFilePath, ImgCaption, Link, K.Word as TypeTitle
+              FROM EVENT_DATE_TIMES ED, EVENT E, KEYWORD K
+              WHERE E.EventTypeID = :eventType AND E.EventTypeID = K.KeywordID AND ED.EventID = E.EventID AND ED.StartDate BETWEEN :startDate AND :endDate GROUP BY E.Title ORDER BY ED.StartTime';            
+        
+    // prepare the statement object
+    $statement = $conn->prepare($sql);
+
+    $statement->bindValue(":eventType", $keywordID, PDO::PARAM_STR);
+    $statement->bindValue(":startDate", $dateRange[0], PDO::PARAM_STR);
+    $statement->bindValue(":endDate", $dateRange[1], PDO::PARAM_STR);
+
+    $statement->execute();
+
+    //Fetch all the result
+    $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+    return $result;
+
+
   }
 
   function adminQuery($type) {
@@ -469,9 +697,9 @@
     switch ($type) {
 
       case "event":
-        $sql = "SELECT    E.EventID as EventID, E.Link, E.Title as EventTitle, ET.Title as TypeTitle, MAX(StartDate)
-                FROM      EVENT_DATE_TIMES ED, EVENT E, EVENT_TYPE ET
-                WHERE     E.EventTypeID = ET.EventTypeID AND ED.EventID = E.EventID
+        $sql = "SELECT    E.EventID as EventID, E.Link, E.Title as EventTitle, K.Word as TypeTitle, MAX(StartDate)
+                FROM      EVENT_DATE_TIMES ED, EVENT E, KEYWORD K
+                WHERE     E.EventTypeID = K.KeywordID AND ED.EventID = E.EventID
                 GROUP BY  E.Title
                 ORDER BY  StartDate
                 ";
@@ -512,6 +740,55 @@
       $result = db_result_to_array($result);
       
       return $result;    
+  }
+
+  function queryClassRoomKeywords($classroomPageID){
+
+    $keywordIDs = array();
+    $result = array();
+    
+    $conn = pdo_connect();
+
+    $sql = '  SELECT  KeywordID
+              FROM    CLASSROOM_PAGE_KEYWORD
+              WHERE   ClassroomPageID = :classroomPageID';
+
+    $statement = $conn->prepare($sql);
+
+    $statement->bindValue(":classroomPageID", $classroomPageID, PDO::PARAM_STR);
+
+    $statement->execute();
+
+    //Fetch all of the results.
+    $keywordIDs = $statement->fetchAll(PDO::FETCH_ASSOC);
+    //$result now contains the entire resultset from the query.
+
+    if(empty($keywordIDs)){
+      //handle error
+
+    } else {
+
+      $sql = '  SELECT  KeywordID, Word
+                FROM    KEYWORD
+                WHERE   KeywordID = :keywordID';
+
+      $statement = $conn->prepare($sql);
+
+      foreach($keywordIDs as $keywordID){
+
+        $statement->bindValue(":keywordID", $keywordID['KeywordID'], PDO::PARAM_STR);
+
+        $statement->execute();
+
+        //Fetch all of the results.
+        array_push($result, $statement->fetchAll(PDO::FETCH_ASSOC));
+        //$result now contains the entire resultset from the query.
+
+      }
+    
+    }
+
+    return $result;
   }
 
 

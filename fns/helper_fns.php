@@ -44,14 +44,42 @@
 		return $dateArray;
 	}
 
+	function buildThirtyDayDateRange(){
+		
+		// this gets the first and last day of the current month
+		$startDate = date("Y-m-d");
+		$endDate = date('Y-m-d', strtotime("+30 days"));
+
+		$dateArray = array($startDate, $endDate);
+
+		return $dateArray;
+	}
+
+	function buildThreeMonthDateRange(){
+		
+		// this gets the first and last day of the current month
+		$startDate = date("Y-m-d");
+		$endDate = date('Y-m-d', strtotime("+93 days"));
+
+		$dateArray = array($startDate, $endDate);
+
+		return $dateArray;
+	}
+
 	function shortenText($string){
+
+		$string=strip_tags($string);
 
 		$result;
 
 		$text = explode(" ", $string, 25);
 
 		if($text){
+			//other thant the <p>, im not sure why—but there seems to be these characters in the string. must remove.
+			if(substr($text[0], 0, 5) == "		<p>"){
+				$text[0] = substr($text[0], 5);
 
+			}
 			for($i=0;$i<count($text)-1;$i++){
 				$result .= $text[$i]. " ";
 			}
@@ -111,4 +139,27 @@
 		} else {
 			return strcmp($a['StartTime'], $b['StartTime']);
 		}
+	}
+
+	function toLink($string){
+
+		// strip all but forward slashes, newlines, letters and numbers
+		// make it all lowercase
+		$link = strtolower ( preg_replace(	'/[^A-Za-z0-9\n\/ \-]/', '', $string));
+		       		
+		// replace spaces, new lines and forward slashes with dashes
+		$link = str_replace(array(" ", "\n", "/"), "-", $link);
+		// sometimes it makes a double slash so replace those with single slash
+		$link = str_replace("--", "-", $link);
+		// check if last character is a dash, if so, trim it off
+		if(substr($link, -1, 1)=="-"){
+			$link = substr($link, 0, -1);
+		}
+		return $link;
+	}
+
+	function linkToString($link){
+		// replace spaces, new lines and forward slashes with dashes
+		$link = str_replace(array("-", "\n", "/"), " ", $link);
+		return $link;
 	}
