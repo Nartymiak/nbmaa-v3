@@ -55,6 +55,10 @@ table {
 .clear {
 	clear: both;
 }
+
+.submit:hover {
+	cursor: pointer;
+}
 /* ---------------------- end reset */
 
 img {
@@ -68,7 +72,7 @@ img {
 }
 
 /* ~~~ fonts ~~~*/
-body {
+body, #calendar .rightColumn a,  #calendar .leftColumn a{
 	color:#473d36;
 	font-family: 'Lato', sans-serif;
 	font-weight: 100;
@@ -80,17 +84,35 @@ h1 {
 	font-family: eaves;
 	font-size: 24px;
 	text-shadow: 0px 0px 5px #484848;
-
 }
 
-h2 {
+#calendar h2 {
+	font-size: 18px;
+}
+
+h2, #calendar .rightColumn h3, #calendar .leftColumn h3 {
 	font-size:24px;
+	line-height: 1.4em;
 }
 
-.rightColumn h2 {
+header a {
+	color:#373535;
+	font-size: 14px;
+}
+
+.dropDown a, .dropDown {
+	color:#ffffff;
+}
+
+.rightColumn h2, .leftColumn h2 {
 	color:#473d36;
 	line-height: 1.3em;
 }
+
+ #calendar .rightColumn h4, #calendar .leftColumn h4 {
+ 	font-weight: 400;
+ 	line-height: 1.3em;
+ }
 
 p {
 	line-height: 1.7em;
@@ -110,8 +132,14 @@ footer {
 	line-height: 1.7;
 }
 
+strong {
+	font-weight: 700;
+}
 
-
+em {
+	font-style: italic;
+	font-weight: inherit;
+}
 
 /* ~~~~~~~~~~~~ */
 
@@ -141,28 +169,74 @@ body {
 /* ~~~~~~ header ~~~~~~ */
 
 #mainNav {
-	height:71px;
 	margin:0 0 0 28.143712574%;
 }
 
-header h1{
+#mainNav, nav .menuItem { /* these have to be the same height */
+	height:71px;
+}
+
+h1{
 	margin:20px 0 0 28.143712574%;
 }
 
 header .logo {
 	width:240px;
+	margin:0 0 0 1.19760479%;
 	position: absolute;
+	z-index: 10;
 }
 
-header a {
-	color:#373535;
+header  a {
 	text-decoration: none;
-	font-size: 14px;
+}
+
+header nav > a, .menuItem > a {
+	line-height: 71px;
 	margin:0 40px 0 0;
 }
 
-header nav {
-	line-height: 71px;
+nav .dropDown {
+	display: none;
+	position: absolute;
+	background-color: #473d37;
+	z-index:9;
+	width:100%;
+	left:0;
+	top:0;
+	margin:64px 0 0 0;
+	padding:20px 0 20px 0;
+}
+
+nav .arrowUp {
+	border-left: 20px solid transparent;
+	border-right: 20px solid transparent;	
+	border-bottom: 20px solid #473d37;
+	position:absolute;
+	top:50px;
+	z-index:9;
+}
+
+nav .dropDown .left {
+	float:left;
+	width:25.748502994%;
+	margin:0 01.19760479% 0 0;	
+	height:10px;
+}
+
+nav .dropDown .middle {
+	width:34.730538922%;
+	margin:0 01.19760479%;	
+	float:left;
+}
+
+nav .dropDown .right {
+	width:25.748502994%;
+	float:left;
+}
+
+nav .menuItem {
+	display: inline-block;
 }
 
 /* ~~~~~ footer ~~~~~ */
@@ -209,7 +283,7 @@ footer .right { /* only applies to right column in footer */
 	margin:0 0 15px 0;
 }
 
-.subNav h3.top {
+.subNav h3.showImg {
 	padding-top:0px;
 }
 
@@ -251,7 +325,7 @@ footer .right { /* only applies to right column in footer */
 	background-color: white;
 }
 
-.rightColumn {
+#exhibition .rightColumn, #event .rightColumn {
 	width:43.71257485%;
 	background-color:#f5f5f5;
 	float:left;
@@ -259,7 +333,7 @@ footer .right { /* only applies to right column in footer */
 
 }
 
-.rightColumn img {
+#exhibition .rightColumn img, #event .rightColumn img{
 	padding:20px 0 8px 0;
 }
 
@@ -271,6 +345,68 @@ footer .right { /* only applies to right column in footer */
 	padding: 0 0 10px 0;
 }
 
+
+/* ~~~~~ calendar page ~~~~~ */
+
+#calendar header {
+	position: fixed;
+	background-color: #ffffff;
+	top:0;
+	width:85%;
+	max-width: 1002px;
+	z-index: 10000;
+	border-bottom: 1px solid rgba(0,0,0,0.35);
+
+}
+
+#calendar h1 {
+
+	margin:0 0 0 28.143712574%;
+	position: relative;
+	top:91px;
+}
+
+#calendar .leftColumn {
+	/* temp place holder width*/
+	width:37.125748503%; /* 37.125748503% = 372px at full width of 1002px*/
+	margin:0 7.784431137% 0 8.982035928%;
+	float:left;
+}
+
+#calendar .rightColumn {
+	width:37.125748503%;
+	float: left;
+}
+
+.calendarElement {
+	width: 93.548387096%;
+	padding:12px 03.225806451% ;
+	margin:0 0 30px 0;
+}
+
+#calendar .showImg {
+	-webkit-box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.35);
+	-moz-box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.35);
+	box-shadow: 0px 0px 8px 0px rgba(0,0,0,0.35);
+}
+
+.calendarElement img {
+	margin-bottom: 12px;
+}
+
+#calendar a {
+	text-decoration: none;
+}
+
+#calendar .rightColumn h2, #calendar .leftColumn h2 {
+	margin: 12px 0;
+}
+
+#calendar .rightColumn h5, #calendar .leftColumn h5 {
+	padding: 12px 0;
+	margin: 0 0 12px 0;
+	border-bottom: 1px solid rgba(0,0,0,0.35);
+}
 
 /* ~~~~~~~~~~~~ */
 
@@ -294,55 +430,131 @@ footer .right { /* only applies to right column in footer */
 
 /* ~~~~~~~~~~~~ */
 
-.calendar {
+.calendar, .oldCalendar, .newCalendar  {
 	width:240px;
-	margin:0 auto;
 	overflow:auto;
+	font-size: 16px;
+	line-height: 33px;
+	margin:0 12px;
+	position: relative;
+	float:left;
+
 }
 
-.calSquare-empty{
-	float:left;
-	width:34px;
-	height:34px;
-}
 .calSquare {
 	float:left;
 	width:33px;
 	height:33px;
-	border-bottom:1px solid #eee;
-	border-right:1px solid #eee;
 	vertical-align: middle;
+	text-align: center;
 }
 
-.calSquare:hover {
-	background-color: #eee;
+.calendar .weekday {
+	background-color: rgba(255, 255, 255, .05);
+}
+
+.calendar .filled {
+	background-color: rgba(255, 255, 255, .0);
+}
+
+.calendar .filled:hover {
+	background-color: rgba(255, 255, 255, .3);
 	cursor:pointer;
 }
 
-.calendar h2 {
-	margin:0 0 27px 0;
+
+.calendarWrapper .leftArrow{
+	border-top: 15px solid transparent;
+	border-bottom: 15px solid transparent; 
+	border-right:15px solid rgba(255, 255, 255, .2);	
+}
+
+.calendarWrapper .leftArrow:hover{
+	border-right:15px solid rgba(255, 255, 255, .3);	
+}
+
+.calendarWrapper .rightArrow{
+	border-top: 15px solid transparent;
+	border-bottom: 15px solid transparent; 
+	border-left:15px solid rgba(255, 255, 255, .2);
+}
+
+.calendarWrapper .rightArrow:hover{
+	border-left:15px solid rgba(255, 255, 255, .3);
+}
+
+
+.calendarWrapper .container {
+	float:left;
+	overflow: hidden;
+	display: inline-block;
+}
+
+.calendarWrapper .leftArrow, .calendarWrapper .rightArrow {
+	margin:118px 0 0 0;
+	float:left;
+}
+
+.menuItem .leftArrow:hover, .menuItem .rightArrow:hover {
+	cursor:pointer;
+}
+
+.calendarHeader {
+	text-align: center;
+}
+
+.calendar h5, .oldCalendar h5 , .newCalendar h5{
+	display: inline-block;
+	width:200px;
+	text-align: center;
+}
+
+.calSquare input[type='checkbox'], .filter input[type='checkbox']  {
+	display: none;
+}
+
+.threeCalendars {
+	position: relative;
 }
 
 .filter {
 	width:100%;
-	padding:12px 4.545454545% 12px 4.545454545%;
-	background-color: #fff;
-	display:block;
-	box-sizing: border-box;
-	-moz-box-shadow: 0px 0px 8px rgba(68,68,68,0.6);
-	-webkit-box-shadow: 0px 0px 8px rgba(68,68,68,0.6);
-	box-shadow: 0px 0px 8px rgba(68,68,68,0.6);
+	line-height: 33px;
+	margin:31px 0 0 0;
 }
 
-.filter a {
+.filter label, .filter input[type='submit'] {
 	display:block;
+	background-color: rgba(255, 255, 255, .1);
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	border-radius: 2px; /* future proofing */
+	-khtml-border-radius: 2px; /* for old Konqueror browsers */
+	margin:0 12px 12px 0;
+	padding:4px;
+	float:left;
+	width:42%;
 }
 
-h2.filter {
-	margin:36px 0 0 0;
-	-moz-box-shadow: none;
-	-webkit-box-shadow: none;
-	box-shadow: none;
+.filter input[type='submit'] {
+	background-color: rgba(255, 255, 255, 1);
+	line-height: 33px;
+	border:none;
+	font:inherit;
+	font-weight: 500;
+	color: #473d37;
+	text-align: center;
+	box-sizing:inherit;
+}
+
+.filter input[type='submit']:hover {
+	cursor: pointer;
+	background-color: rgba(255, 255, 255, .9);
+}
+
+.filter label:hover{
+	cursor: pointer;
+	background-color: rgba(255, 255, 255, .3);
 }
 
 /* ~~~~~~~~~~~~ */
@@ -386,6 +598,15 @@ h2.filter {
 
 .major img {
 	padding:0 0 12px 0;
+}
+
+/* ~~~~~ general css for arrows ~~~~~ */
+
+.leftArrow, .rightArrow, .arrowUp {
+	width: 0; 
+	height: 0;
+	display: inline-block;
+
 }
 
 @media screen and (max-width: 1175px) {

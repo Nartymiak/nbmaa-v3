@@ -24,7 +24,7 @@
          	// read the spread sheet file
          	$this->createTempFile();
 
-         	// create an database object from the spread sheet
+         	// create a database object from the spread sheet
          	$this->spreadSheetDatabase = $this->parseFile();
 
          	//add tuple objects to the database, selectively
@@ -321,17 +321,18 @@
      	
       	private function add($database) {
 
-      		// insertDB() and exists() take a filter array which is filled with strings representing
-      		// attributes in the table that can be diferent (or are not to be compared)
-      		$existFilter = array('ExhibitionReferenceNo','EventReferenceNo','ArtistReferenceNo', 'BodyContent');
-      		$insertFilter= array('ExhibitionReferenceNo','EventReferenceNo','ArtistReferenceNo', 'GalleryID', 'EmployeeID', 'DepartmentID');
-      		$artworkFilter = array('ArtworkReferenceNo');
-      		$eventTypeFilter = array('EventTypeID');
-      		$eventExistFilter = array('StartDate', 'EndDate', 'StartTime', 'EndTime', 'Canceled(bool)', 'Description','RegistrationFull(bool)');
-      		$eventInsertFilter = array('StartDate', 'EndDate', 'StartTime', 'EndTime', 'Canceled(bool)', 'RegistrationFull(bool)');
-
       		// loop through tuple objects
       		foreach($database->getTables() as $table){
+
+	      		// insertDB() and exists() take a filter array which is filled with strings representing
+	      		// attributes in the table that can be diferent (or are not to be compared)
+	      		$existFilter = array('ExhibitionReferenceNo','EventReferenceNo','ArtistReferenceNo', 'ReceptionReferenceNo', 'BodyContent');
+	      		$insertFilter= array('ExhibitionReferenceNo','EventReferenceNo','ArtistReferenceNo', 'ReceptionReferenceNo', 'GalleryID', 'EmployeeID', 'DepartmentID', 'CategoryID');
+	      		$artworkFilter = array('ArtworkReferenceNo');
+	      		$artworkExistFilter = array('ArtworkReferenceNo', 'Title');
+	      		$eventTypeFilter = array('EventTypeID');
+	      		$eventExistFilter = array('StartDate', 'EndDate', 'StartTime', 'EndTime', 'Canceled(bool)', 'Description','RegistrationFull(bool)');
+	      		$eventInsertFilter = array('StartDate', 'EndDate', 'StartTime', 'EndTime', 'Canceled(bool)', 'RegistrationFull(bool)');
 
       			if($table->getTableName()=='EVENT'){
       				$existFilter = array_merge($existFilter, $eventExistFilter);
@@ -339,7 +340,7 @@
       			}
 
       			if($table->getTableName()=='ARTWORK'){
-      				$existFilter =  array_merge($existFilter, $artworkFilter);
+      				$existFilter =  array_merge($existFilter, $artworkExistFilter);
       				$insertFilter = array_merge($insertFilter, $artworkFilter);
       			}
 
@@ -356,7 +357,7 @@
 	      				//echo "<h3>No Match found</h3>";
 	      			}
 	    			elseif ($id){
-	      				//echo "<br>exists, heres the id: ". $id." <br>";
+	      				echo "<br>exists, heres the id: ". $id." <br>";
 	      			}
 
 	      			$tuple->setPK($id);
@@ -378,7 +379,7 @@
       									'SPONSOR'	=> 	array('EVENT_SPONSORS'=>array('EventReferenceNo'), 'EXHIBITION_SPONSORS'=>array('ExhibitionReferenceNo')),
       									'EVENT'		=>	array('EVENT_ARTISTS'=>array('ArtistReferenceNo'), 'EVENT_DATE_TIMES'=>array('StartDate','EndDate','StartTime','EndTime'), 'EXHIBITION_EVENTS'=>array('ExhibitionReferenceNo')),
       									'CURATOR'	=> 	array('EXHIBITION_CURATORS'=>array('ExhibitionReferenceNo')),
-      									'RECEPTION' =>	array('EXHIBITION_RECEPETIONS'=>array('ExhibitionReferenceNo'))
+      									'RECEPTION' =>	array('EXHIBITION_RECEPTIONS'=>array('ExhibitionReferenceNo'))
       								);
 
       		// use this array to swap out spreadsheet column names with actual db attribute names
@@ -396,6 +397,8 @@
       				//if in the spread sheet you find a table name that matches that in the db reference tables array
       				if($table->getTableName()==$reference){
 
+      					echo "found match: " .$reference. "<br>";
+
       					// loop through each array to get the db table to write to
       					foreach($array as $refTableName=>$refTable){
 
@@ -406,30 +409,25 @@
 	      						// Branch here for EVENT_DATE_TIMES
 	      						if($refTableName == 'EVENT_DATE_TIMES'){
 
-	      							echo "working event date times<br>";
-
 									// loop through the attributes of each tuple
 		      						foreach($tuple->getTuple() as $attribute=>$data){
 
-		      							echo "attribute: " .$attribute. " data: " .$data. "<br>";
 		      							$tupleToDB['EventID']=$tuple->getPK();
+
 		      							//loop through each db reference tables array array to write to in case there are multiple columns of reference
 		      							foreach($refTable as $refAttribute){
 
-		      								echo "refTable: " .$refTable. " refAttribute: " .$refAttribute. "<br>";
 		      								// see if the attribute in the spreadsheet tuple matches one of the tuples in the tables we want to write to
-		      								var_dump($tupleToDB);
-		      								echo "<br><br><br>";
 		      								if($attribute==$refAttribute){
 
 		      									// if so create tuple to be passed to insert
 		      									$tupleToDB[$refAttribute]= $data;
-		      									echo "adding to DBTuple: " .$data. "<br>";
+
 		      								}
 		      							}
 							      	}
 		      						// write to the db
-		      						echo "<br><br><br>";
+
 							      	$id=$this->insertDb($refTableName, $tupleToDB, "", $isRefTable=TRUE);
 
 							    // IF NOT EVENT_DATE_TIMES
@@ -448,6 +446,7 @@
 						      									$tuple->getPKAttribute()=>$tuple->getPK()
 						      								);
 						      					// write to the db
+
 						      					$id=$this->insertDb($refTableName, $DBtuple, $tuple->getPKAttribute(), $isRefTable=TRUE);
 					      						//echo "<h3> inserted, heres id: " .$id. "</h3>";
 
@@ -505,7 +504,7 @@
       					$where .= $attribute.' IS NULL AND ';
 
       				}else{
-      					$where .= $attribute. ' = \'' .$data. '\' AND ';
+      					$where .= $attribute. '= \'' .$data. '\' AND ';
       				}
 	      			
       			}
@@ -519,10 +518,8 @@
 	      				FROM '  .$tableName. '
 	      				WHERE ' .$where;
 
-	      	//echo "<h4>query: " .$query. "</h4>";
 	      	// do the query
 	      	$result = get_table($query);
-
 
 	      	// check result and return
 			if(empty($result)){
@@ -590,10 +587,11 @@
 					$query = 'INSERT INTO ' .$tableName. ' ( ' .$attributeString. ')
 		      				  VALUES ( '.$valueString.' )';
 
+		      				  echo $query. "<br><br><br>";
+
 				}
 				// insert() returns the PK of the last inserted object.
 				$id = insert($query);
-				//echo "<p>query: " .$query. "</p>";
 
 				return $id;
 			}

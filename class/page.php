@@ -14,39 +14,104 @@
 				<!DOCTYPE html>
 				<head>
 					<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+
 					<title> NBMAA | <?php echo str_replace(array("\r", "\n"), '',$title); ?></title>
+					<!-- css -->
 					<link href="<? echo $GLOBALS['rootDirectory'] ?>/css/nbmaa3.css" rel="stylesheet" type="text/css" />
-					<link href='http://fonts.googleapis.com/css?family=Lato:100,400,700,400italic' rel='stylesheet' type='text/css'>
-					<script language="Javascript">
-					<!--
-								     	//-->
-					</script>
+					<!-- font -->
+					<link href='http://fonts.googleapis.com/css?family=Lato:100,400,700,100italic,400italic,700italic' rel='stylesheet' type='text/css'>
+					<!-- jquery -->
+					<script type="text/javascript" src="<?php echo $GLOBALS['rootDirectory']; ?>/js/jquery-1.11.1.js"></script>
 				</head>
 			<body>
 				<!--<div id="grid"></div>-->
 		<?
 		}
 
+		/** prints the nav header **/
 		protected function nav(){
 			
-			$logoFile = "nbmaa-spring-logo.jpg";
+			$logoFile = "nbmaa-white-logo.png";
+			$logoBGColor = "rgba(71, 61, 55, .7)";
+			
+			// filters in the calendar query
+			$filters = queryFilters();
+
 			?>
 			<header>
-				<div class="logo"><? echo $this->toImg("logos", $logoFile, "new britain museum of american art logo"); ?></div>
+				<div class="logo" style="background-color:<?php echo $logoBGColor ?>;"><? echo $this->toImg("logos", $logoFile, "new britain museum of american art logo"); ?></div>
 				<nav id="mainNav">
 					<a href="visit.html">VISIT</a>
-					<a href="exhibition.html">EXHIBITION</a>
-					<a href="calendar.html">CALENDAR</a>
+					<a href="exhibition.html">EXHIBITIONS</a>
+					
+					<!-- calendar link -->
+					<div class="menuItem">
+						<a href="http://artofwineandfood.org/nbmaa3/calendar/today">CALENDAR</a>
+						
+						<div class="dropDown">
+							<form action="http://artofwineandfood.org/nbmaa3/calendar/today" method="post">
+								<div class="left"><!-- place holder for under the logo --></div>
+								<div class="middle">
+									<div class="calendarWrapper">
+										<!-- javascript calendar -->
+										<a class="leftArrow"></a>
+										<div class="container">
+											<div class="threeCalendars">
+												<div class="oldCalendar">
+												</div>
+												<div class="calendar">
+												</div>
+												<div class="newCalendar">
+												</div>
+												<div class="clear"></div>
+											</div>
+										</div>
+										<a class="rightArrow"></a>
+										<div class="clear"></div>
+									</div>
+								</div>
+								<div class="right filter">
+									<?php 
+
+									// print the filters from the query
+									if(!$filters){
+										// handle error
+									} else {
+										foreach($filters as $filter){ 
+										?>
+											<label><input class="calInput" type="checkbox" name="filter[]" value="<?php echo $filter['CategoryID'] ?>"><?php echo $filter['Title'] ?></label>
+										<?php
+										}
+									}
+									?>
+										<label><input class="calInput" type="checkbox" name="filter[]" value="all">All</label>
+									
+									<input type="submit" value="Search" class="submit">
+									<div class="clear"></div>
+								</div>
+								<div class="clear"></div>
+							</form>
+						</div>
+					</div>
+					
 					<a href="education.html">EDUCATION</a>
 					<a href="support.html">SUPPORT US</a>
 					<a href="shop.html">SHOP</a>
 				</nav>
-				<h1>NEW BRITAIN MUSEUM OF AMERICAN ART</h1>
 			</header>
+			<h1>NEW BRITAIN MUSEUM OF AMERICAN ART</h1>
 		<?
 		}
 
+		/** prints the footer **/
 		protected function HTMLfooter(){
+		
+			// get the year and the month
+			if(!$_POST['month']) {
+				List($y,$m) = explode(" ", date("Y m"));
+			} else {
+				List($m,$y) = explode("-", $_POST['month']);
+			}
 		?>
 			<footer>
 				<div class="wrapper">
@@ -69,11 +134,30 @@
 					<div class="clear"></clear>
 				</div>
 			</footer>
+			<script type="text/javascript" src="<?php echo $GLOBALS['rootDirectory']; ?>/js/menu.js"></script>
+			<script type="text/javascript" src="<?php echo $GLOBALS['rootDirectory']; ?>/js/calendar.js"></script>
+			<script type="text/javascript" src="<?php echo $GLOBALS['rootDirectory']; ?>/js/color.js"></script>
+			<script type="text/javascript">
+
+				$(document).ready(function() { 
+
+					menu(); // menu.js
+					makeCalendar(<?php echo $y. ", " .$m ?>); // calendar.js
+					logo();
+
+					$(document.getElementById("logoBg")).load(function() {
+						getAverageRGB(document.getElementById("logoBg"));
+					});
+
+				});
+
+			</script>
 		</body>
 	</html>
 		<?
 		}
 
+		/** prints cta in the middle of the page **/
 		protected function cta($link){ ?>
 			<div class="cta">
 				<? 	echo "<a href=" .$link. "\">" ;
@@ -84,6 +168,13 @@
 		<? 	echo "\r\n";
 		}
 
+		/** 
+		* creates a string representing an img element
+		* @param 	dir 		The directory of the image. It has to be found in the images directory.
+		* @param 	fileName 	The filename of the image
+		* @param 	alt 		The data for alt attribute
+		* @return 	String 		String representing an img element
+		*/
 		protected function toImg($dir, $fileName, $alt){
 
 			if($alt=NULL || $alt=""){	$alt = "The New Britain Museum of American Art";}
@@ -116,118 +207,239 @@
 			return $artistName;
 		}
 
-		protected function buildDateRange(){
-			
-			$startDate = date("Y-m-01");
-			$endDate = date("Y-m-t");
 
-			$dateArray = array($startDate, $endDate);
-
-			return $dateArray;
-		}
 	}
 
 
 	class CalendarPage extends Page{
 
 		private $imagePath;
-		private $calendarElements = array();
+		private $calendarEvents = array();
+		private $currentExhibitons = array();
+		private $events;
 
 		function __construct($url){
 
-
 			//first, query the db
-			$result = "null";
+			$result = queryCalendarPageEvents();
 			$this->HTMLheader($url);
 			$this->makeHTMLElements($result);
 			$this->makeBody();
 			$this->HTMLfooter();
+
 		}
 
 		protected function makeBody(){ // CALENDAR PAGE function
+	
 			//full-width background
-			if($this->imagePath){ 					echo "	<div id=\"background\" style=\"background-image:url('" .$this->imagePath. "');\"></div>\r\n" ;}
+if($this->imagePath){ 					echo "	<div id=\"background\" style=\"background-image:url('" .$this->imagePath. "');\"></div>\r\n
+												<img style=\"display:none;\" id=\"logoBg\" src=\"" .$this->imagePath. "?".microtime(). "\">\r\n" ;
+			}
 
 			// wrapper
-			echo "		<div class=\"wrapper\">\r\n";
-			
+			echo "		<div class=\"wrapper\" id=\"calendar\">\r\n";
+
 			// header section
 			$this->nav();
+			
+			// main section
+			echo "		<div class=\"mainSection\">\r\n";
 
-			// calendar elements
-			if(!$this->calendarElements){
+			// left column
+			echo "		<div class=\"leftColumn\">\r\n";
+			echo "		<h2>CURRENT EXHIBITIONS</h2>";
+			// print current exhibitions
+			if(!$this->currentExhibitons){
 				//handle error
 			} else {
 
-				foreach ($this->calendarElements as $element) {
+				// loop through the array to access the elements
+				foreach ($this->currentExhibitons as $element) {
 						
 					echo $element;
+				}
+			}
+			
+			echo "		</div><!-- end left -->\r\n";
+
+			//right column
+			echo "		<div class=\"rightColumn\">\r\n";
+			echo "		<h2>EVENTS</h2>";
+			
+			// print calendar events
+			if(!$this->calendarEvents){
+				//handle error
+			} else {
+
+				// loop through the array to access the elements
+				foreach ($this->calendarEvents as $element) {
 						
+					echo $element;
 				}
 			}
 
+
+			echo "		</div><!-- end right -->\r\n";
+			echo "		<div class=\"clear\"></div>";
+			echo "		</div><!-- end mainSection -->\r\n";
 			echo "		</div><!-- end wrapper -->\r\n";
 
-			$this->makeXMLHttpRequestSection();
+			//$this->makeXMLHttpRequestSection();
 		}
 
-		protected function makeHTMLElements($result){
+		protected function makeHTMLElements($result){ // CALENDAR PAGE function
 
-			$eventDateTimes;
-			$events;
+
+
+			$events = array();
+			$exhibitions = array();
 			$receptions;
 			$classes;
+			$firstExhibitionImage;
+			// query for exhibitions
+			$exhibitionsResult = queryCalendarPageExhibitions();
+			$todaysDate = date('Y-m-d');
 
-			if(!$result){
+			// build the events array by querrying the EVENT table using
+			// EVENT_DATE_TIMES array for reference
+			if($result == null){
 				// handle error
+
 			} else {
 
-				// get the first of the month date and last of the month date
-				$dateRange = $this->buildDateRange();
-			
-				// get all the eventDateTimes in the range of dates
-				if($eventDateTimes = queryCalendarByRange('EVENT_DATE_TIMES', 'StartDate', $dateRange[0], $dateRange[1] )){
-				
-					// stores events
-					$events=array();
-					// store previous eventID to avoid duplicates
-					$temp;
+				$tempDate;
 
-					// loop through eventDateTimes to query events by eventID
-					foreach($eventDateTimes as $tuple){
+				// use these three variables to set up which element to show image
+				$nextImage = false;
+				$doNextImage = false;
+				$alreadyHasImage = array();
 
-						// check if its been querried already
-						if($temp != $tuple['EventID']){
+				foreach($result as $tuple){
 
-							//execute the query and add result to the events array
-							$ref=queryReference('EVENT', 'EventID', $tuple['EventID']);
-							$ref=$ref[0];
-							if(array_push($events, $ref)){
-								//everything is good!
-							}
+					$class = "";
+					$topImg = "";
+					
+
+					if($doNextImage == true && !in_array($tuple['ImgFilePath'], $alreadyHasImage)){
+						$nextImage = true;
+						$doNextImage = false;
+					}
+
+					//print the date for each section
+					if($tuple['StartDate'] != $tempDate){
+
+						List($y,$m,$d) = explode("-",$tuple['StartDate']);
+						$timestamp = mktime(0,0,0,$m,$d,$y);
+
+						// check to see if the date section = today's date
+						if($tuple['StartDate']==$todaysDate) {
+							// write this instead of actual date
+							array_push($this->calendarEvents, "<div class=\"date\"><h5>Today's Events</h5></div>");
+
+						} else {
+
+							array_push($this->calendarEvents, "<div class=\"date\"><h5>" .date("F d, Y", $timestamp). "</h5></div>");
+
 						}
-						//store the id for checking duplicate
-						$temp = $tuple['EventID'];
-					}
-				}
+						$tempDate = $tuple['StartDate'];
 
-				if(!$events){
-					// handle error
+						// check to see if image hasn't been used
+						if(!in_array($tuple['ImgFilePath'], $alreadyHasImage)) {
+							
+							$nextImage = true;
+
+						// if it has, print the next one
+						} else {
+
+							$doNextImage = true;
+						}
+					}
+
+
+					// if its the first in the section and has not been used or the first one has already been used
+					if( $tuple['ImgFilePath'] && $nextImage == true){	
+						$topImg = $this->toImg("event-page-images", $tuple['ImgFilePath'], $tuple['Title']); 
+						$class = "showImg";
+						array_push($alreadyHasImage, $tuple['ImgFilePath']);
+					
+					// if for some reason there is no image file path
+					} else if(!$tuple['ImgFilePath'] && $nextImage == true){
+						$doNextImage = true;
+					}
+
+					// print each element
+					array_push($this->calendarEvents, "
+
+						<div class=\"calendarEventsWrapper\">
+							<a href=\"" .$GLOBALS['rootDirectory']. "/event/" .$tuple['Link']. "\">
+								<div class=\"calendarElement ".$class."\">
+									".$topImg."
+									<h3>" .$tuple['EventTitle']. "</h3>
+									<h4>" .$tuple['TypeTitle']. "</h4>
+									<p>" .date("g:i a", strtotime($tuple['StartTime'])). " to " .date("g:i a", strtotime($tuple['EndTime'])). "</p>
+									<p>" .shortenText($tuple['Description']). "</p>
+								</div>
+							</a>
+						</div>
+					");
+
+					$nextImage = false;
+				}	
+
+			}
+
+			if(!$exhibitionsResult[0]){
+				//handle error
+
+			} else {
+
+				$firstExhibitionImage = queryReference('ARTWORK', 'ArtworkID', $exhibitionsResult[0]['ArtworkReferenceNo']);
+				// build the html img element for the main image
+
+				if(!$firstExhibitionImage[0]['ImgFilePath']){
+				// handle error
 				} else {
+					//create HTML alt attribute text
+					if($firstExhibitionImage[0]['Title']){	$alt = $firstExhibitionImage[0]['Title'];}
+					//create image path for background
+					$this->imagePath = $GLOBALS['rootDirectory']. "/images/exhibition-page-images/" .$firstExhibitionImage[0]['ImgFilePath'];
+				}
+			}
 
-					foreach($eventDateTimes as $eventDateTime){
 
-						$event = getElementByID($events, "EventID", $eventDateTime['EventID']);
+			// build the exhibitions array
+			if(!$exhibitionsResult){
+				// handle error
 
-						array_push($this->calendarElements, "
+			} else {
 
-							<div class=\"calendarElement\">
-								<h2>" .$event['Title']. "</h2>
-								<p>" .$eventDateTime['StartTime']. " " .$eventDateTime['EndTime']. "</p>
-								<p>" .$event['Description']. "</p>
-							</div>
-						");
+				$count=0;
+
+				foreach($exhibitionsResult as $tuple){
+
+					$class = "";
+					$topImg = "";
+
+					//if its the first element, add the .top class and create the image element
+					if($count==0){ 						
+						$class = "showImg";
+						$topImg = $this->toImg("exhibition-page-images", $firstExhibitionImage[0]['ImgFilePath'], $tuple['Title']);
 					}
+
+					array_push($this->currentExhibitons, "
+				
+						<div class=\"calendarEventsWrapper\">
+							<a href=\"" .$GLOBALS['rootDirectory']. "/exhibition/" .$tuple['Link']. "\">
+								<div class=\"calendarElement ".$class."\">
+									".$topImg."
+									<h3>" .$tuple['Title']. "</h3>
+									<p>" .shortenText($tuple['BodyContent']). "</p>
+								</div>
+							</a>
+						</div>
+					");
+				
+				$count++;	
 				}
 			}
 		}
@@ -267,10 +479,12 @@
 
 		protected function makeBody(){ // EVENT PAGE function
 			//full-width background
-			if($this->imagePath){ 					echo "	<div id=\"background\" style=\"background-image:url('" .$this->imagePath. "');\"></div>\r\n" ;}
+			if($this->imagePath){ 					echo "	<div id=\"background\" style=\"background-image:url('" .$this->imagePath. "');\"></div>\r\n
+													     	<img style=\"display:none;\" id=\"logoBg\" src=\"" .$this->imagePath. "?".microtime(). "\">\r\n" ;
+			}
 
 			// wrapper
-			echo "		<div class=\"wrapper\">\r\n";
+			echo "		<div class=\"wrapper\" id=\"event\">\r\n";
 			
 			// header section
 			$this->nav();
@@ -406,10 +620,12 @@
 		protected function makeBody(){
 
 			//full-width background
-			if($this->imagePath){ 					echo "	<div id=\"background\" style=\"background-image:url('" .$this->imagePath. "');\"></div>\r\n" ;}
+			if($this->imagePath){ 					echo "	<div id=\"background\" style=\"background-image:url('" .$this->imagePath. "');\"></div>\r\n
+													     	<img style=\"display:none;\" id=\"logoBg\" src=\"" .$this->imagePath. "?".microtime(). "\">\r\n" ;
+			}
 
 			// wrapper
-			echo "		<div class=\"wrapper\">\r\n";
+			echo "		<div class=\"wrapper\" id=\"exhibition\">\r\n";
 			
 			// header section
 			$this->nav();
