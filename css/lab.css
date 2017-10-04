@@ -1,0 +1,239 @@
+/* CSS designed by Nick Artymiak */
+
+#grid {
+
+	display:none;
+}
+
+/* ~~~~~ used by calendar-subNav.js ~~~~ */
+
+.keywords ul li ul {
+	display: none;
+}
+
+.rotateArrow {
+    -moz-transition: all .1s linear;
+    -webkit-transition: all .1s linear;
+    transition: all .1s linear;
+}
+
+.rotateArrow.down {
+    -ms-transform:rotate(180deg);
+    -moz-transform:rotate(180deg);
+    -webkit-transform:rotate(180deg);
+    transform:rotate(180deg);
+}
+
+#calendar .rightColumn {
+	width:46.107784431%;
+	float: left;
+}
+
+#sideNavCalendar {
+	width:240px;
+	height:270px;
+	overflow-x:hidden;
+}
+
+.calendar {
+	height:270px;
+}
+
+/* can add this to #exhibition .rightColumn, #event .rightColumn, #static .rightColumn, #classroom .rightColumn, #lobby .rightColumn
+/* on nbmaa3.css */
+
+#calendar .rightColumn {
+	width:52.694610778%;
+	background-color:#f5f5f5;
+	float:left;
+	padding: 35px 1.19760479% 0 1.19760479%;
+}
+
+/* ~~~~~ Calendar Nav ~~~~~~~ */
+
+#calendar .subNav {
+	padding: 0;
+}
+
+.calendarWrapper {
+	width:100%;
+}
+
+.calendar, .oldCalendar, .newCalendar  {
+	width:240px;
+	overflow:auto;
+	font-size: 16px;
+	line-height: 33px;
+	margin:0;
+	position: relative;
+	float:left;
+
+}
+
+#noEvents {
+	text-align: center;
+	padding:0 0 35px 0;
+}
+
+.calSquare {
+	float:left;
+	width:33px;
+	height:33px;
+	vertical-align: middle;
+	text-align: center;
+}
+
+.keyword label:hover, #selectMonth:hover{
+	cursor: pointer;
+	background-color: rgba(0, 0, 0, .3);
+}
+
+.calendar .weekday {
+	background-color: rgba(255, 255, 255, .05);
+}
+
+.calendar .filled {
+	background-color: rgba(255, 255, 255, .0);
+}
+
+.calendarWrapper .container {
+	float:left;
+	overflow: hidden;
+	display: inline-block;
+}
+
+.calendarWrapper .leftArrow, .calendarWrapper .rightArrow {
+	display: inline;
+}
+
+.menuItem:hover, .menuItem .leftArrow:hover, .menuItem .rightArrow:hover {
+	cursor:pointer;
+}
+
+.calendarHeader {
+	text-align: center;
+}
+
+h2, #calendar .rightColumn h3, #calendar .leftColumn h3, #lobby .rightColumn h3, #lobby .leftColumn h3 {
+    font-size: 18px;
+    line-height: 1.4em;
+}
+
+.timeDate {
+	font-size:14px;
+}
+
+.calendar h5, .oldCalendar h5 , .newCalendar h5{
+	display: inline-block;
+	width:200px;
+	text-align: center;
+	border-bottom: 1px solid #b8b8b8;
+}
+}
+
+.calSquare input[type='checkbox'], .keyword input[type='checkbox']  {
+	display: none;
+}
+
+.threeCalendars {
+	position: relative;
+}
+
+.parentKeyword {
+	border-bottom: 1px solid #b8b8b8;
+    padding: 30px 0 7px 04.444444444%;
+    margin: 0 28.888888888% 15px 0;
+    width: 95.5%;
+    /* un comment to match only 2 columns...
+    width: 66.666666666%; */
+}
+
+/*~~~ font awesome icon ~~~*/
+.parentKeyword i.fa {
+	color:rgba(0, 0, 0, .5);
+}
+
+.keyword {
+	display: block;
+    padding: 10px 0 10px 04.444444444%;
+    -moz-border-top-left-radius: 2px;
+    -webkit-border-top-left-radius: 2px;
+    border-top-left-radius: 2px;
+    -khtml-border-top-left-radius: 2px;
+    -moz-border-top-right-radius: 2px;
+    -webkit-border-top-right-radius: 2px;
+    border-top-right-radius: 2px;
+    -khtml-border-top-right-radius: 2px;
+}
+
+.keyword {
+    width: inherit;
+    line-height: inherit;
+    margin: 0 0 0 0;
+}
+
+.calendar .selected, .keywords .selected {
+	background-color: rgba(0, 0, 0, .1);
+}
+
+.calendar .filled:hover, .keyword:hover {
+	background-color: rgba(0, 0, 0, .15);
+	cursor:pointer;
+}
+
+.calendar .month:hover, .parentKeyword {
+	color:rgba(0, 0, 0, .7);
+	cursor:pointer;
+}
+
+.keyword label, .keyword input[type='submit'], #selectMonth {
+	display:block;
+	background-color: rgba(255, 255, 255, .1);
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	border-radius: 2px; /* future proofing */
+	-khtml-border-radius: 2px; /* for old Konqueror browsers */
+	margin:0 12px 12px 0;
+	padding:4px;
+	float:left;
+	font-size: 14px;
+	line-height: 1.2em;
+}
+
+#selectMonth {
+	float:none;
+	margin:0 0 0 27px;
+	text-align: center;
+	width:232px;
+}
+
+.keyword input[type='submit'] {
+	background-color: rgba(255, 255, 255, 1);
+	line-height: 33px;
+	border:none;
+	font:inherit;
+	font-weight: 500;
+	color: #473d37;
+	text-align: center;
+	box-sizing:inherit;
+}
+
+.keyword input[type='submit']:hover {
+	cursor: pointer;
+	background-color: rgba(255, 255, 255, .9);
+}
+
+
+.keyword #calendarGo label{
+	display: none;
+	background-color: rgba(71, 222, 142, 1);
+	float: none;
+	clear: both;
+	text-align: center;
+	margin:0;
+}
+
+#calendar .date {
+	background-color: rgba(255, 255, 255, 1);
+	position: relative;
+}

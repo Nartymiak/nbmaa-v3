@@ -134,10 +134,16 @@
 
 		calendar(y, m-1, 'oldCalendar');
 		calendar(y, m, 'calendar');
-		calendar(y, m+1, 'newCalendar');
+		if(m==12){
+			calendar(y+1, 1, 'newCalendar');
+			monthOnView = 0;
+			yearOnView = y+1;
+		} else {
+			calendar(y, m+1, 'newCalendar');
+			monthOnView = m;
+			yearOnView = y;
+		}
 
-		monthOnView = m;
-		yearOnView = y;
 
 		if(pageID == 'calendar'){
 			$('.threeCalendars').on("click",'.calSquare .calInput', function(){

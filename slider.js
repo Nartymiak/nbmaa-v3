@@ -10,7 +10,6 @@
 			//$('.slide').css('height', height);
 
 			$('.slider img').eq(0).css('opacity', 1);
-			$('footer').css('top', '120vh');
 			$('#triggerWindow').css({ 
 				'height': height-71,
 			});
@@ -21,7 +20,13 @@
 			
 			var slider = function() {
 
+				// change the logo bg color when the slide changes
+				getAverageRGB(document.getElementById("logoBg"+sliderIndex));
+
+				$('#slider').css("height", (window.innerHeight + $('footer').outerHeight()));
 				$('.slide').css("z-index", 0);
+				//$('#slider .info').css("top", (window.innerHeight - $('#slider .info').outerHeight() - 20))
+				//$('footer').css("top", window.innerHeight);
 				$('.slide').eq(sliderIndex)
 				.css("z-index", 1)
 				.animate({
@@ -37,6 +42,7 @@
 				else {
 					sliderIndex++;
 				}
+
 				setTimeout( slider, 5000);
 			
 			}

@@ -26,7 +26,7 @@
 				$('#slider').css("height", (window.innerHeight + $('footer').outerHeight()));
 				$('.slide').css("z-index", 0);
 				//$('#slider .info').css("top", (window.innerHeight - $('#slider .info').outerHeight() - 20))
-				$('footer').css("top", window.innerHeight);
+				//$('footer').css("top", window.innerHeight);
 				$('.slide').eq(sliderIndex)
 				.css("z-index", 1)
 				.animate({

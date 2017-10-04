@@ -22,7 +22,7 @@
 
 					<title id="<?php echo str_replace(array("\r", "\n"), '',$title); ?>"> NBMAA | <?php echo str_replace(array("\r", "\n"), '',$title); ?></title>
 					<!-- css -->
-							<link href="<? echo $GLOBALS['rootDirectory'] ?>/css/nbmaa3.css" rel="stylesheet" type="text/css" />
+							<link href="<? echo $GLOBALS['rootDirectory'] ?>/css/nbmaa3.css?v=1.1" rel="stylesheet" type="text/css" />
 					<!-- font -->
 					<link href='http://fonts.googleapis.com/css?family=Lato:100,400,700,100italic,400italic,700italic' rel='stylesheet' type='text/css'>
 					<link rel="stylesheet" href="<? echo $GLOBALS['rootDirectory'] ?>/css/font-awesome.min.css">
@@ -276,6 +276,7 @@
 									<a href="<?php echo $GLOBALS['rootDirectory']; ?>/calendar/Today"><label>All</label></a>
 									<?php if($this->pageID == 'calendar'){ echo "<a id=\"calendarGo\"><label>Go</label></a>"; } ?>
 								<div class="clear"></div>
+								<a style="text-decoration:underline;" href="http://www.nbmaa.org/pdfs/nbmaa-calendar-winter-2016.pdf" target="_blank">Download Quarterly Calendar</a>
 							</div>
 							<div class="clear"></div>
 						</div>
@@ -375,9 +376,9 @@
 				<div id="menuButton">MENU <i class="fa fa-bars"></i></div>
 			</div>
 			</header>
-			<!-- uncomment to add special nav announce across top
+			<!-- comment out to hide special nav announce across top 
 			<div id="navAnnouncement">
-				<p><strong>Special notice:</strong> Today, October 15, 2015, we are closed at 2 p.m.</p>
+				<p><strong>Holiday Hours:</strong> New Year's Eve - close at 5 p.m. / Caf&eacute; close at 1 p.m., New Year's Day - closed</p>
 			</div>
 			-->
 			<h1 itemprop="name">NEW BRITAIN MUSEUM OF AMERICAN ART</h1>
@@ -438,7 +439,6 @@
 						makeCalendar(<?php echo $y. ", " .$m ?>); // calendar.js
 						logo();
 						adjure();
-						<?php if($this->pageID == 'index'){ echo "slider();"; } ?>
 
 						$(document.getElementById("logoBg")).load(function() {
 
@@ -466,7 +466,7 @@
 		protected function cta($link){ ?>
 			<div class="cta">
 				<? 	echo "<a href=\"" .$link. "\">" ;
-					echo $this->toImg("cta-images", "cta-expansion.jpg", "nbmaa-cta", NULL);
+					echo $this->toImg("cta-images", "cta-ctArtTrailPass.jpg", "nbmaa-cta", NULL);
 					echo "</a>\r\n"; 
 				?>
 			</div>
@@ -712,7 +712,7 @@
 			echo "		</div><!-- end mainSection -->\r\n";
 
 			// call to action (CTA) section
-			$this->cta("http://www.nbmaa.org/expansion/html/support.php");
+			$this->cta("http://ctarttrail.org/");
 			echo "		</div><!-- end wrapper -->\r\n";
 
 		}
@@ -883,7 +883,7 @@
 			echo "		<div class=\"clear\"></div>";
 			echo "		</div><!-- end mainSection -->\r\n";
 			// call to action (CTA) section
-			$this->cta("http://www.nbmaa.org/expansion/html/support.php");
+			$this->cta("http://ctarttrail.org/");
 			echo "		</div><!-- end wrapper -->\r\n";
 
 		}
@@ -1038,7 +1038,7 @@
 			echo "		<div class=\"clear\"></div>";
 			echo "		</div><!-- end mainSection -->\r\n";
 			// call to action (CTA) section
-			$this->cta("http://www.nbmaa.org/expansion/html/support.php");
+			$this->cta("http://ctarttrail.org/");
 			echo "		</div><!-- end wrapper -->\r\n";
 
 			//$this->makeXMLHttpRequestSection();
@@ -1264,7 +1264,7 @@
 			echo "		</div><!-- end mainSection -->\r\n";
 
 			// call to action (CTA) section
-			$this->cta("http://www.nbmaa.org/expansion/html/support.php");
+			$this->cta("http://ctarttrail.org/");
 			echo "		</div><!-- end wrapper -->\r\n";
 
 
@@ -1327,7 +1327,6 @@
 					//create image path for background
 					$this->imagePath = $GLOBALS['rootDirectory']. "/images/classroom-page-images/" .$result['ImgFilePath'];
 
-
 				}
 
 			}
@@ -1371,10 +1370,17 @@
 					if($event['Link']){ 
 						echo		"<a href=\"".$GLOBALS['rootDirectory']. "/event/" .$event['Link']. "\">\r\n"; 
 						echo		"<div class=\"calendarElement\">";
+						
 						if($event['EventTitle']){ 			echo 	"<h3>" .$event['EventTitle']. "</h3>\r\n"; }
-						if($event['StartDate']){			echo 	"<p>Starts: " .date("F d, Y", strtotime($event['StartDate'])). "</p>\r\n"; }
+						if($event['StartDate']){
+							if(strtotime(date('Y-m-d')) > strtotime($event['StartDate'])){
+								echo 	"<p>Starts: " .date("F d, Y", strtotime($event['StartDate'])). "</p>\r\n";
+							} else {
+								echo 	"<p>Next class: " .date("F d, Y", strtotime($event['StartDate'])). "</p>\r\n"; 
+							}
+						}
 						if($event['RegistrationEndDate']){	echo 	"<p class=\"registration\">Preregistration ends: " .date("F d, Y", strtotime($event['RegistrationEndDate'])). "</p>\r\n"; }
-							else {							echo 	"<p class=\"registration\">Preregistration not required</p>";}
+							else {							echo 	"<p class=\"registration\">Preregistration not required</p>"; }
 						if($event['StartDate']){			echo 	"<div class=\"startDate\">" .$event['StartDate']. "</div>\r\n"; }
 						echo 	"</div>\r\n
 								</a>\r\n";
@@ -1472,7 +1478,7 @@
 			echo "		</div><!-- end mainSection -->\r\n";
 
 			// call to action (CTA) section
-			$this->cta("http://www.nbmaa.org/expansion/html/support.php");
+			$this->cta("http://ctarttrail.org/");
 			echo "		</div><!-- end wrapper -->\r\n";
 			
 		}
@@ -1637,7 +1643,7 @@
 			echo "		<div id=\"about\">";
 			if($this->title) {						echo "		<h2>" .$this->title. "</h2>\r\n"; } 
 			if($this->startDate && $this->endDate){ echo "		<p>" .$this->startDate. "&ndash;" .$this->endDate. "</p>\r\n";}
-			if($this->gallery) {					echo "		<p>" .$this->gallery. "</p>\r\n";}
+			if($this->gallery) {					echo "		<p class=\"gallery\">" .$this->gallery. "</p>\r\n";}
 			if($this->primaryImage) { 				echo "		" .$this->primaryImage.  "\r\n";}
 			if($this->tombstone) {					echo "		<p class=\"tombstone\">" .$this->tombstone. "</p>\r\n";}
 			if($this->bodyContent) {				echo "		<div class=\"bodyContent\">" .$this->bodyContent. "		</div>\r\n";}
@@ -1709,7 +1715,7 @@
 			echo "		</div><!-- end mainSection -->\r\n";
 
 			// call to action (CTA) section
-			$this->cta("http://www.nbmaa.org/expansion/html/support.php");
+			$this->cta("http://ctarttrail.org/");
 			echo "		</div><!-- end wrapper -->\r\n";
 		}
 
@@ -1957,44 +1963,34 @@
 
 		protected function makeSingleSlide(){
 			?>
-				<div id="opening-announcement">
-					<div id="openingContainer">
-						<div id="messageOne"><h2>Now Open: Art &amp; Education Building</h2></div>
-						<div id="messageTwo"><h3>Seven new galleries and three new art studios</h3></div>
-						<div id="messageThree">
-							<p><span style="font-weight:700;">Current Exhibitions</span><br><a href="http://www.nbmaa.org/lobby/current">Learn more</a></p>
-							<p><span style="font-weight:700;">Nurture Through Art</span><br><a href="http://www.nbmaa.org/classroom/youth-studio-classes">Learn more</a></p>
-							<div class="clear"></div>
+				<!-- logo bg -->
+				<img style="display:none;" id="logoBg" src="http://www.nbmaa.org/images/front-page-images/janet-lage-trashed-dyslexic-love.jpg?<?php  echo microtime() ?>">
+
+				<div id="communityDayNutcracker">
+					<div class="wrapper">
+						
+						<div id="communityDayNutcrackerText">
+							<p>Panel Discussion</p>
+							<h3>An Evening With... Director of Five Points Gallery Judith McElhone</h3>
+							<p style="margin-top:10px;">Thursday, Feb. 11 | 5:30-8:00 p.m.</p>
+							<a id="communityDayButton" href="http://www.nbmaa.org/event/panel-discussion-with-director-of-five-points-gallery-judith-mcelhone">Find out more</a>
+							<div id="communityDayNutcrackerEvent1">
+								<p>Wed@1</p>
+								<h3>Nor’Easter Gallery Talk with Exhibiting Artists</h3>
+								<p>Jan. 13, Jan.20, &amp; Jan. 28</p>
+							</div>
+							<a id="communityDayButton" href="http://www.nbmaa.org/event/noreaster-gallery-talk-with-exhibiting-artists">Find out more</a>
+							<p style="font-size:.7em;padding:0 8px 0 0;border-top: 1px solid #ffffff;">Background artwork: First place winner: Janet Lage, <i>Trashed-Dyslexic Love,</i> Oil, graphite, ink on linen, 22 x 30 in.</p>
 						</div>
+						
 					</div>
-
-					<div id="singleSlide" style="background-image:url('images/front-page-images/nbmaa-art-and-education-opening.jpg');">
-
-						<img style="display:none;" id="logoBg" src="images/front-page-images/nbmaa-art-and-education-opening.jpg?<?php  echo microtime() ?>">
 				</div>
+
 				<script>
+
 					$(document).ready(function() { 
-						var delay = 1500;
-						var leftOffset = $('#header-content').offset().left;
-						var buttonWidth = $('#messageButton').outerWidth(true);
-						var bodyWidth = $('#header-content').width();
-						var pOffset = $()
 
-						setTimeout(function() {
-							$('#messageOne').animate({ left: leftOffset, opacity: 1 }, {duration: 1600, easing: 'easeInExpo'});
-						}, delay * .5);
-
-						setTimeout(function() {
-							$('#messageTwo').animate({ left: leftOffset, opacity: 1 }, {duration: 2000, easing: 'easeInExpo'});
-						}, delay * 1.45);
-
-						setTimeout(function() {
-							$('#messageThree').animate({ left: leftOffset, opacity: 1 }, {duration: 4000, easing: 'easeInExpo'});
-						}, delay * 1.45);
-
-						setTimeout(function() {
-							$('#messageButton').animate({ left: bodyWidth + leftOffset - buttonWidth, opacity: 1 }, {duration: 2000, easing: 'easeOutElastic'});
-						}, delay * 3);
+						$('footer').css('top', 0);
 
 					});
 

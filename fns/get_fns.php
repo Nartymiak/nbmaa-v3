@@ -185,7 +185,7 @@
                                             E.ImgFilePath, ImgCaption, E.Link, K.Word as TypeTitle, E.OutsideLink
                                   FROM      EVENT_DATE_TIMES ED, EVENT E, KEYWORD K
                                   WHERE     E.EventTypeID = :link AND E.EventTypeID = K.KeywordID AND 
-                                            ED.EventID = E.EventID AND ED.StartDate > :startDate 
+                                            ED.EventID = E.EventID AND ED.StartDate > :startDate AND E.Canceled IS NOT TRUE
                                   GROUP BY  E.Title ORDER BY ED.StartDate"); 
 
     $statement->bindValue(":link", $url, PDO::PARAM_STR);
@@ -379,7 +379,7 @@
     // today's date
     $today = date("Y-m-d");
     // subtract one month, so it displays previous scheduled events as well
-    $date = date("Y-m-d", strtotime($today. "-1 month"));
+    $date = date("Y-m-d", strtotime($today. "-15 days"));
 
     $sql = 'SELECT * FROM EVENT_DATE_TIMES WHERE EventID = :value AND StartDate >= :date ORDER BY StartDate ASC';
 

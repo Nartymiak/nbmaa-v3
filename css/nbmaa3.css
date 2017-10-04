@@ -259,9 +259,21 @@ body {
 }
 
 #calendar #navAnnouncement {
-	position: fixed;
+	position: absolute;
 	top:71px;
 }
+
+#index #navAnnouncement {
+	position: absolute;
+	top:71px;
+	max-width: 100%;
+}
+
+#index #navAnnouncement p {
+	max-width: 1002px;
+	margin:0 auto;
+}
+
 
 #mainNav{ 
 	margin:0 0 0 28.143712574%;
@@ -642,6 +654,10 @@ a.classroom-button{
 	padding:10px 0 0 0;
 }
 
+#exhibition p.gallery {
+	margin:0 0 14px 0;
+}
+
 .rightColumn p.tombstone {
 	padding: 0 0 10px 0;
 }
@@ -788,6 +804,177 @@ a.classroom-button{
 	z-index: 1000;
 	margin:0 auto;
 }
+
+/* ~~~~~ custom index page css ~~~~~ */
+
+#communityDayNutcracker {
+	width:100%;
+	height:90vh;
+	background-image: url('http://www.nbmaa.org/images/front-page-images/janet-lage-trashed-dyslexic-love.jpg');
+	background-position: center top;
+	background-size: cover;
+	background-repeat: no-repeat;
+}
+
+#communityDayNutcracker a {
+	text-decoration: none;
+}
+
+#communityDayNutcrackerText {
+	position: relative;
+	color:white;
+	width: 400px;
+	max-width: 95%;
+	margin:0 auto;
+	top:38vh;
+}
+
+#communityDayNutcrackerText p {
+	font-size:1em;
+	line-height:1.3em;
+	margin-top:4px;
+}
+
+#communityDayNutcrackerText h2 {
+	font-size:4.7em;
+	line-height:1em;
+}
+
+#communityDayNutcrackerEvent1 {
+	margin:40px 0 0 0;
+}
+
+#communityDayNutcrackerEvent1 h3, #communityDayNutcrackerText h3 {
+	font-size:2em;
+}
+
+#communityDayNutcrackerEvent2 {
+	margin:20px 0 0 0;
+	padding:0 0 8px 0;
+	border-bottom: 1px solid #ffffff;
+}
+
+#communityDayNutcrackerEvent2 h3 {
+	font-size:1.5em;
+}
+
+#communityDayButton {
+	background-color: rgba(288, 288, 288, .9);
+	padding:8px;
+	color:black;
+	margin:12px 0;
+	text-decoration:none;
+	display: block;
+	position: relative;
+	width:150px;
+	text-align: center;
+}
+
+#communityDayButton:hover {
+	background-color: rgba(288, 288, 288, 1);
+}
+
+#index h1 {
+	display: none;
+}
+
+@media screen and (max-height: 974px) {
+
+	#communityDayNutcrackerText {
+		top:37vh;
+	}
+
+}
+
+@media screen and (max-height: 850px) {
+
+	#communityDayNutcrackerText {
+		top:33vh;
+	}
+
+}
+
+@media screen and (max-height: 787px) {
+
+	#communityDayNutcrackerText {
+		top:22vh;
+	}
+
+	#communityDayNutcrackerText p {
+		font-size:.9em;
+		line-height: 1.3em;
+	}
+
+	#communityDayNutcrackerText h2 {
+		font-size:3em;
+	}
+
+	#communityDayNutcrackerEvent1 {
+		margin:40px 0 0 0;
+	}
+
+	#communityDayNutcrackerEvent1 h3, #communityDayNutcrackerText h3 {
+		font-size:2.2em;
+	}
+
+	#communityDayNutcrackerEvent2 {
+		margin:20px 0 0 0;
+	}
+
+	#communityDayNutcrackerEvent2 h3 {
+		font-size:1.5em;
+	}
+
+}
+
+@media screen and (max-height: 737px) {
+
+	#communityDayNutcrackerText {
+		top:40vh;
+	}
+
+}
+
+@media screen and (max-height: 678px) {
+
+	#communityDayNutcrackerText {
+		top:22vh;
+	}
+
+	#communityDayNutcrackerText p {
+		font-size:.5em;
+		line-height: 1.3em;
+	}
+
+	#communityDayNutcrackerText h2 {
+		font-size:1.25em;
+	}
+
+	#communityDayNutcrackerEvent1 {
+		margin:20px 0 0 0;
+	}
+
+	#communityDayNutcrackerEvent1 h3, #communityDayNutcrackerText h3 {
+		font-size:1em;
+	}
+
+	#communityDayNutcrackerEvent2 {
+		margin:10px 0 0 0;
+	}
+
+	#communityDayNutcrackerEvent2 h3 {
+		font-size:.75em;
+	}
+
+	#communityDayButton {
+		font-size:.75em;
+		padding:8px;
+		margin:12px auto;
+		width:100px;
+	}
+
+}
+
 
 /* ~~~~~ calendar and lobby page ~~~~~ */
 
@@ -1073,6 +1260,21 @@ a.classroom-button{
 	margin:0;
 }
 
+/* ~~~~~ sideNav Calendar ~~~~~~~ */
+
+#sideNavCalendar {
+	height:301px;
+	overflow: scroll;
+	border:1px solid rgba(0, 0, 0, .1);
+	margin:0 0 10px 0;
+	position: relative;
+}
+
+.calendar {
+	height:301px;
+	position: relative;
+}
+
 /* ~~~~~ Contact Page ~~~~~~~ */
 .department {
 	padding:2px 0;
@@ -1095,6 +1297,32 @@ a.classroom-button{
 
 .department .contact .ext:before {
 	content: "(860) 229-0257 ext. ";
+}
+
+/* ~~~~~ Nor'Easter Page ~~~~~~~ */
+
+#memberShowTable {
+	font-size: .8em;
+	max-width: 100%;
+	overflow: scroll;
+}
+
+#memberShowTable td {
+	padding: 2px 5px;
+	box-sizing:border-box;
+	border-bottom: 1px solid rgba(0, 0, 0, .1);
+}
+
+#memberShowTable td:nth-child(3){
+	font-style: italic;
+}
+
+.winner {
+	background-color: rgba(0, 0, 0, .1);
+	width:100%;
+	padding:8px;
+	box-sizing:border-box;
+	margin:0 0 8px 0;
 }
 
 /* ~~~~~ Annual Report Page ~~~~~~~ */
@@ -1393,6 +1621,10 @@ a.classroom-button{
 		height:71px;
 	}
 
+	#index header {
+		height:0;
+	}
+
 	.subNav{
 		width:98.80239521%;
 	}
@@ -1645,6 +1877,10 @@ a.classroom-button{
 		margin:0;
 		padding:10px;
 		box-sizing:border-box;
+	}
+
+	#index #navAnnouncement {
+		display: none;
 	}
 
 }
