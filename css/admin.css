@@ -198,6 +198,17 @@ nav a {
 	width:23.756906077%;
 }
 
+.content form .schedule .add {
+	border-bottom:1px solid rgba( 0, 0, 0, .5);
+	border-top:1px solid rgba( 0, 0, 0, .5);
+	padding: 4px 0;
+	margin: 4px 0;
+}
+
+.content form .schedule .add label {
+	margin:1px 1.4px 0px 1.4px;
+}
+
 .content form .schedule .dateTime label.date{
 	width:23.756906077%;
 }
@@ -206,13 +217,21 @@ nav a {
 	width:15%;
 }
 
-.content form .schedule .dateTime label.delete{
-	width:10%;
+.content form .schedule .dateTime label.delete {
+	width:15%;
 	text-align: center;
 }
 
+.content form .schedule .dateTime input[type = 'checkbox']{
+	display:none;
+}
+
+.content form .schedule .dateTime input[type = 'checkbox']:checked + label .fa-times{
+	color:rgba(239, 32, 32, 1);
+}
+
 .content form .schedule .dateTime label .fa-times {
-	color:rgba(239, 32, 32, .7);
+	color:rgba(239, 32, 32, .2);
 }
 
 .content form .schedule .dateTime label .fa-times:hover {
