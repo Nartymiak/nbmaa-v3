@@ -41,10 +41,6 @@
 		}
 	}
 
-	for ( var i=0;i<newDays.length;i++){
-		console.log(newDays[i]);
-	}
-
 	var daysInGregorianMonths = [31,28,31,30,31,30,31,31,30,31,30,31];
 
 	// stores page id
@@ -138,10 +134,16 @@
 
 		calendar(y, m-1, 'oldCalendar');
 		calendar(y, m, 'calendar');
-		calendar(y, m+1, 'newCalendar');
+		if(m==12){
+			calendar(y+1, 1, 'newCalendar');
+			monthOnView = 0;
+			yearOnView = y+1;
+		} else {
+			calendar(y, m+1, 'newCalendar');
+			monthOnView = m;
+			yearOnView = y;
+		}
 
-		monthOnView = m;
-		yearOnView = y;
 
 		if(pageID == 'calendar'){
 			$('.threeCalendars').on("click",'.calSquare .calInput', function(){
