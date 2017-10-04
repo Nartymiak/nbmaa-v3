@@ -33,6 +33,32 @@
 		return $result;
 	}
 
+	//given an array of dates, return the starting and last
+	function startAndEndDates($arr){
+		$earliest =  date('Y-m-d', 0);
+		$latest = date('Y-m-d', 1);
+		
+		$arraySize = sizeof($arr);
+		$result = array();
+		
+		if($arraySize<= 1){
+			$earliest = $arr[0]['StartDate'];
+			$latest = $arr[0]['StartDate'];
+		}else{
+			$earliest = $arr[0]['StartDate'];
+			for($i=0;$i<$arraySize;$i++){
+				if($arr[$i]['StartDate'] < $earliest){
+					$earliest = $arr[$i]['StartDate'];
+				}else if($arr[$i]['StartDate'] > $latest){
+					$latest = $arr[$i]['StartDate'];
+				}
+			}
+		}
+		$result[0]=$earliest;
+		$result[1]=$latest;
+		return $result;
+	}
+
 	function buildDateRange(){
 		
 		// this gets the first and last day of the current month

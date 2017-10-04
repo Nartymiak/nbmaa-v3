@@ -284,7 +284,7 @@
         break;
 
       case "upcoming":
-        $sql = 'SELECT * FROM EXHIBITION WHERE StartDate > :date ORDER BY StartDate';
+        $sql = 'SELECT * FROM EXHIBITION WHERE StartDate > :date AND Publish = 1 ORDER BY Rank';
         break;
       
       case "recently-off-the-wall":
@@ -379,9 +379,9 @@
     // today's date
     $today = date("Y-m-d");
     // subtract one month, so it displays previous scheduled events as well
-    $date = date("Y-m-d", strtotime($today. "-15 days"));
+    $date = date("Y-m-d", strtotime($today));
 
-    $sql = 'SELECT * FROM EVENT_DATE_TIMES WHERE EventID = :value AND StartDate >= :date ORDER BY StartDate ASC';
+    $sql = 'SELECT * FROM EVENT_DATE_TIMES WHERE EventID = :value AND StartDate >= :date ORDER BY StartDate ASC LIMIT 8';
 
     $statement = $conn->prepare($sql);
 
@@ -393,6 +393,21 @@
 
     //Fetch all of the results.
     $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+    if($result == null){
+
+      $sql = 'SELECT * FROM EVENT_DATE_TIMES WHERE EventID = :value ORDER BY StartDate DESC LIMIT 1';
+
+      $statement = $conn->prepare($sql);
+
+      $statement->bindValue(":value", $eventID, PDO::PARAM_STR);
+
+      $statement->execute();
+
+      //Fetch all of the results.
+      $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+    }
     //$result now contains the entire resultset from the query.
     $conn = null;
     return $result;
