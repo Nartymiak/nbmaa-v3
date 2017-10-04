@@ -1,9 +1,30 @@
 <?php
-	include_once('../fns/functions.php');
-	include_once('../class/classes.php');
-	do_html_header('NBMAA Administrator - Content Builder');
+	include_once('../fns/adminFunctions.php');
+	include_once('../class/adminClasses.php');
+	//do_html_header('NBMAA Administrator - Content Builder');
 
 	$spreadSheet;
+	$adminWindow;
+
+	//admin
+	// get the third string from the url and break out string after "?"
+	$url = explode("/",$_SERVER['REQUEST_URI']);
+	$urlDetail = explode("?",$url[3]);
+
+	// check the third string from the url
+	switch ($urlDetail[0]) {
+		case "edit":
+			// use the string after "?"
+			$adminWindow = new EditAdminPage($urlDetail);
+			break;
+		case "event":
+			$adminWindow = new EventAdminPage($urlDetail);
+			break;
+		default:
+			$adminWindow = new MainAdminPage();
+	}
+
+
 
 	if(!$_FILES) {
 ?>	

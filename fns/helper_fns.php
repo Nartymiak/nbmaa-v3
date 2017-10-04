@@ -32,3 +32,83 @@
 
 		return $result;
 	}
+
+	function buildDateRange(){
+		
+		// this gets the first and last day of the current month
+		$startDate = date("Y-m-d");
+		$endDate = date("Y-m-t");
+
+		$dateArray = array($startDate, $endDate);
+
+		return $dateArray;
+	}
+
+	function shortenText($string){
+
+		$result;
+
+		$text = explode(" ", $string, 25);
+
+		if($text){
+
+			for($i=0;$i<count($text)-1;$i++){
+				$result .= $text[$i]. " ";
+			}
+
+			if($result) { $result .= "..."; }
+		}
+
+		return $result;
+
+	}
+
+	function shortenByChar($string, $length) {
+
+		$result;
+
+		$text = str_split($string);
+
+		if($text){
+
+			for($i=0;$i<$length;$i++){
+				$result .= $text[$i];
+			}
+
+			if($result) { $result .= "..."; }
+		}
+
+		return $result;
+
+	}
+
+
+	function date_compare($a, $b){
+
+		$d1 = strtotime($a['StartDate']);
+		$d2 = strtotime($b['StartDate']);
+
+		if($d1 < $d2){
+			return -1;
+		} elseif ($d1 > $d2){
+			return 1;
+
+		} else {
+			return strcmp($a['StartTime'], $b['StartTime']);
+		}
+	}
+
+	function date_compare_descend($b, $a){
+
+		$d1 = strtotime($a['StartDate']);
+		$d2 = strtotime($b['StartDate']);
+
+		if($d1 < $d2){
+			return -1;
+		} elseif ($d1 > $d2){
+			return 1;
+
+		} else {
+			return strcmp($a['StartTime'], $b['StartTime']);
+		}
+	}
