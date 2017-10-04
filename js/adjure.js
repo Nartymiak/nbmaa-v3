@@ -4,13 +4,7 @@
 
 		pageID = $('.mainSection').parents().attr("id");
 
-		if(pageID == 'classroom'){
-
-			$('.classLinks').on("click", 'a', function(){
-				adjureMarkClicked($(this));
-				adjureShow($(this).attr("id"));
-			});
-		} else if(pageID == 'exhibition'){
+		if(pageID == 'exhibition'){
 
 			$('.classLinks').on("click", 'a', function(){
 				adjureMarkClicked($(this));
@@ -18,7 +12,6 @@
 			});
 
 		}
-
 
 	}
 
@@ -34,9 +27,7 @@
 				$(this).removeClass('current');
 			}
 
-
 		});
-
 
 	}
 

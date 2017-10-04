@@ -229,9 +229,8 @@ body {
 	height:2000px;
 	display:none;
 	z-index: 9999;
-	background: url(../images/11-col-grid.png) center top;
+	background: url(../images/11-col-grid.png) center center;
 	background-repeat: no-repeat;
-	background-size: 100%;
 	pointer-events: none;
 }
 
@@ -245,26 +244,11 @@ body {
 
 /* ~~~~~~ header ~~~~~~ */
 
-#navAnnouncement {
-	background-color: rgba(0, 0, 0, 1);
-	text-align: right;
-	color:white;
-	padding:5px 20px;
-	width:100%;
-	max-width: 1002px;
-	margin:0 auto;
-	position: relative;
-	z-index: 3;
-	box-sizing:border-box;
-}
-
-#calendar #navAnnouncement {
-	position: fixed;
-	top:71px;
-}
-
-#mainNav{ 
+#mainNav {
 	margin:0 0 0 28.143712574%;
+}
+
+#mainNav, nav .menuItem { /* these have to be the same height */
 	height:71px;
 }
 
@@ -273,8 +257,7 @@ h1{
 }
 
 header .logo {
-	width:23.952095808%;
-	max-width:240px;
+	width:240px;
 	margin:0 1.19760479% 0 0;
 	position: absolute;
 	z-index: 10;
@@ -317,8 +300,6 @@ nav .arrowUp {
 	border-bottom: 20px solid rgba(25, 27, 31, 1);
 	position:absolute;
 	top:50px;
-	display: block;
-	margin:0 0 0 20px;
 	z-index:9;
 }
 
@@ -421,10 +402,6 @@ nav .menuItem {
 	display: inline-block;
 }
 
-#menuButton {
-	display:none;
-}
-
 /* ~~~~~ footer ~~~~~ */
 footer {
 	position: relative;
@@ -522,33 +499,12 @@ footer .right { /* only applies to right column in footer */
 /* ~~~~~ Buttons ~~~~~ */
 
 .purchase-button {
-	padding:20px 5%;
+	padding:20px 40px;
 	background-color: rgba(0, 0, 0, .1);
 	text-align: center;
 	width:211px;
-	max-width: 90%;
 	margin:10px auto 0 auto;
 	display: block;
-}
-
-.member-purchase-button {
-	padding:10px 2.5%;
-	background-color: rgba(0, 0, 0, .1);
-	text-align: center;
-	max-width: 100%;
-	margin:10px 0 15px 0;
-	display: block;
-}
-
-.member-purchase-button:hover {
-	cursor: pointer;
-	background-color: rgba(0, 0, 0, .25);
-}
-
-a.member-purchase-button{
-	color:rgb(0, 0, 0);
-	font-weight: 700;
-	text-decoration: none;
 }
 
 a.purchase-button{
@@ -561,25 +517,6 @@ a.purchase-button{
 	cursor: pointer;
 	background-color: rgba(0, 0, 0, .25);
 }
-
-.classroom-button {
-	padding:10px 1%;
-	background-color: rgba(255, 255, 255, 1);
-	max-width: 98%;
-	margin:10px auto 10px auto;
-	display: block;
-}
-
-a.classroom-button{
-	color:rgb(0, 0, 0);
-	text-decoration: none;
-}
-
-.classroom-button:hover {
-	cursor: pointer;
-	background-color: rgba(255, 255, 255, .8);
-}
-
 
 /* ~~~~~ call to action (CTA) ~~~~~ */
 
@@ -651,7 +588,8 @@ a.classroom-button{
 }
 
 #exhibition #exhibitionArtworks img {
-	width:100%;
+	width:14.772727272%;
+	margin:0 02.272727272% 0 0;
 }
 
 #exhibition #artists, #event #artists {
@@ -698,23 +636,23 @@ a.classroom-button{
 }
 
 #slider {
-	position: absolute;
+	position: fixed;
 	width:100%;
-	height:120vh;
 	top:0;
 	left:0;
-	z-index: 1;
 }
 .slide {
 	width:100%;
+	height:100%;
 	position: absolute;
 	left:0;
+	height:0;
 	background-position: 50% 60%;
 	background-size: cover;
 	background-repeat: no-repeat;
 	opacity:0;
 	z-index: 0;
-	height:100%;
+	height:100vh;
 }
 
 .info a{
@@ -857,7 +795,7 @@ a.classroom-button{
 	background-color: rgba(245, 245, 245, .4);
 }
 
-#calendar .rightColumn .calendarElement .startDate, #calendar .rightColumn .date .startDate, #calendar .rightColumn address, #calendar .leftColumn address, #classroom .rightColumn .startDate, #exhibition .rightColumn .startDate {
+#calendar .rightColumn .calendarElement .startDate, #calendar .rightColumn .date .startDate, #classroom .rightColumn .startDate, #exhibition .rightColumn .startDate {
 	display: none;
 }
 
@@ -893,16 +831,6 @@ a.classroom-button{
 	background-color: #ffffff;
 }
 
-#classroom .bodyContent .nurture-through-art-logo {
-	width:5%;
-	display: inline-block;
-	margin:0 5px 0 0;
-}
-
-#classroom .bodyContent h2 {
-	display: inline-block;
-}
-
 /* ~~~~~~~~~~~~ */
 
 .slider {
@@ -923,11 +851,7 @@ a.classroom-button{
 	z-index: 0;
 }
 
-/* ~~~~~ Calendar ~~~~~~~ */
-
-.calendarWrapper {
-	width:294px;
-}
+/* ~~~~~~~~~~~~ */
 
 .calendar, .oldCalendar, .newCalendar  {
 	width:240px;
@@ -1032,15 +956,15 @@ a.classroom-button{
 	margin:0 12px 12px 0;
 	padding:4px;
 	float:left;
+	width:42%;
 	font-size: 14px;
 	line-height: 1.2em;
 }
 
 #selectMonth {
 	float:none;
-	margin:0 0 0 27px;
+	margin:0 auto;
 	text-align: center;
-	width:232px;
 }
 
 .keyword input[type='submit'] {
@@ -1062,117 +986,6 @@ a.classroom-button{
 .keyword label:hover, #selectMonth:hover{
 	cursor: pointer;
 	background-color: rgba(255, 255, 255, .3);
-}
-
-.keyword #calendarGo label{
-	display: none;
-	background-color: rgba(71, 222, 142, 1);
-	float: none;
-	clear: both;
-	text-align: center;
-	margin:0;
-}
-
-/* ~~~~~ Contact Page ~~~~~~~ */
-.department {
-	padding:2px 0;
-	margin:2px 0;
-}
-
-.department > h3{
-	font-size: 1.5em;
-}
-
-.department .contact {
-	background-color: rgba( 0, 0, 0, .02);
-	padding:4px 4px;
-	margin:4px 0;
-	-moz-border-radius: 2px;
-	-webkit-border-radius: 2px;
-	border-radius: 2px; /* future proofing */
-	-khtml-border-radius: 2px; /* for old Konqueror browsers */
-}
-
-.department .contact .ext:before {
-	content: "(860) 229-0257 ext. ";
-}
-
-/* ~~~~~ Annual Report Page ~~~~~~~ */
-
-#annualReportSponsors {
-	text-align: center;
-}
-
-#annualReportSponsors img {
-	max-width:100px;
-}
-
-#annualReportSponsors a {
-	text-decoration: none;
-}
-
-/* ~~~~~ School Tour Form ~~~~~~~ */
-
-#schoolTourForm, #adultTourForm {
- 	width:100%;
-}
-
-#schoolTourForm form textarea, #adultTourForm form textarea, #schoolTourForm form input[type=text], #adultTourForm form input[type=text] {
-	width:100%;
-	background-color: rgba(255, 255, 255, .4);
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	border-radius: 3px; /* future proofing */
-	-khtml-border-radius: 3px; /* for old Konqueror browsers */
-	border:none;
-}
-
-#schoolTourForm form input[type=text], #adultTourForm form input[type=text] {
-	line-height: 1.5em;
-	font-size:1.5em;
-}
-
-#schoolTourForm form textarea, #adultTourForm form textarea {
-	height:200px;
-}
-
-#schoolTourForm form label, #adultTourForm form label {
-	display:block;
-	margin:20px 0 5px 0;
-}
-
- 
-#schoolTourForm form input[type=text]:focus, #adultTourForm form input[type=text]:focus, #schoolTourForm form textarea:focus, #adultTourForm form textarea:focus {
-  	box-shadow: 0 0 5px rgba(81, 203, 238, 1);
-  	border: 1px solid rgba(81, 203, 238, 1);
-}
-
-#schoolTourForm .formSection, #adultTourForm .formSection {
-	background-color: rgba(0, 0, 0, .1);
-	margin:10px 0;
-	padding:10px;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
-	border-radius: 5px; /* future proofing */
-	-khtml-border-radius: 5px; /* for old Konqueror browsers */
-}
-
-#schoolTourForm .formSection #submit, #adultTourForm .formSection #submit{
-	font-size: 1.5em;
-	text-align: center;
-	margin:14px auto 0 auto;
-	display:block;
-}
-
-#returnForm .returnData{
-	display: block;
-	padding:6px 12px;
-	margin:6px;
-	background-color: rgba(0, 0, 0, .05);
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	border-radius: 3px; /* future proofing */
-	-khtml-border-radius: 3px; /* for old Konqueror browsers */
 }
 
 /* ~~~~~~~~~~~~ */
@@ -1227,545 +1040,39 @@ a.classroom-button{
 
 }
 
-/* ~~~~~ front page grand opening styles ~~~~~ */
-
-#opening-announcement {
-	color: rgba( 21, 88, 76, 1);
-	position: absolute;
-	width:100%;
-	height:119vh;
-	top:0;
-	left:0;
-	z-index: 1;
-}
-
-#singleSlide {
-	width: 100%;
-    position: absolute;
-    left: 0;
-    background-position: 50% 60%;
-    background-size: cover;
-    background-repeat: no-repeat;
-    opacity: 1;
-    z-index: 0;
-    height: 100%;
-}
-
-#openingContainer {
-    position: absolute;
-    top:213px;
-}
-
-#messageOne, #messageTwo, #messageThree, #messageButton {
-	left:-140vh;
-	z-index: 1;
-	position:relative;
-	padding:0 40px;
-	margin:20px 0;
-	opacity:0;
-}
-
-#messageOne h2 {
-	font-size: 3em;
-	font-weight: 700;
-}
-
-#messageTwo h3 {
-	font-size: 2em;
-}
-
-#messageThree {
-	
-}
-
-#messageThree p {
-	background-color: rgba(255, 255, 255, 1);
-	font-size: 1em;
-	float: left;
-	width:40%;
-	padding:15px 2.5%;
-	margin:0 2.5%;
-}
-
-#messageButton {
-	left:110vw;
-	width:200px;
-	text-align: center;
-	display: block;
-	background-color: rgba( 91, 39, 64, .85);
-	font-size: 1em;
-	color:white;
-	margin:0;
-	padding:10px;
-	-moz-border-radius: 2px;
-	-webkit-border-radius: 2px;
-	border-radius: 2px; /* future proofing */
-	-khtml-border-radius: 2px; /* for old Konqueror browsers */
-}
-
-#messageButton:hover {
-	background-color: rgba( 91, 39, 64, 1);
-	cursor: pointer;
-}
-
-/* ~~~~~ mobilize rules ~~~~~ */
-
 @media screen and (max-width: 1175px) {
-	.wrapper, #index header #header-content, #calendar header #header-content {
+	.wrapper {
 		width:95%;
 	}
 
+	.header-wrapper {
+		width:95%;
+		padding:0 2.5%;
+	}
+
+	#index header #header-content {
+		width:95%;
+	}
 }
 
 @media screen and (max-width: 1025px) {
-	.wrapper, #index header #header-content, #calendar header #header-content {
+	.wrapper {
 		width:98%;
 	}
 
+	.header-wrapper {
+		width:100%;
+		padding:0 0;
+	}
 }
 
-@media screen and (max-width: 934px) {
-	header nav > a, .menuItem > a{
-		padding: 0 10px;
+@media screen and (max-width: 960px) {
+	.wrapper {
+		width:98%;
 	}
 
-	nav .calendarLink .dropDown .right {
-    	margin-left: 08.982035928%;
+	.header-wrapper {
+		width:100%;
+		padding:0 0;
 	}
-
 }
-
-/* iPad */
-@media screen and (max-width: 769px) {
-
-	.subNav {
-		width:34.730538922%;
-		margin: 0 0 0 01.19760479%;
-	}
-
-	#exhibition .rightColumn, #event .rightColumn, #static .rightColumn, #classroom .rightColumn, #lobby .rightColumn {
-   		width: 61.676646706%;
-   	}
-
-	.subNav h3, .subNav .navCategory{
-		width:74.137931034%;
-	}
-
-	#background {
-		height:474.65px;
-	}
-
-	.mainSection {
-	    top: 304.65px;
-	}
-
-	#calendar .leftColumn {
-		width:26.946107784%;
-		margin-left: 01.19760479%;
-	}
-
-	#calendar .rightColumn {
-	    width: 62.874251497%;
-	}
-
-	header nav > a, .menuItem > a{
-		padding: 0 5px;
-	}
-
-	#openingContainer {
-	    position: absolute;
-	    top:142px;
-	}
-
-}
-
-@media screen and (max-width: 700px) {
-
-	h1 {
-		visibility: hidden;
-	}
-
-	#background {
-		top:0;
-	}
-
-	header {
-		height:71px;
-	}
-
-	.subNav{
-		width:98.80239521%;
-	}
-
-	#exhibition .rightColumn, #event .rightColumn, #static .rightColumn, #classroom .rightColumn, #lobby .rightColumn, 
-	#calendar .leftColumn, #calendar .rightColumn, .subNav	 {
-		width:79.640718562%; /* full width = 97.604790419% */
-		padding:35px 10.179640718% 0 10.179640718%; /* at full width = padding:35px 1.19760479% 0 1.19760479%; */
-		margin:0;
-	}
-
-	.subNav {
-		padding-top:0;
-	}
-
-	#calendarCurrentExhibitions {
-		display: none;
-	}
-
-	#about > img {
-		display: none;
-	}
-
-	#exhibition #exhibitionArtworks img {
-		display:inline-block;
-		width:100%;
-	}
-
-	.rightColumn .showImg img {
-		display: block;
-	}
-
-	.dateTimes p .date {
-    	width: 100%;
-    	font-weight: 700;
-	}
-
-	#index header, #calendar header{
-		background-color: transparent;
-		border: none;
-	}
-
-	#mainNav {
-		display: none;
-		position:fixed;
-		background-color: rgba(255, 255, 255, 1);
-		width: 100%; /* non border box width: 79.640718562% */
-		height:100vh;
-    	padding: 71px 10.179640718% 0 10.179640718%;
-    	float:none;
-    	top:0;
-    	left:0;
-    	margin:0;
-    	z-index: 9998;
-    	text-align: center;
-    	overflow:scroll;
-    	-webkit-overflow-scrolling: touch;
-    	box-sizing:border-box;
-	}
-	
-	#mainNav .menuItem:first-child {
-		margin:0;
-	}
-
-	nav .menuItem {
-		display:block;
-		position: relative;
-	}
-
-	nav .menuItem:hover {
-		background-color: rgba(0, 0, 0, .1);
-	}
-
-	nav .menuItem > a{
-		width:100%;
-		padding:0;
-	}
-
-	nav .dropDown {
-		display: none;
-		position: relative;
-		top:0;
-		left:0;
-		margin:0;
-	}
-
-	nav .dropDown .logoSpace {
-		display: none;
-	}
-
-	nav .visitLink .dropDown .left, nav .visitLink .dropDown .middle, nav .visitLink .dropDown .right, 
-	.educationLink .dropDown .left, nav .educationLink .dropDown .middle, nav .educationLink .dropDown .right, 
-	.supportLink .dropDown .left, nav .supportLink .dropDown .middle, nav .supportLink .dropDown .right, 
-	nav .exhibitionLink .dropDown .left, nav .calendarLink .dropDown .middle, nav .exhibitionLink .dropDown .right {
-		float:none;
-		width:97.604790419%;
-		padding:0 1.19760479% 0 1.19760479%;
-		margin:0;
-		text-align: left;
-	}
-
-	nav .exhibitionLink .dropDown .left .image, nav .exhibitionLink .dropDown .left .exhibitionCaption {
-		float:none;
-		width: 100%;
-		text-align: left;		
-	}
-
-	nav .exhibitionLink .dropDown .left .exhibitionCaption {
-		display: inline-block;
-		margin:0 0 12px 0;	
-	}
-
-	nav .exhibitionLink .dropDown .left .exhibitionCaption .inner {
-    	padding: 16px 0 10px 0px;
-    	width:100%;
-	}
-
-	nav .exhibitionLink .dropDown .left .navCategoryLinks {
-		margin:0;
-		padding:0;
-		float: none;
-	}
-
-	nav .calendarLink .dropDown .right {
-		float:none;
-		width: 264px;
-		text-align: left;
-		margin:0 auto;
-	}
-
-	nav .navCategoryLinks, nav .exhibitionLink .dropDown .left .navCategoryLinks {
-		width:100%;
-	}
-
-	.navCategoryLinks a {
-		background-color: rgba(255, 255, 255, .1);
-		-moz-border-radius: 2px;
-		-webkit-border-radius: 2px;
-		border-radius: 2px; /* future proofing */
-		-khtml-border-radius: 2px; /* for old Konqueror browsers */
-		margin:0 12px 12px 0;
-		padding:10px;
-	}
-
-	.calendarWrapper {
-		width:264px;
-		position: relative;
-		margin:0 auto;
-	}
-
-	.calendarWrapper .leftArrow, .calendarWrapper .rightArrow{
-		margin: 0;
-		float:none;
-		position: absolute;
-		z-index: 5000;
-	}
-
-	.calendarWrapper .rightArrow {
-		right:10px;
-	}
-
-	#selectMonth {
-		margin: 10px auto 20px auto;
-	}
-
-	.keyword #calendarGo label{
-		display: block;
-	}
-
-	#mainNav .navCategory {
-		border-bottom: none;
-	}
-
-	nav .arrowUp {
-		top:52px;
-		margin:0 20px;
-		position: absolute;
-	}
-
-	#menuButton {
-		display: block;
-		text-align: center;
-		z-index: 9999;
-		position: fixed;
-		right:10px;
-		margin:10px 0;
-		padding:0 10px;
-		background-color: rgba(255, 255, 255, .9);
-		-moz-border-radius: 2px;
-		-webkit-border-radius: 2px;
-		border-radius: 2px; /* future proofing */
-		-khtml-border-radius: 2px; /* for old Konqueror browsers */
-	}
-
-	#menuButton:hover {
-		cursor: pointer;
-	}
-
-	#menuButton i {
-		line-height: 71px;
-	}
-
-	#slider .info {
-		width:100%;
-	}
-
-	#slider .infoContent {
-		width:64.071856287%;
-		margin:20px 0;
-		-moz-border-radius: 0;
-	    -webkit-border-radius: 0;
-	    border-radius: 0;
-	    -khtml-border-radius: 0;
-	}
-
-	/* ~~~~~ front page grand opening styles ~~~~~ */
-
-	#openingContainer {
-	    position: absolute;
-	    top:71px;
-	}
-
-	#messageOne, #messageTwo, #messageThree, #messageButton {
-		padding:0 40px;
-		margin:20px 0;
-	}
-
-	#messageOne h2 {
-		font-size: 2em;
-		font-weight: 700;
-	}
-
-	#messageTwo h3 {
-		font-size: 1.25em;
-	}
-
-	#messageThree p {
-		font-size: 1em;
-	}
-
-	#messageButton {
-    	padding: 10px;
-    	margin: 0;
-	}
-
-	#messageThree p {
-
-		float: none;
-		width:100%;
-		margin:0;
-		padding:10px;
-		box-sizing:border-box;
-	}
-
-}
-
-@media screen and (max-width: 600px) {
-
-	#background {
-	    height: 370.82px;
-	}
-
-	.mainSection, .cta, footer {
-	    top: 202px;
-	}
-	
-	#menuButton i {
-		line-height: 45px;
-	}
-
-	footer {
-		padding-top: 0;
-	}
-
-	footer .column, footer .columnTwo {
-		float:none;
-		width:79.640718562%; /* full width = 97.604790419% */
-		padding:13px 10.179640718% 0 10.179640718%; /* at full width = padding:35px 1.19760479% 0 1.19760479%; */
-		margin:0;
-	}
-
-	footer img {
-		max-width: 33%;
-	}
-
-}
-
-@media screen and (max-width: 377px) {
-
-	#calendar .leftColumn, #calendar .rightColumn {
-		width:97.604790419%;
-		padding:0 1.19760479% 0 1.19760479%;
-		margin:0;
-	}
-
-	#background {
-	    height: 197.771px;
-	}
-
-	.mainSection, .cta, footer {
-	    top: 28.951px;
-	}
-
-	#calendar .mainSection {
-		top:108.951px;
-	}
-
-	#mainNav {
-		 /* non border box width: 97.604790419%*/
-		padding: 41px 1.19760479% 0 1.19760479%;
-	}
-
-	#slider .infoContent {
-		width:87.071856%;
-		margin: 4px auto;
-		top:60px;
-		float:none;
-	}
-
-	#slider h2 {
-		font-size: 12px;
-	}
-
-	#slider p {
-		font-size: 8px;
-	}
-
-	#slider .right .fa {
-	    font-size: 24px;
-	    padding: 6px;
-	}
-
-	/* ~~~~~ front page grand opening styles ~~~~~ */
-
-	#openingContainer {
-	    position: absolute;
-	    top:91px;
-	    text-align: center;
-	}
-
-	#messageOne, #messageTwo, #messageThree, #messageButton {
-		padding:0 10px;
-		margin:9px 0;
-	}
-
-	#messageOne h2 {
-		font-size: 1.7em;
-		font-weight: 700;
-	}
-
-	#messageTwo h3 {
-		font-size: 1em;
-	}
-
-	#messageThree p {
-		font-size: .8em;
-	}
-
-	#messageButton {
-    	padding: 10px;
-    	margin: 0;
-    	width:97%;
-    	box-sizing:border-box;
-	}
-
-	#messageThree p {
-
-		float: none;
-		width:100%;
-		margin:0;
-		padding:10px;
-		box-sizing:border-box;
-	}
-
-}
-

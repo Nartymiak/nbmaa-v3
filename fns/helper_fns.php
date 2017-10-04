@@ -126,6 +126,10 @@
 		}
 	}
 
+	function nav_id_sort($a, $b){
+		return $a['NavCategoryLinkID'] - $b['NavCategoryLinkID'];
+	}
+
 	function date_compare_descend($b, $a){
 
 		$d1 = strtotime($a['StartDate']);
@@ -143,10 +147,11 @@
 
 	function toLink($string){
 
+		// replace "&" with "and"
+		$link = str_replace("&", "and", $string);
 		// strip all but forward slashes, newlines, letters and numbers
 		// make it all lowercase
-		$link = strtolower ( preg_replace(	'/[^A-Za-z0-9\n\/ \-]/', '', $string));
-		       		
+		$link = strtolower ( preg_replace(	'/[^A-Za-z0-9\n\/ \-]/', '', $link));
 		// replace spaces, new lines and forward slashes with dashes
 		$link = str_replace(array(" ", "\n", "/"), "-", $link);
 		// sometimes it makes a double slash so replace those with single slash
@@ -162,4 +167,27 @@
 		// replace spaces, new lines and forward slashes with dashes
 		$link = str_replace(array("-", "\n", "/"), " ", $link);
 		return $link;
+	}
+
+	/**
+	*Builds an artist's name 
+	*@param a result from querying the ARTIST table
+	*@return String artist name
+	**/
+	function buildArtistName($artistsQuery){
+
+		$artistName ="";
+
+		if(!$artistsQuery){
+			//handle error
+		} else {
+
+			if($artistsQuery['Fname'] || $artistsQuery['Mname'] || $artistsQuery['Lname']){
+				if($artistsQuery['Fname']){ $artistName.= $artistsQuery['Fname']; }
+				if($artistsQuery['Mname']){ $artistName.=  " " .$artistsQuery['Mname']; }
+				if($artistsQuery['Lname']){ $artistName.=  " " .$artistsQuery['Lname']; }
+			}
+		}
+
+		return $artistName;
 	}

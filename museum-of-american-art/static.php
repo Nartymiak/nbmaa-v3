@@ -2,9 +2,11 @@
 	include_once('../fns/functions.php');
 	include_once('../class/classes.php');
 
-	//exhibition
+	//static
 	$getName = explode("/",$_SERVER['REQUEST_URI']);
 
-	$page = new StaticPage($getName[2]); 
+	$link = explode("?", $getName[2]);
+
+	$page = new StaticPage($link[0]);
 
 ?>

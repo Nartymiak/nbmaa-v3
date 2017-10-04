@@ -5,14 +5,20 @@
     $conn = db_connect();
        $result = @$conn->query($query);
      if (!$result) {
+        mysqli_close($conn);
        return false;
      }
      $num_cats = @$result->num_rows;
      if ($num_cats == 0) {
+        mysqli_close($conn);
         return false;
      }
      $result = db_result_to_array($result);
-     return $result;
+   
+    mysqli_close($conn);
+    return $result;
+   
+
    }
 
   // returns the schema of the database
@@ -29,15 +35,18 @@
     $num_items = $result->num_rows;
 
     if (!$result) {
+      mysqli_close($conn);
       return false;
     }
            
     if ($num_items == 0) {
+      mysqli_close($conn);
       return false;
     }
 
     else {
       $result = db_result_to_array($result);
+      mysqli_close($conn);
       return $result;
     }
   }
@@ -49,7 +58,8 @@
 
     if($result){
       $result = $conn->insert_id;
-    }     
+    }
+    mysqli_close($conn);     
     return $result;
   }
 
@@ -71,7 +81,7 @@
     //$result contain
 
     $result = $result[0];
-
+    $conn = null;
     return $result;
   
   }
@@ -98,7 +108,7 @@
 
     //$result contain
     $result = $result[0];
-
+    $conn = null;
     return $result;
   
   }
@@ -122,7 +132,7 @@
 
     //$result contain
     $result = $result[0];
-
+    $conn = null;
     return $result;
 
   }
@@ -130,11 +140,18 @@
   function queryClassroomPage($url){
 
     $conn = pdo_connect();
+    $type;
+    $result = array();
+
+    // if the url is not a keyword id# and is a classroom page link string
+    if(!is_numeric($url)){
 
     //Prepare the statement.
     $statement = $conn->prepare(" SELECT  C.ClassroomPageID, C.Title, C.Body, C.ImgFilePath, C.ImgCaption, C.Link
                                   FROM    CLASSROOM_PAGE C
                                   WHERE   C.Link = :link");
+    $type = "main-page";
+
     //Bind the Value, binding parameters should be used when the same query is run repeatedly with different parameters.
     $statement->bindValue(":link", $url, PDO::PARAM_STR);
     //Execute the query
@@ -144,11 +161,116 @@
     $result = $statement->fetchAll(PDO::FETCH_ASSOC);
     //$result now contains the entire resultset from the query.
 
-    //$result contain
+    $conn = null;
+
     $result = $result[0];
+
+    if($result){ array_unshift($result, $type); }
 
     return $result;
 
+
+    } else {
+
+    $eventsResult;
+    $classroomPageIDAndDescriptionResult;
+
+    // prepare the type for the result
+    $type = "events";
+    $dateRange = buildThreeMonthDateRange();
+
+
+    //Prepare the statement.
+    $statement = $conn->prepare(" SELECT    StartDate, EndDate, StartTime, EndTime, E.Title as EventTitle, E.Description, E.RegistrationEndDate,
+                                            E.ImgFilePath, ImgCaption, E.Link, K.Word as TypeTitle, E.OutsideLink
+                                  FROM      EVENT_DATE_TIMES ED, EVENT E, KEYWORD K
+                                  WHERE     E.EventTypeID = :link AND E.EventTypeID = K.KeywordID AND 
+                                            ED.EventID = E.EventID AND ED.StartDate > :startDate 
+                                  GROUP BY  E.Title ORDER BY ED.StartDate"); 
+
+    $statement->bindValue(":link", $url, PDO::PARAM_STR);
+    $statement->bindValue(":startDate", $dateRange[0], PDO::PARAM_STR);
+    //Execute the query
+    $statement->execute();
+
+    //Fetch all of the results.
+    $eventsResult = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+    // find the classroomPageID;
+    //Prepare the statement.
+    $statement = $conn->prepare(" SELECT  C.ClassroomPageID, K.Description, K.Word
+                                  FROM    CLASSROOM_PAGE_KEYWORD C, KEYWORD K
+                                  WHERE   C.KeywordID = :link AND K.KeywordID = :link "); 
+
+
+    //Bind the Value, binding parameters should be used when the same query is run repeatedly with different parameters.
+    $statement->bindValue(":link", $url, PDO::PARAM_STR);
+    //Execute the query
+    $statement->execute();
+
+    //Fetch all of the results.
+    $classroomPageIDAndDescriptionResult = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+    $conn = null;
+
+    // prepend the result array with type and classroomPageID
+    array_push($result, $type, $classroomPageIDAndDescriptionResult[0], $eventsResult);
+
+    return $result;
+
+    }
+
+  }
+
+  function queryClassRoomKeywords($classroomPageID){
+
+    $keywordIDs = array();
+    $result = array();
+    $mainPageLink;
+    
+    $conn = pdo_connect();
+
+    $sql = '  SELECT  KeywordID
+              FROM    CLASSROOM_PAGE_KEYWORD
+              WHERE   ClassroomPageID = :classroomPageID';
+
+    $statement = $conn->prepare($sql);
+
+    $statement->bindValue(":classroomPageID", $classroomPageID, PDO::PARAM_STR);
+
+    $statement->execute();
+
+    //Fetch all of the results.
+    $keywordIDs = $statement->fetchAll(PDO::FETCH_ASSOC);
+    //$result now contains the entire resultset from the query.
+
+    if(empty($keywordIDs)){
+      //handle error
+
+    } else {
+
+      $sql = '  SELECT  K.KeywordID, K.Word, CP.Link, CP.Title
+                FROM    KEYWORD AS K, CLASSROOM_PAGE AS CP, CLASSROOM_PAGE_KEYWORD AS CPK
+                WHERE   K.KeywordID = :keywordID AND CPK.KeywordID = K.KeywordID AND CP.ClassroomPageID = CPK.classroomPageID';
+
+      $statement = $conn->prepare($sql);
+
+      foreach($keywordIDs as $keywordID){
+
+        $statement->bindValue(":keywordID", $keywordID['KeywordID'], PDO::PARAM_STR);
+
+        $statement->execute();
+
+        //Fetch all of the results.
+        array_push($result, $statement->fetchAll(PDO::FETCH_ASSOC));
+        //$result now contains the entire resultset from the query.
+
+      }
+
+    }
+
+    $conn = null;
+    return $result;
   }
 
 
@@ -187,7 +309,7 @@
     //Fetch all of the results.
     $result = $statement->fetchAll(PDO::FETCH_ASSOC);
     //$result now contains the entire resultset from the query.
-    
+    $conn = null;
     return $result;
   }
 
@@ -208,7 +330,7 @@
     //Fetch all of the results.
     $result = $statement->fetchAll(PDO::FETCH_ASSOC);
     //$result now contains the entire resultset from the query.
-    
+    $conn = null;
     return $result;
   }
 
@@ -255,9 +377,11 @@
 
     $conn = pdo_connect();
     // today's date
-    $date = date("Y-m-d");
+    $today = date("Y-m-d");
+    // subtract one month, so it displays previous scheduled events as well
+    $date = date("Y-m-d", strtotime($today. "-1 month"));
 
-    $sql = 'SELECT * FROM EVENT_DATE_TIMES WHERE EventID = :value AND StartDate >= :date ORDER BY StartDate';
+    $sql = 'SELECT * FROM EVENT_DATE_TIMES WHERE EventID = :value AND StartDate >= :date ORDER BY StartDate ASC';
 
     $statement = $conn->prepare($sql);
 
@@ -270,7 +394,7 @@
     //Fetch all of the results.
     $result = $statement->fetchAll(PDO::FETCH_ASSOC);
     //$result now contains the entire resultset from the query.
-      
+    $conn = null;
     return $result;
   }
 
@@ -283,7 +407,7 @@
 
     if(empty($dates)){
 
-      return queryCalendarPageEvents("today");
+      return queryCalendarPageEvents("Today");
     
     } else {
 
@@ -293,9 +417,9 @@
       $conn = pdo_connect();
 
       // write the generic statement
-      $sql = 'SELECT  StartDate, EndDate, StartTime, EndTime, E.Title as EventTitle, E.Description, E.ImgFilePath, E.EventTypeID, ImgCaption, Link, K.Word as TypeTitle
+      $sql = 'SELECT  StartDate, EndDate, StartTime, EndTime, E.Title as EventTitle, E.Description, E.ImgFilePath, E.EventTypeID, E.AdmissionCharge, ImgCaption, E.Link, K.Word as TypeTitle, E.OutsideLink
               FROM    EVENT_DATE_TIMES ED, EVENT E, KEYWORD K
-              WHERE   E.EventTypeID = K.KeywordID AND ED.EventID = E.EventID AND ED.StartDate = :startDate ORDER BY ED.StartDate';
+              WHERE   E.EventTypeID = K.KeywordID AND ED.EventID = E.EventID AND ED.StartDate = :startDate AND E.Canceled IS NOT TRUE ORDER BY ED.StartDate';
           
       // for each day selected by the user, bind $day value to the statement, excecute the statement and build the result
       foreach($dates as $day){
@@ -316,7 +440,7 @@
 
       // sort result by date
       usort($result, 'date_compare');
-
+      $conn = null;
       return $result;
     }
   }
@@ -362,6 +486,9 @@
             break;
           case "programs":
             $parentKeywordID = "35";
+            break;
+          case "lectures":
+            $parentKeywordID = "16";
             break;
           default:
             $parentKeywordID = $url;
@@ -409,15 +536,16 @@
     $conn = pdo_connect();
 
     // write the generic statement
-    $sql = '  SELECT  StartDate, EndDate, StartTime, EndTime, E.Title as EventTitle, E.Description, E.ImgFilePath, E.EventTypeID, ImgCaption, Link, K.Word as TypeTitle
+    $sql = '  SELECT  StartDate, EndDate, StartTime, EndTime, E.Title as EventTitle, E.Description, E.ImgFilePath, E.EventTypeID, ImgCaption, E.Link, K.Word as TypeTitle, E.OutsideLink
               FROM    EVENT_DATE_TIMES ED, EVENT E, KEYWORD K
-              WHERE   E.EventTypeID = K.KeywordID AND ED.EventID = E.EventID AND ED.StartDate BETWEEN :startDate AND :endDate ORDER BY ED.StartDate';        
+              WHERE   E.EventTypeID = K.KeywordID AND ED.EventID = E.EventID AND ED.StartDate >= :startDate AND E.Canceled IS NOT TRUE ORDER BY ED.StartDate';        
               
     // prepare the statement object
     $statement = $conn->prepare($sql);
 
     $statement->bindValue(":startDate", $dateRange[0], PDO::PARAM_STR);
-    $statement->bindValue(":endDate", $dateRange[1], PDO::PARAM_STR);
+    // commented out to allow all events after today's date to be returned in result
+    //$statement->bindValue(":endDate", $dateRange[1], PDO::PARAM_STR);
 
     $statement->execute();
 
@@ -429,7 +557,7 @@
     
     // sort result by date
     usort($result, 'date_compare');
-    
+    $conn = null;
     return $result;
 
   }
@@ -452,7 +580,7 @@
     //Fetch all of the results.
     $result = $statement->fetchAll(PDO::FETCH_ASSOC);
     //$result now contains the entire resultset from the query.
-    
+    $conn = null;
     return $result;
   }
 
@@ -462,17 +590,19 @@
 
       $result = @$conn->query($query);
       if (!$result) {
+        mysqli_close($conn);
         return false;
       }
       
       $num_cats = @$result->num_rows;
       
       if ($num_cats == 0) {
+        mysqli_close($conn);
         return false;
       }
       
       $result = db_result_to_array($result);
-      
+      mysqli_close($conn);
       return $result;    
   }
 
@@ -488,12 +618,14 @@
       
       $result = @$conn->query($query);
       if (!$result) {
+        mysqli_close($conn);
         return false;
       }
       
       $num_cats = @$result->num_rows;
       
       if ($num_cats == 0) {
+        mysqli_close($conn);
         return false;
       }
       
@@ -501,7 +633,7 @@
       array_push($returnResult, $tuple);
        
     }
-
+    mysqli_close($conn);
     return $returnResult;
 
   }
@@ -527,10 +659,12 @@
     if(empty($result)){
 
       $result[0] = array("KeywordID" => $parentKeywordID);
+      $conn = null;
       return $result;
 
     } else {
-
+      array_push($result, array("KeywordID" => $parentKeywordID));
+      $conn = null;
       return $result;
     }
 
@@ -558,9 +692,9 @@
     }
 
     // write the generic statement
-    $sql = '  SELECT  StartDate, EndDate, StartTime, EndTime, E.Title as EventTitle, E.Description, E.ImgFilePath, ImgCaption, Link, K.Word as TypeTitle
+    $sql = '  SELECT  StartDate, EndDate, StartTime, EndTime, E.Title as EventTitle, E.Description, E.ImgFilePath, ImgCaption, E.Link, K.Word as TypeTitle, E.OutsideLink
               FROM    EVENT_DATE_TIMES ED, EVENT E, KEYWORD K
-              WHERE   E.EventTypeID = K.KeywordID AND ED.EventID = E.EventID AND ED.StartDate BETWEEN :startDate AND :endDate ORDER BY ED.StartDate';        
+              WHERE   E.EventTypeID = K.KeywordID AND ED.EventID = E.EventID AND ED.StartDate BETWEEN :startDate AND :endDate AND E.Canceled IS NOT TRUE ORDER BY ED.StartDate';        
               
     // prepare the statement object
     $statement = $conn->prepare($sql);
@@ -578,7 +712,7 @@
     
     // sort result by date
     usort($result, 'date_compare');
-    
+    $conn = null;    
     return $result;
   }
 
@@ -591,9 +725,9 @@
     $conn = pdo_connect();
 
     // write the generic statement
-    $sql = 'SELECT  StartDate, EndDate, StartTime, EndTime, E.Title as EventTitle, E.Description, E.ImgFilePath, ImgCaption, Link, K.Word as TypeTitle
+    $sql = 'SELECT  StartDate, EndDate, StartTime, EndTime, E.Title as EventTitle, E.Description, E.ImgFilePath, ImgCaption, E.Link, K.Word as TypeTitle, E.OutsideLink
             FROM    EVENT_DATE_TIMES ED, EVENT E, KEYWORD K
-            WHERE   E.EventTypeID = K.KeywordID AND ED.EventID = E.EventID AND ED.StartDate = :startDate ORDER BY ED.StartDate';
+            WHERE   E.EventTypeID = K.KeywordID AND ED.EventID = E.EventID AND ED.StartDate = :startDate AND E.Canceled IS NOT TRUE ORDER BY ED.StartDate';
 
     // prepare the statement object
     $statement = $conn->prepare($sql);
@@ -604,7 +738,7 @@
 
     //Fetch the result.
     $result = $statement->fetchAll(PDO::FETCH_ASSOC);
-  
+    $conn = null;
     return $result;
   }
 
@@ -623,9 +757,9 @@
     $keywordIDs = queryParentKeyword($url);
 
     // write the generic statement
-    $sql = '  SELECT StartDate, EndDate, StartTime, EndTime, E.Title as EventTitle, E.Description, E.ImgFilePath, ImgCaption, Link, K.Word as TypeTitle
+    $sql = '  SELECT StartDate, EndDate, StartTime, EndTime, E.Title as EventTitle, E.Description, E.ImgFilePath, ImgCaption, E.Link, K.Word as TypeTitle, E.OutsideLink
               FROM EVENT_DATE_TIMES ED, EVENT E, KEYWORD K
-              WHERE E.EventTypeID = :eventType AND E.EventTypeID = K.KeywordID AND ED.EventID = E.EventID AND ED.StartDate BETWEEN :startDate AND :endDate ORDER BY ED.StartTime';            
+              WHERE E.EventTypeID = :eventType AND E.EventTypeID = K.KeywordID AND ED.EventID = E.EventID AND ED.StartDate BETWEEN :startDate AND :endDate AND E.Canceled IS NOT TRUE ORDER BY ED.StartTime';            
         
     // prepare the statement object
     $statement = $conn->prepare($sql);
@@ -651,7 +785,7 @@
     
     // sort result by date
     usort($result, 'date_compare');
-      
+    $conn = null;
     return $result;
   }
 
@@ -662,22 +796,23 @@
     $dateRange = buildThreeMonthDateRange();
 
     // write the generic statement
-    $sql = '  SELECT StartDate, EndDate, StartTime, EndTime, E.Title as EventTitle, E.Description, E.ImgFilePath, ImgCaption, Link, K.Word as TypeTitle
+    $sql = '  SELECT StartDate, EndDate, StartTime, EndTime, E.Title as EventTitle, E.Description, E.ImgFilePath, ImgCaption, E.Link, K.Word as TypeTitle, E.OutsideLink
               FROM EVENT_DATE_TIMES ED, EVENT E, KEYWORD K
-              WHERE E.EventTypeID = :eventType AND E.EventTypeID = K.KeywordID AND ED.EventID = E.EventID AND ED.StartDate BETWEEN :startDate AND :endDate GROUP BY E.Title ORDER BY ED.StartTime';            
+              WHERE E.EventTypeID = :eventType AND E.EventTypeID = K.KeywordID AND ED.EventID = E.EventID AND ED.StartDate > :startDate AND E.Canceled IS NOT TRUE GROUP BY E.Title ORDER BY ED.StartDate';            
         
     // prepare the statement object
     $statement = $conn->prepare($sql);
 
     $statement->bindValue(":eventType", $keywordID, PDO::PARAM_STR);
     $statement->bindValue(":startDate", $dateRange[0], PDO::PARAM_STR);
-    $statement->bindValue(":endDate", $dateRange[1], PDO::PARAM_STR);
+    // commented out to allow for all events after today's date to be displayed
+    //$statement->bindValue(":endDate", $dateRange[1], PDO::PARAM_STR);
 
     $statement->execute();
 
     //Fetch all the result
     $result = $statement->fetchAll(PDO::FETCH_ASSOC);
-
+    $conn = null;
     return $result;
 
 
@@ -697,11 +832,11 @@
     switch ($type) {
 
       case "event":
-        $sql = "SELECT    E.EventID as EventID, E.Link, E.Title as EventTitle, K.Word as TypeTitle, MAX(StartDate)
+        $sql = "SELECT    E.EventID as EventID, E.Link, E.Title as EventTitle, K.Word as TypeTitle, MAX(StartDate), CreatedOn
                 FROM      EVENT_DATE_TIMES ED, EVENT E, KEYWORD K
                 WHERE     E.EventTypeID = K.KeywordID AND ED.EventID = E.EventID
                 GROUP BY  E.Title
-                ORDER BY  StartDate
+                ORDER BY  CreatedOn
                 ";
       break;
 
@@ -718,7 +853,7 @@
     $statement->execute();
 
     $result = $statement->fetchAll(PDO::FETCH_ASSOC);
-
+    $conn = null;
     return $result;
   }
 
@@ -728,69 +863,21 @@
 
       $result = @$conn->query($query);
       if (!$result) {
+        mysqli_close($conn);
         return false;
       }
       
       $num_cats = @$result->num_rows;
       
       if ($num_cats == 0) {
+        mysqli_close($conn);
         return false;
       }
       
       $result = db_result_to_array($result);
-      
+      mysqli_close($conn);
       return $result;    
   }
-
-  function queryClassRoomKeywords($classroomPageID){
-
-    $keywordIDs = array();
-    $result = array();
-    
-    $conn = pdo_connect();
-
-    $sql = '  SELECT  KeywordID
-              FROM    CLASSROOM_PAGE_KEYWORD
-              WHERE   ClassroomPageID = :classroomPageID';
-
-    $statement = $conn->prepare($sql);
-
-    $statement->bindValue(":classroomPageID", $classroomPageID, PDO::PARAM_STR);
-
-    $statement->execute();
-
-    //Fetch all of the results.
-    $keywordIDs = $statement->fetchAll(PDO::FETCH_ASSOC);
-    //$result now contains the entire resultset from the query.
-
-    if(empty($keywordIDs)){
-      //handle error
-
-    } else {
-
-      $sql = '  SELECT  KeywordID, Word
-                FROM    KEYWORD
-                WHERE   KeywordID = :keywordID';
-
-      $statement = $conn->prepare($sql);
-
-      foreach($keywordIDs as $keywordID){
-
-        $statement->bindValue(":keywordID", $keywordID['KeywordID'], PDO::PARAM_STR);
-
-        $statement->execute();
-
-        //Fetch all of the results.
-        array_push($result, $statement->fetchAll(PDO::FETCH_ASSOC));
-        //$result now contains the entire resultset from the query.
-
-      }
-    
-    }
-
-    return $result;
-  }
-
 
   function querySubNav($link){
 
@@ -799,6 +886,7 @@
     // create the connection
     $conn = pdo_connect();
 
+    // first, check if the user clicked on a link from the main nav
     $sql = 'SELECT    Title, Link, NavCategoryLinkID
               FROM    NAV_CATEGORY_LINK
               WHERE   Link = :link';
@@ -812,9 +900,10 @@
 
     //Fetch all of the results.
     $navCatResult = $statement->fetchAll(PDO::FETCH_ASSOC);
-    //$result now contains the entire resultset from the query.
 
-    if(sizeof($navCatResult) == 0){
+    // second, if no result from link, check if the user clicked on a link from the sub nav
+    // *HACK* add "|| $navCatResult[0]['NavCategoryLinkID'] == 31" because art-lab link in main nav is the only link in main nav that is not a parent nav.
+    if(sizeof($navCatResult) == 0 || $navCatResult[0]['NavCategoryLinkID'] == 31 ){
 
       $sql = 'SELECT  Title, Link, NavCategoryLinkID
               FROM    SUBNAV_LINK
@@ -829,8 +918,8 @@
 
       //Fetch all of the results.
       $subNavResult = $statement->fetchAll(PDO::FETCH_ASSOC);
-      //$result now contains the entire resultset from the query.
     
+      // if the user clicked on a sub nav link, use the nav category link id to get all the sub nav links to be used
       $sql = '  SELECT  Title, Link
                 FROM    SUBNAV_LINK
                 WHERE   NavCategoryLinkID =' .$subNavResult[0]['NavCategoryLinkID'];
@@ -840,7 +929,8 @@
 
     } else {
 
-      $sql = '  SELECT  Title, Link
+      // if the user did click on a link from the main nav, get all the sub nav links that match the nav category link id of the link they clicked on  
+      $sql = '  SELECT  Title, Link, OutsideLink
                 FROM    SUBNAV_LINK
                 WHERE   NavCategoryLinkID =' .$navCatResult[0]['NavCategoryLinkID'];
     }
@@ -848,16 +938,99 @@
     // prepare the statement object
     $statement = $conn->prepare($sql);
 
-    if($fromFooter == FALSE){   $statement->execute(); }
+    if($fromFooter == FALSE){   $statement->execute();}
 
     //Fetch all of the results.
     $result = $statement->fetchAll(PDO::FETCH_ASSOC);
     //$result now contains the entire resultset from the query.
 
-    
+    $conn = null;
     return $result;
   }
 
+  function queryFrontPageArtwork(){
+
+    $query = 'SELECT ArtworkID FROM FRONT_PAGE_ARTWORK';
+    $conn = db_connect();
+
+    $result = @$conn->query($query);
+    if (!$result) {
+      mysqli_close($conn);
+      return false;
+    }
+      
+    $num_cats = @$result->num_rows;
+      
+    if ($num_cats == 0) {
+      mysqli_close($conn);
+      return false;
+    }
+      
+    $result = db_result_to_array($result);
+    mysqli_close($conn);
+    return $result;   
+
+  }
+
+  function queryFrontPageExhibitions(){
+
+    // today's date
+    $today = date("Y-m-d");
+
+    $conn = pdo_connect();
+
+    $sql = 'SELECT ArtworkReferenceNo as ArtworkID, Title, Link FROM EXHIBITION WHERE :today BETWEEN StartDate AND EndDate ORDER BY Rank';
+
+    $statement = $conn->prepare($sql);
+
+    $statement->bindValue(":today", $today, PDO::PARAM_STR);
+
+    $statement->execute();
+
+    //Fetch all of the results.
+    $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+    //$result now contains the entire resultset from the query.
+    $conn = null;
+    return $result;
+  }
+
+  // VIP! Do not use when accepting parameters from a user <form> or url
+  // returns the tuple from specified table and value
+  function queryArtworkArtistInfo($art){
+      $artworkQuery;
+      $artistArtworkQuery;
+      $artistNames;
+      $artistQuery;
+      $result;
+
+      if(is_array($art)){
+        // build main image artist name (by querying ARTWORK with artworkReferenceNo in the EXHIBITION table)
+        if($artworkQuery = queryReference('ARTWORK', 'ArtworkID', $art['ArtworkID'])){
+
+          // check if artist_artwork table gets referenced
+          if($artistArtworkQuery = queryReference('ARTIST_ARTWORKS', 'ArtworkID', $artworkQuery[0]['ArtworkID'])){
+
+            // build the artistNames string
+            $artistNames ="";
+
+            // loop through the artwork query
+            foreach($artistArtworkQuery as $artist){
+
+              // query the ARTIST table with corresponding ID
+              if($artistsQuery = queryReference('ARTIST', 'ArtistID', $artist['ArtistID'])){
+
+                // build name and concatenate each return string
+                $artistNames .= buildArtistName($artistsQuery[0]);
+
+              }
+            }
+          }
+        }
+      
+        $result = array("artwork" => $artworkQuery, "artists" => $artistNames);
+      }
+      return $result;
+  }
 
 
 

@@ -2,9 +2,11 @@
 	include_once('../fns/functions.php');
 	include_once('../class/classes.php');
 
-	//exhibition
+	//lobby
 	$getName = explode("/",$_SERVER['REQUEST_URI']);
 
-	$page = new LobbyPage($getName[2]); 
+	$link = explode("?", $getName[2]);
+
+	$page = new LobbyPage($link[0]);
 
 ?>
