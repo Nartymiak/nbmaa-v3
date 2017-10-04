@@ -5,6 +5,6 @@
 	//calendar
 	$getName = explode("/",$_SERVER['REQUEST_URI']);
 
-	$page = new CalendarPage($getName[2]); 
+	$page = new CalendarPage($getName[3]); 
 
 ?>

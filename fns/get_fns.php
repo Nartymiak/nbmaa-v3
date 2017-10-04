@@ -447,78 +447,15 @@
 
   /** 
   *Queries the database according to the user's input from the calendar
-  *@param None, but function uses global $_POST value ( if $_POST is null, runs a default query)
+  *@param a string from the url
   *@return associative query result
   **/
-  function queryCalendarPageEvents($url){
+  function queryCalendarPageEvents(){
 
-    $query = array();
     $result = array();
-    $keywordIDs = array();
 
-    // if user selected date and not keyword    
-    if(DateTime::createFromFormat('Y-m-d', $url) !== FALSE) {
+    $result = queryCalendarPageEventsToday();
 
-      $result = queryCalendarPageEventsByDays($url);
-
-    } else {
-
-      $query = queryCalendarPageEventsToday();
-
-      // if user selected keyword and not day
-      if($url != "Today" && $url != "events"){
-
-        switch($url){
-          case "family-programs":
-            $parentKeywordID = "31";
-            break;
-          case "adult-studio-classes":
-            $parentKeywordID = "12";
-            break;
-          case "tours":
-            $parentKeywordID = "23";
-            break;
-          case "travel-programs":
-            $parentKeywordID = "24";
-            break;
-          case "openings":
-            $parentKeywordID = "28";
-            break;
-          case "programs":
-            $parentKeywordID = "35";
-            break;
-          case "lectures":
-            $parentKeywordID = "16";
-            break;
-          default:
-            $parentKeywordID = $url;
-        }
-
-          // query db against array elements, get the child keywords of parent keyword
-          $queriedKeywords = queryParentKeyword($parentKeywordID);
-
-          // add the result to the keywords array
-          foreach($queriedKeywords as $key => $el) {
-
-            array_push($keywordIDs, array("KeywordID"=>$el['KeywordID']));
-          
-          }
-
-        foreach($query as $key => $event){
-
-          foreach($keywordIDs as $key => $keywordID){
-          
-            if($event['EventTypeID'] == $keywordID['KeywordID']){
-
-              array_push($result, $event);
-            }
-          }
-        }
-      } else {
-
-        $result = $query;
-      }
-    }
     return $result;
   }
 
@@ -538,14 +475,14 @@
     // write the generic statement
     $sql = '  SELECT  StartDate, EndDate, StartTime, EndTime, E.Title as EventTitle, E.Description, E.ImgFilePath, E.EventTypeID, ImgCaption, E.Link, K.Word as TypeTitle, E.OutsideLink
               FROM    EVENT_DATE_TIMES ED, EVENT E, KEYWORD K
-              WHERE   E.EventTypeID = K.KeywordID AND ED.EventID = E.EventID AND ED.StartDate >= :startDate AND E.Canceled IS NOT TRUE ORDER BY ED.StartDate';        
+              WHERE   E.EventTypeID = K.KeywordID AND ED.EventID = E.EventID AND ED.StartDate BETWEEN :startDate AND :endDate AND E.Canceled IS NOT TRUE ORDER BY ED.StartDate';        
               
     // prepare the statement object
     $statement = $conn->prepare($sql);
 
     $statement->bindValue(":startDate", $dateRange[0], PDO::PARAM_STR);
-    // commented out to allow all events after today's date to be returned in result
-    //$statement->bindValue(":endDate", $dateRange[1], PDO::PARAM_STR);
+
+    $statement->bindValue(":endDate", $dateRange[1], PDO::PARAM_STR);
 
     $statement->execute();
 
@@ -814,8 +751,6 @@
     $result = $statement->fetchAll(PDO::FETCH_ASSOC);
     $conn = null;
     return $result;
-
-
   }
 
   function adminQuery($type) {
@@ -836,7 +771,7 @@
                 FROM      EVENT_DATE_TIMES ED, EVENT E, KEYWORD K
                 WHERE     E.EventTypeID = K.KeywordID AND ED.EventID = E.EventID
                 GROUP BY  E.Title
-                ORDER BY  CreatedOn
+                ORDER BY  CreatedOn DESC
                 ";
       break;
 
@@ -907,7 +842,7 @@
 
       $sql = 'SELECT  Title, Link, NavCategoryLinkID
               FROM    SUBNAV_LINK
-              WHERE   Link = :link';
+              WHERE   Link = :link ORDER BY DisplayOrder';
 
       // prepare the statement object
       $statement = $conn->prepare($sql);
@@ -922,7 +857,7 @@
       // if the user clicked on a sub nav link, use the nav category link id to get all the sub nav links to be used
       $sql = '  SELECT  Title, Link
                 FROM    SUBNAV_LINK
-                WHERE   NavCategoryLinkID =' .$subNavResult[0]['NavCategoryLinkID'];
+                WHERE   NavCategoryLinkID =' .$subNavResult[0]['NavCategoryLinkID']. ' ORDER BY DisplayOrder';
 
       // *HACK* check size because subNavResult contains nothing if a link with no subNav links from the footer is using this method
       if(sizeof($subNavResult) == 0){ $fromFooter = TRUE; }
@@ -932,7 +867,7 @@
       // if the user did click on a link from the main nav, get all the sub nav links that match the nav category link id of the link they clicked on  
       $sql = '  SELECT  Title, Link, OutsideLink
                 FROM    SUBNAV_LINK
-                WHERE   NavCategoryLinkID =' .$navCatResult[0]['NavCategoryLinkID'];
+                WHERE   NavCategoryLinkID =' .$navCatResult[0]['NavCategoryLinkID']. ' ORDER BY DisplayOrder';
     }
 
     // prepare the statement object
@@ -1032,6 +967,169 @@
       return $result;
   }
 
+  /** 
+  *Used with the subNav Calendar. Queries the database according to the month the user stops scroll
+  *@param the month the user stopped scrolling on (yyyy-mm--dd)
+  *@return associative query result
+  **/
+  function querySubNavCalendar($month){
+
+    if(empty($month)){
+
+      //handle error
+    
+    } else {
+
+      $startDate = $month. "-01";
+      $endDate = $month. "-31";
+
+      $result = array();
+
+      // create the connection
+      $conn = pdo_connect();
+
+      // write the generic statement
+      $sql = 'SELECT  StartDate, EndDate, StartTime, EndTime, E.Title as EventTitle, E.Description, E.ImgFilePath, E.EventTypeID, E.AdmissionCharge, ImgCaption, E.Link, K.Word as TypeTitle, E.OutsideLink
+              FROM    EVENT_DATE_TIMES ED, EVENT E, KEYWORD K
+              WHERE   E.EventTypeID = K.KeywordID AND ED.EventID = E.EventID AND ED.StartDate BETWEEN :startDate AND :endDate AND E.Canceled IS NOT TRUE ORDER BY ED.StartDate';
+          
+      // prepare the statement object
+      $statement = $conn->prepare($sql);
+
+      $statement->bindValue(":startDate", $startDate, PDO::PARAM_STR);
+       $statement->bindValue(":endDate", $endDate, PDO::PARAM_STR);
+
+      $statement->execute();
+
+      //Fetch all of the results.
+      $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+
+
+      // sort result by date
+      usort($result, 'date_compare');
+      $conn = null;
+      return $result;
+    }
+  }
+
+  /** 
+  *Retrieves keywords and their parents
+  *@param None
+  *@return associative query result
+  **/
+  function queryKeywordsAndsParents(){
+
+    $result = array();
+    $parentKeywords = array();
+    $keywords = array();
+
+    // create the connection
+    $conn = pdo_connect();
+
+    // write the generic statement
+    $sql = 'SELECT  ParentKeywordID, Word
+            FROM    PARENT_KEYWORD ORDER BY DisplayOrder';
+          
+    // prepare the statement object
+    $statement = $conn->prepare($sql);
+
+    $statement->execute();
+
+    //Fetch all of the results.
+    $parentKeywords = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+    // write the generic statement
+    $sql = 'SELECT  K.KeywordID, K.Word, PKK.ParentKeywordID
+            FROM    KEYWORD K, PARENT_KEYWORD_KEYWORD PKK
+            WHERE   PKK.KeywordID = K.KeywordID ORDER BY K.Word ASC';
+
+    // prepare the statement object
+    $statement = $conn->prepare($sql);
+
+    $statement->execute();
+
+    $keywords = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+    $conn = null;
+
+    $result[0] = $parentKeywords;
+    $result[1] = $keywords;
+
+    return $result;
+
+   }
+
+   function queryMemberCheck($number, $exp){
+
+    $conn = pdo_connect();
+
+    $sql = 'SELECT MemberID, MemberActualID, MemberEmail, ExpirationDate FROM MEMBER WHERE MemberActualID = :memberActualID AND ExpirationDate = :expirationDate ';
+
+    $statement = $conn->prepare($sql);
+
+    $statement->bindValue(":memberActualID", $number, PDO::PARAM_STR);
+    $statement->bindValue(":expirationDate", $exp, PDO::PARAM_STR);
+
+    $statement->execute();
+
+    //Fetch all of the results.
+    $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+    //$result = $result[0];
+    //$result now contains the entire resultset from the query.
+    $conn = null;
+    
+
+    return $result;
+
+   }
+
+   // not a get function. Used in member update webpage
+   function updateMemberEmail($emailString){
+
+    $emails = array();
+    $temp = array();
+
+    // get an array ready for updating database
+    $temp = explode(";", $emailString);
+    // check if $temp array has an even number of elements (explode adds 1 empty string at end of array)
+    if (sizeof($temp)%2 == 1){
+      for($i = 0; $i < sizeof($temp); $i++){
+
+        // since the string is set up like this: mem#, email, mem#, email, mem#, email....
+        if($i%2==1){
+          array_push($emails, array('MemberID' => $temp[$i-1], 'email' => $temp[$i]));
+        }
+      }
+    
+      $conn = pdo_connect();
+
+      $sql = 'UPDATE  MEMBER
+              SET     MemberEmail = :email, Updated = :datetime
+              WHERE   MemberID = :memberID';
+
+      // prepare the statement object
+      $statement = $conn->prepare($sql);
+
+      foreach($emails as $email){
+        $statement->bindValue(":email", $email['email'], PDO::PARAM_STR);
+        $statement->bindValue(":memberID", $email['MemberID'], PDO::PARAM_STR);
+        $statement->bindValue(":datetime", date('Y-m-d H:i:s'), PDO::PARAM_STR);
+
+        $statement->execute();
+
+      }
+
+      $conn = null;
+
+      } else {
+        // handle error
+      }
+
+
+
+
+   }
 
 
 ?>

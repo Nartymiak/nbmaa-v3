@@ -212,7 +212,7 @@
 							echo "<a href=\"" .$GLOBALS['adminFilePath']. "/event?" .$element['Link']. "\">\r\n";
 							echo "	<div class=\"type\">" .$element['TypeTitle']. "</div>\r\n";
 							echo "	<div class=\"title\">" .$element['EventTitle']. "</div>\r\n";
-							echo "	<div class=\"date\">" .date("m-d-y", strtotime($element['MAX(StartDate)'])). "</div>\r\n";
+							echo "	<div class=\"date\">" .date("m-d-y", strtotime($element['CreatedOn'])). "</div>\r\n";
 							echo "</a>\r\n";
 							echo "</div>\r\n";
 						}
@@ -359,7 +359,9 @@
 
 								
 
-				?>			 	<form action="<?php echo $GLOBALS['adminFilePath']. "/event?" .$element['Link'] ?>" method="post">
+				?>			 	
+								<a class="button" target="_blank" href="<?php echo $GLOBALS['rootDirectory']. "/event/" .$element['Link'] ?>"> preview </a>
+								<form action="<?php echo $GLOBALS['adminFilePath']. "/event?" .$element['Link'] ?>" method="post">
 									<input type="hidden" name="EventID" value="<?php echo $element['EventID'] ?>">
 									<label><p>Title</p><input type="text" name="Title" value="<?php echo $element['Title'] ?>"></label>
 									<label><p>Background Image File Name</p><input type="text" name="ImgFilePath" value="<?php echo $element['ImgFilePath'] ?>"></label>

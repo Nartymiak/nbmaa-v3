@@ -3,10 +3,12 @@
 	var calendarHeightHalf = (calendarHeight/2) | 0;
 	var calendarElements;
 	var scrollStopToggle = 0;
+	var firstLoadToggle = 0;
 
 	// calendar algorithm variables
 	var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 	var day = ["S", "M", "T", "W", "T", "F", "S"];
+
 	// use an empty string to make array address match literal month values in order to match time stamp values
 	var dateToMonth = ["", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 	var daysInGregorianMonths = [31,28,31,30,31,30,31,31,30,31,30,31];
@@ -81,13 +83,14 @@
 	}
 
 	// @param The year and month to initialize from.
-	var makeSideNavCalendar = function(y, m, lastDate){
+	var makeSideNavCalendar = function(y, m, lastDate, todaysDate){
 
-		var startYear = 2016;
-		var startMonth = 1;
+		var startYear = 2015;
+		var startMonth =3;
 		var endMonth = new Date(lastDate).getMonth()+2;
 		var endYear = new Date(lastDate).getFullYear();
-
+		var todaysCalOffset;
+		
 		// create all the calendars in the scrolling div
 		while(startMonth != endMonth || startYear != endYear){
 
@@ -100,9 +103,14 @@
 			}
 		}
 
-		markCalSquareSelected('2016-01-18');
+		var container = document.getElementById('sideNavCalendar');
+		var rowToScrollTo = document.getElementsByClassName('2016-12')[0];
 
-		calendarElements = $('.calendar');
+		container.scrollTop = rowToScrollTo.offsetTop;
+
+		markCalSquareSelected(todaysDate);
+
+		calendarElements = $('#sideNavCalendar .calendar');
 
 		// when scroll is triggered, start timer. Keep reseting until user stops scrolling. If no scroll at end of timer, call stopScroll();
 		$('#sideNavCalendar').scroll(function(){
@@ -143,6 +151,7 @@
 		});
 
 		addCountToFilter();
+		markSelectedDates();
 	}
 
 	function stopScroll(){
@@ -150,28 +159,35 @@
 		//asign some variables
 		position = $('#sideNavCalendar').scrollTop();
 		
-		// if user scrolled below the half way mark
-		if(position%calendarHeight >= calendarHeightHalf){
-			// scroll to calendar below
-			$('#sideNavCalendar').animate({
-       			scrollTop: ((position/calendarHeight) | 0) * calendarHeight + calendarHeight,
-    		}, 200);
-    		onViewObj = $(calendarElements[((position/calendarHeight) | 0)+1]).attr('class').split(' ')[1];
-    		// call ajax function
-    		show(onViewObj);
+		// check this variable to make sure its not the first time the page is loaded, should equal 0 if it is.
+		if(firstLoadToggle == 1){
+			// if user scrolled below the half way mark
+			if(position%calendarHeight >= calendarHeightHalf){
+				// scroll to calendar below
+				$('#sideNavCalendar').animate({
+	       			scrollTop: ((position/calendarHeight) | 0) * calendarHeight + calendarHeight,
+	    		}, 200);
+	    		onViewObj = $(calendarElements[((position/calendarHeight) | 0)+1]).attr('class').split(' ')[1];
+	    		// call ajax function
+	    		show(onViewObj);
 
-		// if user scrolled above the half way mark
+			// if user scrolled above the half way mark
+			} else {
+				// scroll to calendar above
+				$('#sideNavCalendar').animate({
+	       			scrollTop: ((position/calendarHeight) | 0) * calendarHeight 
+	    		}, 200);
+	    		onViewObj = $(calendarElements[((position/calendarHeight) | 0)]).attr('class').split(' ')[1];
+	    		// call ajax function
+	    		show(onViewObj);
+			}
+
+			scrollStopToggle = 1;
 		} else {
-			// scroll to calendar above
-			$('#sideNavCalendar').animate({
-       			scrollTop: ((position/calendarHeight) | 0) * calendarHeight 
-    		}, 200);
-    		onViewObj = $(calendarElements[((position/calendarHeight) | 0)]).attr('class').split(' ')[1];
-    		// call ajax function
-    		show(onViewObj);
-		}
+			// if it is 0, set the toggle to 1 for all other times its scrolled.
+			firstLoadToggle = 1;
 
-		scrollStopToggle = 1;
+		}
 
 	}
 
@@ -272,6 +288,9 @@
 
 	function showDate(date){
 
+		var flag = 0;
+		$('#noEvents').remove();
+
 		$(".date").each(function(){
 
 			if(date != $(this).attr("id")){
@@ -281,9 +300,14 @@
 			} else {
 				$(this).css("display", "block");
 				$(this).nextUntil( ".date" ).css("display", "block");
+				flag = 1;
 			}
 
 		});
+
+		if(flag == 0){
+			$('.rightColumn').append("<p id=\"noEvents\">There are no events scheduled for the day you selected.</p>");
+		}
 
 		markCalSquareSelected(date);
 
