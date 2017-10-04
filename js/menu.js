@@ -75,10 +75,6 @@
 
       });
 
-      $('#calendarGo').on('click', function(){
-        $('#menuButton').trigger('click');
-      });
-
     }
 
       $('.subNav a').each(function(){
@@ -184,10 +180,12 @@
 
 var subNavShow = function(link) {
 
-  var id = '#' + link.attr('class').split(' ')[0];
-
+  var id = ".id" + link.attr('class').split(' ')[0];
+  
   $('.rightColumn').children().css('display', 'none');
+  
   $(id).css('display', 'block');
+
   $('html, body').animate({
       scrollTop: $('.rightColumn').offset().top
   }, 300);

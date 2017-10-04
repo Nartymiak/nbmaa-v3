@@ -1,4 +1,8 @@
 <?php
-header("Location: http://www.nbmaa.org/event/community-day-newington-wethersfield-and-glastonbury");
-die();
+	include_once('fns/functions.php');
+	include_once('class/classes.php');
+
+	//index
+	$page = new IndexPage(); 
+
 ?>

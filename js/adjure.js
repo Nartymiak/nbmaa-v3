@@ -2,13 +2,15 @@
 
 	var adjure = function(){
 
+		
 		pageID = $('.mainSection').parents().attr("id");
 
 		if(pageID == 'exhibition'){
-
+			console.log('fire');
 			$('.classLinks').on("click", 'a', function(){
 				adjureMarkClicked($(this));
 				adjureShow($(this).attr("id"));
+
 			});
 
 		}
@@ -32,7 +34,7 @@
 	}
 
 	function adjureShow(data){
-		
+
 		// the server request
 		$.ajax({
  

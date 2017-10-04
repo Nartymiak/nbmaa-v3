@@ -22,7 +22,7 @@
 
 					<title id="<?php echo str_replace(array("\r", "\n"), '',$title); ?>"> NBMAA | <?php echo str_replace(array("\r", "\n"), '',$title); ?></title>
 					<!-- css -->
-							<link href="<? echo $GLOBALS['rootDirectory'] ?>/css/nbmaa3.css?v=1.1" rel="stylesheet" type="text/css" />
+							<link href="<? echo $GLOBALS['rootDirectory'] ?>/css/nbmaa3.css?v=1.9" rel="stylesheet" type="text/css" />
 					<!-- font -->
 					<link href='http://fonts.googleapis.com/css?family=Lato:100,400,700,100italic,400italic,700italic' rel='stylesheet' type='text/css'>
 					<link rel="stylesheet" href="<? echo $GLOBALS['rootDirectory'] ?>/css/font-awesome.min.css">
@@ -37,6 +37,13 @@
 						<meta property="og:url"           content="<?php echo "http://" .$_SERVER[HTTP_HOST].$_SERVER[REQUEST_URI]; ?>" /> 
 						<meta property="og:description"   content="<?php echo $this->metaOG['description']; ?>"/>
 						<meta property="og:image"         content="<?php echo $this->metaOG['img']; ?>" />
+						<meta name="twitter:card" content="summary_large_image">
+						<meta name="twitter:site" content="@nbmaa">
+						<meta name="twitter:creator" content="@Nartymiak">
+						<meta name="twitter:title" content="<?php echo $this->metaOG['title']; ?>">
+						<meta name="twitter:description" content="<?php echo $this->metaOG['description']; ?>">
+						<meta name="twitter:image" content="<?php echo $this->metaOG['img']; ?>">
+
 
 					<?php } ?>
 					<!-- google analytics -->
@@ -78,6 +85,7 @@
 			$exhibitonGallery;
 			$randomInt;
 			$keywords;
+			$todaysDate = date("Y-m-d");
 
 			// get the links in the main Nav
 			if($mainNav = queryNav()) {
@@ -133,7 +141,7 @@
 							<?php
 								// write the nav category header
 								if(sizeof($this->navCategories[0])!=0){		
-									echo "<div class=\"navCategory\">" . $this->navCategories[0][0]["IconHTML"] ."".$this->navCategories[0][0]["Title"] ."</div>" ; 
+									echo "<div class=\"navCategory\">" . $this->navCategories[0][0]["IconHTML"] ."".$this->navCategories[0][0]["Title"] ."</div>\r\n" ; 
 								//write each link
 									$this->writeNavLinks($this->navCategories[0][0]["NavCategoryID"]);
 								}
@@ -145,7 +153,7 @@
 							<?php
 								// write the nav category header
 								if(sizeof($this->navCategories[0])!=0){		
-									echo "<div class=\"navCategory\">" .$this->navCategories[0][1]["IconHTML"]."".$this->navCategories[0][1]["Title"]. "</div>" ; 
+									echo "<div class=\"navCategory\">" .$this->navCategories[0][1]["IconHTML"]."".$this->navCategories[0][1]["Title"]. "</div>\r\n" ; 
 								//write each link
 									$this->writeNavLinks($this->navCategories[0][1]["NavCategoryID"]);
 								}
@@ -157,7 +165,7 @@
 							<?php
 								// write the nav category header
 								if(sizeof($this->navCategories[0])!=0){		
-									echo "<div class=\"navCategory\">" .$this->navCategories[0][2]["IconHTML"]."".$this->navCategories[0][2]["Title"] ."</div>" ; 
+									echo "<div class=\"navCategory\">" .$this->navCategories[0][2]["IconHTML"]."".$this->navCategories[0][2]["Title"] ."</div>\r\n" ; 
 								//write each link
 									$this->writeNavLinks($this->navCategories[0][2]["NavCategoryID"]);
 								}
@@ -179,7 +187,7 @@
 								// write the nav category header
 								if(sizeof($this->navCategories[1])!=0){	
 
-									echo "<div class=\"navCategory\">" .$this->navCategories[1][0]["IconHTML"]."".$this->navCategories[1][0]["Title"]. "</div>" ; 
+									echo "<div class=\"navCategory\">" .$this->navCategories[1][0]["IconHTML"]."".$this->navCategories[1][0]["Title"]. "</div>\r\n" ; 
 
 									//get the image and data for the main exhibition, write the html
 									if($exhibitionImage != NULL) { 
@@ -195,12 +203,12 @@
 									// write the caption for the exhibition in a floating div
 									if($exhibitionsResult[0] != NULL && $exhibitionImage != NULL) {
 
-										echo 	"<a class=\"exhibitionCaption\" href=\"" .$GLOBALS['rootDirectory']. "/exhibition/" .$exhibitionsResult[$randomInt]['Link']. "\">
-													<div class=\"inner\">
-														<h6>" .$exhibitionsResult[$randomInt]['Title']. "</h6>
-														<p class=\"title\">" .$exhibitonGallery[0]['NickName']. "</p>
-													</div>
-												</a>";
+										echo 	"<a class=\"exhibitionCaption\" href=\"" .$GLOBALS['rootDirectory']. "/exhibition/" .$exhibitionsResult[$randomInt]['Link']. "\">\r\n
+													<div class=\"inner\">\r\n
+														<h6>" .$exhibitionsResult[$randomInt]['Title']. "</h6>\r\n
+														<p class=\"title\">" .$exhibitonGallery[0]['NickName']. "</p>\r\n
+													</div>\r\n
+												</a>\r\n";
 									}
 								}
 									
@@ -213,7 +221,7 @@
 							<?php
 								// write the nav category header
 								if(sizeof($this->navCategories[1])!=0){		
-									echo "<div class=\"navCategory\">" .$this->navCategories[1][1]["IconHTML"]."".$this->navCategories[1][1]["Title"]. "</div>" ; 
+									echo "<div class=\"navCategory\">" .$this->navCategories[1][1]["IconHTML"]."".$this->navCategories[1][1]["Title"]. "</div>\r\n" ; 
 								//write each link
 									$this->writeNavLinks($this->navCategories[1][1]["NavCategoryID"]);
 								}
@@ -225,62 +233,7 @@
 					</div>
 					
 					<!-- calendar link -->
-					<div class="menuItem calendarLink">
-						<a>CALENDAR</a>
-						
-						<div class="dropDown" aria-haspopup="true">
-							<div class="logoSpace"><!-- place holder for under the logo --></div>
-							<div class="middle">
-								<div class="calendarWrapper">
-									<!-- javascript calendar -->
-									<a class="leftArrow"></a>
-									<div class="container">
-										<div class="threeCalendars">
-											<div class="oldCalendar">
-											</div>
-											<div class="calendar">
-											</div>
-											<div class="newCalendar">
-											</div>
-											<div class="clear"></div>
-										</div>
-									</div>
-									<a class="rightArrow"></a>
-									<div class="clear"></div>
-								</div>
-								<a id="selectMonth" <?php if($this->pageID != 'calendar'){ echo "href=\"".$GLOBALS['rootDirectory']. "/calendar/Today\""; }?>>Select entire month</a>
-							</div>
-							<div class="right keyword">
-								<?php 
-
-								// print the keywords from the query
-								if(!$keywords){
-									// handle error
-								} else {
-
-									if($this->pageID == 'calendar'){
-										foreach($keywords as $keyword){ 
-										?>
-											<label><input class="calInput" type="checkbox" name="keyword[]" value="<?php echo $keyword['KeywordID'] ?>"><?php echo $keyword['Word'] ?></label>
-										<?php
-										}
-									} else {
-										foreach($keywords as $keyword){ 
-										?>
-											<a href="<?php echo $GLOBALS['rootDirectory']; ?>/calendar/<?php echo toLink($keyword['KeywordID']) ?>"><label><?php echo $keyword['Word'] ?></label></a>
-										<?php
-										}
-									}
-								}
-								?>
-									<a href="<?php echo $GLOBALS['rootDirectory']; ?>/calendar/Today"><label>All</label></a>
-									<?php if($this->pageID == 'calendar'){ echo "<a id=\"calendarGo\"><label>Go</label></a>"; } ?>
-								<div class="clear"></div>
-								<a style="text-decoration:underline;" href="http://www.nbmaa.org/pdfs/nbmaa-calendar-winter-2016.pdf" target="_blank">Download Quarterly Calendar</a>
-							</div>
-							<div class="clear"></div>
-						</div>
-					</div>
+						<a href="<?php echo $GLOBALS['rootDirectory'];?>/calendar/today">CALENDAR</a>
 					
 					<div class="menuItem educationLink">
 						<a>EDUCATION</a>
@@ -292,7 +245,7 @@
 							<?php
 								// write the nav category header
 								if(sizeof($this->navCategories[2])!=0){		
-									echo "<div class=\"navCategory\">" .$this->navCategories[2][0]["IconHTML"]."".$this->navCategories[2][0]["Title"]. "</div>" ; 
+									echo "<div class=\"navCategory\">" .$this->navCategories[2][0]["IconHTML"]."".$this->navCategories[2][0]["Title"]. "</div>\r\n" ; 
 								//write each link
 									$this->writeNavLinks($this->navCategories[2][0]["NavCategoryID"]);
 								}
@@ -304,7 +257,7 @@
 							<?php
 								// write the nav category header
 								if(sizeof($this->navCategories[2])!=0){		
-									echo "<div class=\"navCategory\">" .$this->navCategories[2][1]["IconHTML"]."".$this->navCategories[2][1]["Title"]. "</div>" ; 
+									echo "<div class=\"navCategory\">" .$this->navCategories[2][1]["IconHTML"]."".$this->navCategories[2][1]["Title"]. "</div>\r\n" ; 
 								//write each link
 									$this->writeNavLinks($this->navCategories[2][1]["NavCategoryID"]);
 								}
@@ -316,7 +269,7 @@
 							<?php
 								// write the nav category header
 								if(sizeof($this->navCategories[2])!=0){		
-									echo "<div class=\"navCategory\">" .$this->navCategories[2][2]["IconHTML"]."".$this->navCategories[2][2]["Title"]. "</div>" ; 
+									echo "<div class=\"navCategory\">" .$this->navCategories[2][2]["IconHTML"]."".$this->navCategories[2][2]["Title"]. "</div>\r\n" ; 
 								//write each link
 									$this->writeNavLinks($this->navCategories[2][2]["NavCategoryID"]);
 								}
@@ -337,7 +290,7 @@
 							<?php
 								// write the nav category header
 								if(sizeof($this->navCategories[3])!=0){		
-									echo "<div class=\"navCategory\">" .$this->navCategories[3][0]["IconHTML"]."".$this->navCategories[3][0]["Title"]. "</div>" ; 
+									echo "<div class=\"navCategory\">" .$this->navCategories[3][0]["IconHTML"]."".$this->navCategories[3][0]["Title"]. "</div>\r\n" ; 
 								//write each link
 									$this->writeNavLinks($this->navCategories[3][0]["NavCategoryID"]);
 								}
@@ -349,7 +302,7 @@
 							<?php
 								// write the nav category header
 								if(sizeof($this->navCategories[3])!=0){		
-									echo "<div class=\"navCategory\">" .$this->navCategories[3][1]["IconHTML"]."".$this->navCategories[3][1]["Title"]. "</div>" ; 
+									echo "<div class=\"navCategory\">" .$this->navCategories[3][1]["IconHTML"]."".$this->navCategories[3][1]["Title"]. "</div>\r\n" ; 
 								//write each link
 									$this->writeNavLinks($this->navCategories[3][1]["NavCategoryID"]);
 								}
@@ -361,7 +314,7 @@
 							<?php
 								// write the nav category header
 								if(sizeof($this->navCategories[3])!=0){		
-									echo "<div class=\"navCategory\">" .$this->navCategories[3][2]["IconHTML"]."".$this->navCategories[3][2]["Title"]. "</div>" ; 
+									echo "<div class=\"navCategory\">" .$this->navCategories[3][2]["IconHTML"]."".$this->navCategories[3][2]["Title"]. "</div>\r\n" ; 
 								//write each link
 									$this->writeNavLinks($this->navCategories[3][2]["NavCategoryID"]);
 								}
@@ -376,18 +329,25 @@
 				<div id="menuButton">MENU <i class="fa fa-bars"></i></div>
 			</div>
 			</header>
-			<!-- comment out to hide special nav announce across top 
+			<!-- uncomment to add special nav announce across top
 			<div id="navAnnouncement">
-				<p><strong>Holiday Hours:</strong> New Year's Eve - close at 5 p.m. / Caf&eacute; close at 1 p.m., New Year's Day - closed</p>
+				<div class="wrapper">
+					<div id="navAnnouncementWrapper">
+						<p>The Museum will be closed Wednesday, October 12 at 3 p.m., and will be closed all day Thursday, October 13 in preparation for our Fall fundraiser <a href="http://artofwineandfood.org/">The Art of Wine &amp; Food</a>.
+						</p>
+					</div>
+				</div>
 			</div>
-			-->
+			<!-- end -->
 			<h1 itemprop="name">NEW BRITAIN MUSEUM OF AMERICAN ART</h1>
 		<?
 		}
 
 		/** prints the footer **/
 		protected function HTMLfooter(){
-		
+			$todaysDate = date('Y-m-d');
+			$lastDate = '2017-01-31';
+
 			// get the year and the month
 			if(!$_POST['month']) {
 				List($y,$m) = explode(" ", date("Y m"));
@@ -403,9 +363,9 @@
 							<a href="<?php echo $GLOBALS['rootDirectory']; ?>/museum-of-american-art/employment">Employment</a>
 						</div>
 						<div class="column right">
+							<a href="http://s290.photobucket.com/user/nbmaa/slideshow/The%20Robert%20Lesser%20Pulp%20Art%20Collection/?albumview=slideshow">View Pulp Art: The Robert Lesser Collection</a>
 							<a href="<?php echo $GLOBALS['rootDirectory']; ?>/museum-of-american-art/opportunities-for-artists">Opportunities for Artists</a>
 							<a href="<?php echo $GLOBALS['rootDirectory']; ?>/museum-of-american-art/rent-the-museum">Rent the Museum</a>
-							<a href="<?php echo $GLOBALS['rootDirectory']; ?>/museum-of-american-art/accessibility">Accessibility</a>
 						</div>
 						<div class="columnTwo">
 							<a href="<?php echo $GLOBALS['rootDirectory']; ?>/museum-of-american-art/giving">How to Donate to the Museum</a>
@@ -419,11 +379,12 @@
 					</div>
 				</footer>
 				<script type="text/javascript" src="<?php echo $GLOBALS['rootDirectory']; ?>/js/menu.js"></script>
-				<script type="text/javascript" src="<?php echo $GLOBALS['rootDirectory']; ?>/js/calendar.js"></script>
 				<script type="text/javascript" src="<?php echo $GLOBALS['rootDirectory']; ?>/js/color.js"></script>
 				<script type="text/javascript" src="<?php echo $GLOBALS['rootDirectory']; ?>/js/adjure.js"></script>
 				<script type="text/javascript" src="<?php echo $GLOBALS['rootDirectory']; ?>/js/Vibrant.js"></script>
 				<script type="text/javascript" src="<?php echo $GLOBALS['rootDirectory']; ?>/js/easing.js"></script>
+				<script type="text/javascript" src="<?php echo $GLOBALS['rootDirectory']; ?>/js/calendar-subNav.js"></script>
+				<script type="text/javascript" src="<?php echo $GLOBALS['rootDirectory']; ?>/js/memberEmailForm.js"></script>
 				<?php 
 					if($this->pageID == 'index'){ 
 					?>
@@ -436,20 +397,32 @@
 					$(document).ready(function() { 
 
 						menu(); // menu.js
-						makeCalendar(<?php echo $y. ", " .$m ?>); // calendar.js
 						logo();
 						adjure();
 
 						$(document.getElementById("logoBg")).load(function() {
 
-							//getAverageRGB(document.getElementById("logoBg"));
+							getAverageRGB(document.getElementById("logoBg"));
 							var vibrant = new Vibrant(document.getElementById("logoBg"));
     						var swatches = vibrant.swatches();
-							$('.logo').css('background-color', swatches['DarkVibrant'].getHex());
+
+							$('.logo').css('background-color', swatches['DarkMuted'].getHex());
+							$('#navAnnouncement').css('background-color', swatches['DarkMuted'].getHex());
 						});
 
+					<?php 
+						if($this->pageID == 'calendar'){ 
+						?>
+							makeSideNavCalendar(<?php echo $y. ", " .$m. ", '" .$lastDate. "', '" .$todaysDate. "'" ?>); // calendar.js
 						
-
+						<?php
+						}else if ($this->pageID == 'index'){
+							?>
+							$('footer').css('top', 0);
+							<?php
+						}
+					?>
+					
 					});
 
 				</script>
@@ -463,10 +436,17 @@
 		}
 
 		/** prints cta in the middle of the page **/
-		protected function cta($link){ ?>
+		protected function cta(){
+		 
+			$link;
+			$image;
+
+			$link = "http://ctarttrail.org/";
+			$image = "cta-ctArtTrailPass.jpg";	 	
+	 ?>
 			<div class="cta">
 				<? 	echo "<a href=\"" .$link. "\">" ;
-					echo $this->toImg("cta-images", "cta-ctArtTrailPass.jpg", "nbmaa-cta", NULL);
+					echo $this->toImg("cta-images", $image, "nbmaa-cta", NULL);
 					echo "</a>\r\n"; 
 				?>
 			</div>
@@ -493,15 +473,15 @@
 
 		protected function writeNavLinks($navCategoryID){
 			//write each link
-			echo "<div class=\"navCategoryLinks\">";
+			echo "<div class=\"navCategoryLinks\">\r\n";
 			foreach($this->navCategoryLinks as $linkSet){
 				foreach($linkSet as $link){
 					if($link['NavCategoryID'] == $navCategoryID) {
-						echo "<a href=\"".$GLOBALS['rootDirectory']. "/" .$link['SubDirectory']. "/" .$link['Link']. "\">".$link['Title']. "</a>";
+						echo "<a href=\"".$GLOBALS['rootDirectory']. "/" .$link['SubDirectory']. "/" .$link['Link']. "\">".$link['Title']. "</a>\r\n";
 					}
 				}
 			}
-			echo "</div>";
+			echo "</div>\r\n";
 		}
 
 		protected function buildTombstone($artistNames, $artworkQuery, $detail){
@@ -600,7 +580,7 @@
 				echo "Become a Member";
 			}
 			echo "		</a>\r\n";
-			echo "		<a target=\"_blank\" href=\"http://eepurl.com/bgHJt1\">Join our Email List</a>\r\n";
+			echo "		<a target=\"_blank\" href=\"http://eepurl.com/b_hZc5\">Join our Email List</a>\r\n";
 			echo "		<div id=\"socialSection\">";
 			echo "		<a id=\"shareLinks\">Share</a>\r\n";
 			echo "		<div class=\"shareLinks\">";
@@ -712,7 +692,7 @@
 			echo "		</div><!-- end mainSection -->\r\n";
 
 			// call to action (CTA) section
-			$this->cta("http://ctarttrail.org/");
+			$this->cta();
 			echo "		</div><!-- end wrapper -->\r\n";
 
 		}
@@ -775,7 +755,7 @@
 
 			// Quick Hack to add subpage to subpage. Affects "Individual Members Page only"
 			if 	(
-				$this->title == "How to Join" ||
+				$this->title == "How to Join/Renew" ||
 				$this->title == "Basic Benefits for All" ||
 				$this->title == "Basic Level Membership" ||
 				$this->title == "Circle Level Membership" ||
@@ -786,7 +766,7 @@
 			){
 				
 				echo "<h3 class=\"top\">Individual Membership</h3>\r\n";
-				echo "<a href=\"" .$GLOBALS['rootDirectory']. "/museum-of-american-art/individual-members\">How to Join</a>\r\n";
+				echo "<a href=\"" .$GLOBALS['rootDirectory']. "/museum-of-american-art/individual-members\">How to Join/Renew</a>\r\n";
 				echo "<a href=\"" .$GLOBALS['rootDirectory']. "/museum-of-american-art/basic-benefits-for-all\">Basic Benefits for All</a>\r\n";
 				echo "<a href=\"" .$GLOBALS['rootDirectory']. "/museum-of-american-art/what-is-narm\">What is NARM?</a>\r\n";
 				echo "<h3 class=\"top\">Membership Types</h3>\r\n";
@@ -883,7 +863,7 @@
 			echo "		<div class=\"clear\"></div>";
 			echo "		</div><!-- end mainSection -->\r\n";
 			// call to action (CTA) section
-			$this->cta("http://ctarttrail.org/");
+			$this->cta();
 			echo "		</div><!-- end wrapper -->\r\n";
 
 		}
@@ -957,17 +937,15 @@
 
 	class CalendarPage extends Page{
 
-		private $imagePath;
+		private $imagePath; // use this in the hero image for latest exhibition image 
 		private $calendarEvents = array();
-		private $currentExhibitons = array();
-		private $events;
-		private $featuredEvent;
+		private $keywordsAndParents = array();
 
 		function __construct($url){
 
 			//first, query the db
-			$result = queryCalendarPageEvents($url);
-			$this->HTMLheader("Calendar " .linkToString($url));
+			$result = queryCalendarPageEvents();
+			$this->HTMLheader("Calendar of Events");
 			$this->makeHTMLElements($result);
 			$this->makeBody();
 			$this->HTMLfooter();
@@ -994,29 +972,8 @@
 			// main section
 			echo "		<div class=\"mainSection\">\r\n";
 
-			// left column
-			echo "		<div class=\"leftColumn\">\r\n";
-			
-			// featured event cta
-			//$this->buildFeaturedEvent();
-
-			// current exhibition section
-			echo "		<div id=\"calendarCurrentExhibitions\">";
-			echo "		<h5><i class=\"fa fa-eye\"> </i> Current Exhibitions</h5>";
-			// print current exhibitions
-			if(!$this->currentExhibitons){
-				//handle error
-			} else {
-
-				// loop through the array to access the elements
-				foreach ($this->currentExhibitons as $element) {
-						
-					echo $element;
-				}
-			}
-			echo "		</div><!-- end calendarCurrentExhibitions -->\r\n";
-			
-			echo "		</div><!-- end left -->\r\n";
+			//sub navigation section
+			$this->makeSubNav();			
 
 			//right column
 			echo "		<div class=\"rightColumn\">\r\n";
@@ -1035,137 +992,31 @@
 
 
 			echo "		</div><!-- end right -->\r\n";
-			echo "		<div class=\"clear\"></div>";
+			echo "		<div class=\"clear\"></div>\r\n";
 			echo "		</div><!-- end mainSection -->\r\n";
 			// call to action (CTA) section
-			$this->cta("http://ctarttrail.org/");
+			$this->cta();
 			echo "		</div><!-- end wrapper -->\r\n";
 
-			//$this->makeXMLHttpRequestSection();
 		}
 
 		protected function makeHTMLElements($result){ // CALENDAR PAGE function
 
-			$events = array();
-			$exhibitions = array();
-			$receptions;
-			$classes;
 			$firstExhibitionImage;
+
 			// query for exhibitions
 			$exhibitionsResult = queryCalendarPageExhibitions();
-			$todaysDate = date('Y-m-d');
 
-			// build the events array by querrying the EVENT table using
-			// EVENT_DATE_TIMES array for reference
-			if($result == null){
-				array_push($this->calendarEvents, "	<div class=\"date\"><h5><i class=\"fa fa-calendar\"> </i> Today's Events</h5>
-														<p>There are no events for the category you have selected</p>
-													</div>");
-
-			} else {
-
-				$tempDate;
-
-				// use these three variables to set up which element to show image
-				$nextImage = false;
-				$doNextImage = false;
-				$alreadyHasImage = array();
-
-				foreach($result as $tuple){
-
-					$class = "";
-					$topImg = "";
-					$eventLink ="";
-					
-
-					if($doNextImage == true && !in_array($tuple['ImgFilePath'], $alreadyHasImage)){
-						$nextImage = true;
-						$doNextImage = false;
-					}
-
-					// set up outside link or not
-					if($tuple['OutsideLink'] == true){
-						$eventLink = $tuple['Link'];
-					} else {
-						$eventLink = "" .$GLOBALS['rootDirectory']. "/event/" .$tuple['Link']. "";
-					}
-
-					//print the date for each section
-					if($tuple['StartDate'] != $tempDate){
-
-						List($y,$m,$d) = explode("-",$tuple['StartDate']);
-						$timestamp = mktime(0,0,0,$m,$d,$y);
-
-						// check to see if the date section = today's date
-						if($tuple['StartDate']==$todaysDate) {
-							// write this instead of actual date
-							array_push($this->calendarEvents, "	<div class=\"date\"><h5><i class=\"fa fa-calendar\"> </i> Today's Events</h5>
-																	<div class=\"startDate\">" .$tuple['StartDate']. "</div>
-																</div>");
-
-						} else {
-
-							array_push($this->calendarEvents, "	<div class=\"date\"><h5><i class=\"fa fa-calendar\"> </i> " .date("l, F d, Y", $timestamp). "</h5>
-																	<div class=\"startDate\">" .$tuple['StartDate']. "</div>
-																</div>");
-
-						}
-						$tempDate = $tuple['StartDate'];
-
-						// check to see if image hasn't been used
-						if(!in_array($tuple['ImgFilePath'], $alreadyHasImage)) {
-							
-							$nextImage = true;
-
-						// if it has, print the next one
-						} else {
-
-							$doNextImage = true;
-						}
-					}
-
-					// if its the first in the section and has not been used or the first one has already been used
-					if( $tuple['ImgFilePath'] && $nextImage == true){	
-						$topImg = $this->toImg("event-page-images", $tuple['ImgFilePath'], $tuple['Title'], "image"); 
-						$class = "showImg";
-						array_push($alreadyHasImage, $tuple['ImgFilePath']);
-					
-					// if for some reason there is no image file path
-					} else if(!$tuple['ImgFilePath'] && $nextImage == true){
-						$doNextImage = true;
-					}
-
-					// print each element
-					array_push($this->calendarEvents, "
-
-						<div class=\"calendarEventsWrapper\" itemprop = \"Event\" itemscope itemtype=\"http://schema.org/Event\">
-							<a href=\"" .$eventLink. "\" itemprop=\"url\">
-								<div class=\"calendarElement ".$class."\">
-									".$topImg."
-									<h3 itemprop=\"name\">" .$tuple['EventTitle']. "</h3>
-									<h4>" .$tuple['TypeTitle']. "</h4>
-									<p>" .date("g:i a", strtotime($tuple['StartTime'])). " to " .date("g:i a", strtotime($tuple['EndTime'])). "</p>
-									<p itemprop=\"description\">" .shortenText($tuple['Description']). "</p>
-									<meta itemprop=\"startdate\" content=\"".$tuple['StartDate']."T".$tuple['StartTime']."\"><time class=\"startDate\">" .$tuple['StartDate']. "</time>
-									<span itemprop=\"location\" itemscope itemtype=\"http://schema.org/Place\">
-										<meta itemprop=\"name\" content=\"New Britain Museum of American Art\">
-										<address itemprop=\"address\" itemscope itemtype=\"http://schema.org/PostalAddress\">
-											<span itemprop=\"name\">New Britain Museum of American Art</span>
-											<span itemprop=\"streetAddress\">56 Lexington Street</span>,
-											<span itemprop=\"addressLocality\">New Britain</span>,
-											<span itemprop=\"addressRegion\">CT</span>, <span itemprop=\"addressCountry\">USA</span>
-										</address>
-									</span>
-								</div>
-							</a>
-						</div>
-					");
-
-					$nextImage = false;
-				}	
-
+			// query events
+			if( $this->calendarEvents = $this->makeHTMLCalendarEvents($result) ){
+				// everything is golden
 			}
 
+			// query keywords
+			if( $this->keywordsAndParents = queryKeywordsAndsParents() ){
+				// everything is gravy
+			}
+			
 			//build the image
 			if(!$exhibitionsResult[0]){
 				//handle error
@@ -1190,8 +1041,150 @@
 
 		}
 
-		protected function makeSubNav(){ // CALENDAR PAGE function
+		// accepts an array. Array should be an array of events. returns the array list formatted for html
+		protected function makeHTMLCalendarEvents($events){
 
+			$todaysDate = date('Y-m-d');
+			$result = array();
+
+			if($events == null){
+				array_push($result, "	<div class=\"date\"><h5><i class=\"fa fa-calendar\"> </i> Today's Events</h5>\r\n
+											<p>There are no events for the category you have selected</p>\r\n
+										</div>\r\n");
+
+			} else {
+
+				foreach($events as $tuple){
+
+					$eventLink =null;
+					$timestamp;
+					$evenString;
+					$tempDate;
+
+					// setup the link
+					if($tuple['Link']){
+						
+						if($tuple['OutsideLink'] == true){
+							$eventLink = $tuple['Link'];
+						}else{
+							$eventLink = $GLOBALS['rootDirectory']. "/event/" .$tuple['Link']. "";
+						}
+					}
+
+					// setup timestamp
+					if($tuple['StartDate'] != $tempDate){
+
+						List($y,$m,$d) = explode("-",$tuple['StartDate']);
+						$timestamp = mktime(0,0,0,$m,$d,$y);
+
+						// check to see if the date section = today's date
+						if($tuple['StartDate']==$todaysDate) {
+							// write this instead of actual date
+							array_push($result, "	
+								<div class=\"date\" id=\"" .$tuple['StartDate']. "\"><h5><i class=\"fa fa-calendar\"> </i> Today's Events</h5>
+									<div class=\"startDate\">" .$tuple['StartDate']. "</div>
+								</div>");
+
+						} else {
+
+							array_push($result, "	
+								<div class=\"date\" id=\"" .$tuple['StartDate']. "\"><h5><i class=\"fa fa-calendar\"> </i> " .date("l, F d, Y", $timestamp). "</h5>
+									<div class=\"startDate\">" .$tuple['StartDate']. "</div>
+								</div>");
+						}
+
+						$tempDate = $tuple['StartDate'];
+					}
+
+
+					// the first line of the calendar html element
+					$eventString = 							"<div class=\"calendarEventsWrapper\" itemprop = \"Event\" itemscope itemtype=\"http://schema.org/Event\">\r\n";
+					// the link tag
+					if($eventLink) { 	$eventString .=  	"<a href=\"" .$eventLink. "\" itemprop=\"url\">\r\n";}
+					// start the inner div "calendarElement"
+					$eventString .= 						"<div class=\"calendarElement\">\r\n";
+					// image
+					//if($tuple['ImgFilePath']){			$eventString .=  $this->toImg("event-page-images", $tuple['ImgFilePath'], $tuple['Title'], "image"). "\r\n"; }
+					// event name
+					if($tuple['EventTitle']){			$eventString .= "<h3 itemprop=\"name\">" .$tuple['EventTitle']. "</h3>\r\n";}
+					// event type title
+					if($tuple['TypeTitle']){			$eventString .= "<h4 class=\"calendarEventType\">" .$tuple['TypeTitle']. "</h4>\r\n";}
+					// event description
+					//if($tuple['Description']){			$eventString .= "<p class=\"description\" itemprop=\"description\">" .shortenText($tuple['Description']). "</p>\r\n";}
+					// event time and itemprop data
+					if($tuple['StartDate'] || $tuple['StartTime'] || $tuple['EndTime']) {
+
+						$eventString .= 
+							"<p class=\"timeDate\">\r\n
+								<meta itemprop=\"startdate\" content=\"".$tuple['StartDate']."T".$tuple['StartTime']."\">\r\n
+								<time class=\"startDate\">" .date("l, F d", $timestamp). "</time>\r\n
+								" .date("g:i a", strtotime($tuple['StartTime'])). " to " .date("g:i a", strtotime($tuple['EndTime'])). 
+							"</p>\r\n";
+
+					}
+					//itemprop location
+					if($this->itemPropLocation){		$eventString .= $this->itemPropLocation;}
+					// close inner div "calendar element"
+					$eventString .= 						"</div>\r\n";
+					// close a tag
+					if($eventLink) { 	$eventString .=  	"</a>\r\n";}
+					// close calendar html element
+					$eventString .= 						"</div>\r\n";
+
+
+					// push the eventString onto the result array
+					array_push($result, $eventString);
+
+				}	
+
+			}
+
+			return $result;
+
+		}
+
+		protected function makeSubNav(){ // CALENDAR PAGE function
+			
+			echo "		<nav class=\"subNav\">\r\n";
+
+			?>	
+				<!-- javascript calendar -->
+				<div id="sideNavCalendar">
+
+				</div>
+				<p class="calendarInstruction">scroll calendar to view other months<br>highlighted days indicate event(s)</p>
+					
+				<div class="keywords">
+				<?php 
+
+					// print the keywords from the query
+					if(!$this->keywordsAndParents){
+						// handle error
+
+					} else {
+
+						echo "	<ul>\r\n";
+						// use the first address of array for parent keywords
+						foreach($this->keywordsAndParents[0] as $parentKeyword){
+							echo " <li class=\"parentKeyword\" id=".$parentKeyword['KeywordID']." >" .$parentKeyword['Word']. " <i class=\"fa fa-chevron-up rotateArrow\"></i></li>\r\n";
+							echo " <li>\r\n<ul>\r\n";
+							foreach($this->keywordsAndParents[1] as $keyword){
+								if($keyword['ParentKeywordID'] == $parentKeyword['ParentKeywordID']){
+									echo " <li class=\"keyword\" id=\"" .$keyword['Word']. "\">" .$keyword['Word']. "</li>\r\n";
+								}
+							}
+							echo " </ul>\r\n</li>\r\n";
+						
+						}
+						
+						echo "	</ul>\r\n";
+					
+					}
+				?>
+				</div>
+			<?
+
+			echo "		</nav>\r\n";
 		}
 
 		protected function makeXMLHttpRequestSection(){ // CALENDAR PAGE function
@@ -1264,7 +1257,7 @@
 			echo "		</div><!-- end mainSection -->\r\n";
 
 			// call to action (CTA) section
-			$this->cta("http://ctarttrail.org/");
+			$this->cta();
 			echo "		</div><!-- end wrapper -->\r\n";
 
 
@@ -1336,8 +1329,6 @@
 		protected function makeSubNav(){ 
 			echo "		<nav class=\"subNav\">\r\n";
 
-			//var_dump($this->subNavLinksQuery);
-
 			if($this->subNavLinksQuery){
 				echo "		<h3 class=\"top\">About</h3>\r\n";
 				echo "		<a href=\"".$GLOBALS['rootDirectory']. "/classroom/" .$this->subNavLinksQuery[0][0]['Link']. "\" id=\"" .$this->subNavLinksQuery[0][0]['Link']. "\">" .$this->subNavLinksQuery[0][0]['Title']. "</a>\r\n";
@@ -1379,7 +1370,7 @@
 								echo 	"<p>Next class: " .date("F d, Y", strtotime($event['StartDate'])). "</p>\r\n"; 
 							}
 						}
-						if($event['RegistrationEndDate']){	echo 	"<p class=\"registration\">Preregistration ends: " .date("F d, Y", strtotime($event['RegistrationEndDate'])). "</p>\r\n"; }
+						if($event['RegistrationEndDate']){	echo 	"<p class=\"registration\">Preregister by " .date("F d, Y", strtotime($event['RegistrationEndDate'])). "</p>\r\n"; }
 							else {							echo 	"<p class=\"registration\">Preregistration not required</p>"; }
 						if($event['StartDate']){			echo 	"<div class=\"startDate\">" .$event['StartDate']. "</div>\r\n"; }
 						echo 	"</div>\r\n
@@ -1402,7 +1393,7 @@
 		private $admissionCharge;
 		private $eventType;
 		private $eventArtistQuery;
-		private $artistsQuery;
+		private $artistsQuery = array();
 		private $exhibitionQuery;
 		private $exhibitionLink;
 		private $eventDateTimes;
@@ -1441,9 +1432,15 @@
 
 			// right column
 			echo "		<div class=\"rightColumn\">\r\n";
-			echo "		<div id=\"about\">\r\n";
-			if($this->title) {						echo "		<h2>" .$this->title. "</h2>\r\n"; } 
-			if($this->eventType) {					echo "		<h3>" .$this->eventType. "</h3>\r\n";}
+			echo "		<div id=\"about\" class=\"idabout\">\r\n";
+			
+			if($this->eventType) {					echo "		<h2>" .$this->eventType. "</h2>\r\n";}
+			if($this->title) {						echo "		<h3>" .$this->title. "</h3>\r\n"; }
+			if(count($this->eventDateTimes) == 1) {	
+				List($y,$m,$d) = explode("-",$this->eventDateTimes[0]['StartDate']);
+				$titleDate = mktime(0,0,0,$m,$d,$y);
+				echo " <p><span class=\"date\">" .date("l, F d, Y", $titleDate). "</span> \r\n"; 
+			} 
 			if($this->primaryImage) { 				echo "		" .$this->primaryImage.  "\r\n";}
 			if($this->imageCaption) {				echo "		<p class=\"tombstone\">" .$this->imageCaption. "</p>\r\n";}
 			if($this->bodyContent) {				echo "		<div class=\"bodyContent\">" .$this->bodyContent. "		</div>\r\n";}
@@ -1463,11 +1460,11 @@
 			echo "		</div>\r\n";
 			
 			if($this->artistsQuery){
-				echo "<div id=\"artists\">\r\n";
+				echo "<div id=\"artists\" class=\"idartists\">\r\n";
 				foreach($this->artistsQuery as $artist){
-					echo "<h2>".buildArtistName($artist). "</h2>\r\n";
+					echo "<h2>".buildArtistName($artist[0]). "</h2>\r\n";
 					echo "<p>";
-					echo $artist['Bio'];
+					echo $artist[0]['Bio'];
 					echo "</p>\r\n";
 				}
 				echo "</div>\r\n";
@@ -1478,7 +1475,7 @@
 			echo "		</div><!-- end mainSection -->\r\n";
 
 			// call to action (CTA) section
-			$this->cta("http://ctarttrail.org/");
+			$this->cta();
 			echo "		</div><!-- end wrapper -->\r\n";
 			
 		}
@@ -1492,11 +1489,13 @@
 				echo "		<div class=\"display\">\r\n";
 				echo "		<a class=\"about current\">About</a>\r\n";
 
-				if(count($this->artistsQuery)==1){ 				
-					$artistName = buildArtistName($this->artistsQuery[0]);
-					echo "		<a id=\"" .$this->artistsQuery[0]['ArtistID']. "\" class=\"artists\">" .$artistName. "</a>\r\n";
-				} else {
-					echo "		<a id=\"" .$this->artistsQuery[0]['ArtistID']. "\" class=\"artists\">Artists' Bio</a>\r\n";
+				if ($this->artistsQuery[0][0]['Bio'] != null){
+					if(count($this->artistsQuery[0][0])===1){ 				
+						$artistName = buildArtistName($this->artistsQuery[0][0]);
+						echo "		<a id=\"" .$this->artistsQuery[0][0]['ArtistID']. "\" class=\"artists\">" .$artistName. "</a>\r\n";
+					} else {
+						echo "		<a id=\"" .$this->artistsQuery[0][0]['ArtistID']. "\" class=\"artists\">Artist Bios</a>\r\n";
+					}
 				}
 
 				echo "		</div>";
@@ -1554,8 +1553,10 @@
 
 					// build the ARTIST query
 					foreach($this->eventArtistQuery as $artist){
-						if($this->artistsQuery = queryReference('ARTIST', 'ArtistID', $artist['ArtistID'])){
+						if(array_push($this->artistsQuery,queryReference('ARTIST', 'ArtistID', $artist['ArtistID']))){
 							// everything is gravy!
+
+
 						}
 					}
 				}
@@ -1576,8 +1577,6 @@
 		}
 	}
 
-
-
 	class ExhibitionPage extends Page{
 
 		private $exhibitionID;
@@ -1588,6 +1587,8 @@
 		private $exhibitionEventsQuery;
 		private $eventQuery;
 		private $artistBiosQuery;
+		private $exhibitionVideosQuery;
+		private $exhibitionVideoQuery;
 		private $lecturesArray;
 
 		private $artistNames; // artists names are stored as a single string
@@ -1608,8 +1609,8 @@
 			$result = queryExhibitionPage($url);
 
 			$this->exhibitionID = $result['ExhibitionID'];
-			$this->HTMLheader($result['Title']);
 			$this->makeHTMLElements($result);
+			$this->HTMLheader($result['Title']);
 			$this->makeBody();
 			$this->HTMLfooter();
 
@@ -1640,7 +1641,7 @@
 
 			// right column
 			echo "		<div class=\"rightColumn\">\r\n";
-			echo "		<div id=\"about\">";
+			echo "		<div id=\"about\" class=\"idabout\">\r\n";
 			if($this->title) {						echo "		<h2>" .$this->title. "</h2>\r\n"; } 
 			if($this->startDate && $this->endDate){ echo "		<p>" .$this->startDate. "&ndash;" .$this->endDate. "</p>\r\n";}
 			if($this->gallery) {					echo "		<p class=\"gallery\">" .$this->gallery. "</p>\r\n";}
@@ -1650,12 +1651,12 @@
 			echo "		</div>\r\n";
 
 			if($this->exhibitionArtworksQuery) {
-				echo "<div id=\"exhibitionArtworks\">";
-				echo "<h2>Artwork</h2>";
+				echo "<div id=\"exhibitionArtworks\">\r\n";
+				echo "<h2>Artwork</h2>\r\n";
 
 				foreach($this->exhibitionArtworksQuery as $row){
 					$art = queryReference('ARTWORK', 'ArtworkID', $row['ArtworkID']);
-					echo "<img src =\"" .$GLOBALS['rootDirectory']. "/images/exhibition-page-images/" .$art[0]['ImgFilePath']. "\">";
+					echo "<img src =\"" .$GLOBALS['rootDirectory']. "/images/exhibition-page-images/" .$art[0]['ImgFilePath']. "\">\r\n";
 				}
 
 				echo "</div>\r\n";
@@ -1663,19 +1664,33 @@
 			}
 
 			if($this->artistBios){
-				echo "<div id=\"artists\">";
+				echo "<div id=\"artists\" class=\"idartists\">\r\n";
 				foreach($this->artistBios as $artist){
 					echo "<h2>".buildArtistName($artist). "</h2>\r\n";
-					echo "<p>";
+					echo "<p>\r\n";
 					if($artist['Bio']) {	
 						echo nl2p($artist['Bio']);
 					}
-					echo "</p>";
+					echo "</p>\r\n";
+				}
+				echo "</div>\r\n";
+			}
+
+			if($this->exhibitionVideoQuery){
+				echo "<div id=\"videos\">\r\n";
+				foreach($this->exhibitionVideoQuery as $video){
+
+					echo "<h2>Videos</h2>\r\n";
+					echo "<p>Link: ";
+					echo $video['Description'];
+					echo "</p>\r\n";
 				}
 				echo "</div>\r\n";
 			}
 
 			if($this->eventQuery){
+
+
 
 				foreach($this->eventQuery as $event){
 
@@ -1688,7 +1703,7 @@
 					$topImg = $this->toImg("event-page-images", $event[0]['ImgFilePath'], $event[0]['Title'], NULL); 
 					$class = "showImg";
 					
-					echo "<div class=\"exhibitionEvent\" id=\"" .$event[0]['EventTypeID']. "\">";
+					echo "<div class=\"exhibitionEvent id" .$event[0]['EventTypeID']. "\">";
 					
 					echo "	<div class=\"date\"><h5><i class=\"fa fa-calendar\"> </i> " .date("F d, Y", $timestamp). "</h5>
 															<div class=\"startDate\">" .$dateTime[0]['StartDate']. "</div>
@@ -1715,7 +1730,7 @@
 			echo "		</div><!-- end mainSection -->\r\n";
 
 			// call to action (CTA) section
-			$this->cta("http://ctarttrail.org/");
+			$this->cta();
 			echo "		</div><!-- end wrapper -->\r\n";
 		}
 
@@ -1731,7 +1746,7 @@
 				echo "		<div class=\"display\">";
 				echo "		<a class=\"about current\">About</a>";
 				if($this->exhibitionArtworksQuery){		echo "		<a id=\"" .$this->exhibitionArtworksQuery[0]['ExhibitionID']. "\" class=\"exhibitionArtworks\">Artwork</a>\r\n";}
-				if(count($this->artistBios) == 1){ 		echo "		<a id=\"" .$this->artistsQuery[0]['ArtistID']. "\" class=\"artists\">Artist Bio</a>\r\n";}
+				if(count($this->artistBios) == 1  ){ 		echo "		<a id=\"" .$this->artistsQuery[0]['ArtistID']. "\" class=\"artists\">Artist Bio</a>\r\n";}
 				if(count($this->artistBios) > 1){ 		echo "		<a id=\"" .$this->artistsQuery[0]['ArtistID']. "\" class=\"artists\">Artists</a>\r\n";}
 				if($this->exhibitionVideoQuery){ 		echo "		<a id=\"" .$this->artistsQuery[0]['ExhibitionID']. "\" class=\"videos\">Videos</a>\r\n";}
 			
@@ -1805,8 +1820,10 @@
 				}
 
 				// build the videos query
-				if($this->exhibitionVideoQuery = queryReference('EXHIBITION_VIDEOS', 'ExhibitionID', $result['ExhibitionID'])){
-					//everything is gravy!
+				if($this->exhibitionVideosQuery = queryReference('EXHIBITION_VIDEOS', 'ExhibitionID', $result['ExhibitionID'])){
+					if($this->exhibitionVideoQuery = queryReference('VIDEO', 'VideoID', $this->exhibitionVideosQuery[0]['VideoID'])){
+
+					}
 				}
 
 				// build the events query
@@ -1850,7 +1867,7 @@
 				}
 
 				//build gallery
-				if ($this->gallery = queryReference('GALLERY', 'GalleryID', $result['GalleryReferenceNo'])[0]['NickName']){
+				if ($this->gallery = queryReference('GALLERY', 'GalleryID', $result['GalleryReferenceNo'])[0]['Title']){
 					// then everything is grand!
 				}
 
@@ -1889,8 +1906,14 @@
 						array_push($this->artistBios, $info[0]);
 					}
 
-				}				
+				}
+		
 			}
+
+			//  meta tags
+			if($this->title ) {			$this->metaOG['title'] = "Exhibition | " .$this->title;  } 
+			if($this->imagePath) { 		$this->metaOG['img'] = $this->imagePath; }
+			if($this->bodyContent) {	$this->metaOG['description'] = shortenText($this->bodyContent); }	
 		}
 	}
 
@@ -1964,36 +1987,37 @@
 		protected function makeSingleSlide(){
 			?>
 				<!-- logo bg -->
-				<img style="display:none;" id="logoBg" src="http://www.nbmaa.org/images/front-page-images/janet-lage-trashed-dyslexic-love.jpg?<?php  echo microtime() ?>">
+				<img style="display:none;" id="logoBg" src="http://www.nbmaa.org/images/front-page-images/von-metzch-title.jpg?<?php  echo microtime() ?>">
 
-				<div id="communityDayNutcracker">
+				<!-- <div id="communityDayNutcracker">
 					<div class="wrapper">
 						
 						<div id="communityDayNutcrackerText">
-							<p>Panel Discussion</p>
-							<h3>An Evening With... Director of Five Points Gallery Judith McElhone</h3>
-							<p style="margin-top:10px;">Thursday, Feb. 11 | 5:30-8:00 p.m.</p>
-							<a id="communityDayButton" href="http://www.nbmaa.org/event/panel-discussion-with-director-of-five-points-gallery-judith-mcelhone">Find out more</a>
-							<div id="communityDayNutcrackerEvent1">
-								<p>Wed@1</p>
-								<h3>Nor’Easter Gallery Talk with Exhibiting Artists</h3>
-								<p>Jan. 13, Jan.20, &amp; Jan. 28</p>
-							</div>
-							<a id="communityDayButton" href="http://www.nbmaa.org/event/noreaster-gallery-talk-with-exhibiting-artists">Find out more</a>
-							<p style="font-size:.7em;padding:0 8px 0 0;border-top: 1px solid #ffffff;">Background artwork: First place winner: Janet Lage, <i>Trashed-Dyslexic Love,</i> Oil, graphite, ink on linen, 22 x 30 in.</p>
+							<a href="http://artofwineandfood.org/">
+								<img src="http://www.nbmaa.org/images/front-page-images/art-of-wine-and-food-info-nbmaa-2016.png">	
+							</a>
 						</div>
 						
 					</div>
+				</div> -->
+
+				<div class="wrapper" style="top:40px;max-width:75vw;">
+					<ul class="bxslider">
+						<li style="height:75vh"><img style="max-height:75vh;margin:0 auto;position:absolute;top: 50%;transform: translate(-50%, -50%);left: 50%;" src="http://www.nbmaa.org/images/front-page-images/von-metzch-title.jpg" /></li>
+						<li style="height:75vh"><img style="max-height:75vh;margin:0 auto;position:absolute;top: 50%;transform: translate(-50%, -50%);left: 50%;" title='George Nick, "Joe’s American Bar and Grill," 2008, Oil on linen, 50 x 40 in., Courtesy of Gail and Ernst von Metzsch' style="max-height:75vh;margin:0 auto;" src="http://www.nbmaa.org/images/front-page-images/george-nick-joes-american-bar-and-grill.jpg" /></li>
+						<li style="height:75vh"><img style="max-height:75vh;margin:0 auto;position:absolute;top: 50%;transform: translate(-50%, -50%);left: 50%;" title='Janet Monafo, "Open Heart," 1994, Pastel on paper, 46 x 58 in., Courtesy of Gail and Ernst von Metzsch' style="max-height:75vh;margin:0 auto;" src="http://www.nbmaa.org/images/front-page-images/janet-monafo-open-heart.jpg" /></li>
+					 	<li style="height:75vh"><img style="max-height:75vh;margin:0 auto;position:absolute;top: 50%;transform: translate(-50%, -50%);left: 50%;" title='Paul Rahilly, "The Violinist," 1980, Oil on canvas, 60 x 40 in., Courtesy of Gail and Ernst von Metzsch' style="max-height:75vh;margin:0 auto;" src="http://www.nbmaa.org/images/front-page-images/paul-rahilly-the-violinist.jpg" /></li>
+					</ul>
 				</div>
 
+				<!-- bxSlider Javascript file -->
+				<script src="http://www.nbmaa.org/js/jquery.bxslider/jquery.bxslider.min.js"></script>
+				<!-- bxSlider CSS file -->
+				<link href="http://www.nbmaa.org/js/jquery.bxslider/jquery.bxslider.css" rel="stylesheet" />
 				<script>
-
-					$(document).ready(function() { 
-
-						$('footer').css('top', 0);
-
+					$(document).ready(function(){
+					  $('.bxslider').bxSlider();
 					});
-
 				</script>
 
 			<?php

@@ -1,0 +1,41 @@
+#communityDayNutcracker {
+	background-image: none;
+	background-color: rgba(109, 110, 113, 1);  
+}
+
+#communityDayNutcrackerText {
+	padding: 0;
+    background-color: transparent;
+   	-moz-border-radius: 0px;
+	-webkit-border-radius: 0px;
+	border-radius:0px; /* future proofing */
+	-khtml-border-radius: 0px; /* for old Konqueror browsers */
+	box-sizing:border-box;
+}
+
+
+#communityDayNutcracker img {
+	width:100%;
+	max-width:300px;
+	display:block;
+	margin:0 auto 20px auto;
+}
+
+#communityDayNutcrackerText h4 {
+	line-height: 1.5em;
+}
+
+#communityDayNutcrackerText h3 {
+	line-height: 1.2em;
+}
+
+@media screen and (max-height: 787px) {
+
+	#communityDayNutcracker img {
+		margin-bottom:0;
+	}
+
+	#communityDayNutcrackerText h4 , #communityDayNutcrackerText p {
+ 	   display:none;
+ 	}
+}

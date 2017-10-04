@@ -99,10 +99,10 @@
 
 					$statement->execute();
 
-
 				}
 
-			}
+			}		
+			$conn = null;
 		}
 	}
 
@@ -112,8 +112,6 @@ function writeStaticPage() {
 		if(!$_POST) {
 			// handle error
 		} else {
-
-			echo "writing static";
 
 			$conn = pdo_connect();
 
@@ -161,6 +159,7 @@ function writeStaticPage() {
 				}
 
 			}
+			$conn = null;
 		}
 	}
 ?>

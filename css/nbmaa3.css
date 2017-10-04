@@ -29,14 +29,6 @@ time, mark, audio, video {
 	vertical-align: baseline;
 }
 
-.rightColumn td{
-	vertical-align: middle;
-}
-
-.rightColumn td img{
-	max-width: inherit;
-}
-
 /* HTML5 display-role reset for older browsers */
 article, aside, details, figcaption, figure, 
 footer, header, hgroup, menu, nav, section {
@@ -109,9 +101,18 @@ h1 {
 	font-size: 18px;
 }
 
-h2, #calendar .rightColumn h3, #calendar .leftColumn h3, #lobby .rightColumn h3, #lobby .leftColumn h3 {
+h2, #lobby .rightColumn h3, #lobby .leftColumn h3 {
 	font-size:24px;
 	line-height: 1.4em;
+}
+
+#calendar .rightColumn h3, #calendar .leftColumn h3 {
+	font-size:18px;
+	line-height: 1.4em;
+}
+
+#calendar .timeDate {
+	font-size:14px;
 }
 
 header a {
@@ -246,16 +247,24 @@ body {
 /* ~~~~~~ header ~~~~~~ */
 
 #navAnnouncement {
-	background-color: rgba(0, 0, 0, 1);
-	text-align: right;
+	background-color: rgba(30, 44, 64, 1);
+	text-align: left;
 	color:white;
-	padding:5px 20px;
+	padding:5px 0;
 	width:100%;
 	max-width: 1002px;
 	margin:0 auto;
 	position: relative;
 	z-index: 3;
 	box-sizing:border-box;
+}
+
+#navAnnouncementWrapper {
+	margin-left:28.143712574%;
+}
+
+#navAnnouncementWrapper a {
+	color:#93ff58;
 }
 
 #calendar #navAnnouncement {
@@ -420,16 +429,7 @@ nav .exhibitionLink .dropDown .right {
 	margin:0 0 0 01.19760479%;
 }
 
-nav .calendarLink .dropDown .middle {
-	width:34.730538922%;
-	margin:0 01.19760479%;	
-}
-
-nav .calendarLink .dropDown .right {
-	width:25.748502994%;
-}
-
-nav .menuItem {
+nav .menuItem, header nav > a {
 	display: inline-block;
 }
 
@@ -612,7 +612,7 @@ a.classroom-button{
 #background {
 	width:100%;
 	height:535px;
-	background-position: 50% 60%;
+	background-position: 50% 25%;
 	background-size: cover;
 	background-repeat: no-repeat;
 	position:absolute;
@@ -631,7 +631,7 @@ a.classroom-button{
 	padding:10px 0 0 0;
 }
 
-#exhibition .rightColumn, #event .rightColumn, #static .rightColumn, #classroom .rightColumn, #lobby .rightColumn {
+#exhibition .rightColumn, #event .rightColumn, #static .rightColumn, #classroom .rightColumn, #lobby .rightColumn, #calendar .rightColumn {
 	width:52.694610778%;
 	background-color:#f5f5f5;
 	float:left;
@@ -805,12 +805,20 @@ a.classroom-button{
 	margin:0 auto;
 }
 
+.rightColumn td{
+	vertical-align: middle;
+}
+
+.rightColumn td img{
+	max-width: inherit;
+}
+
 /* ~~~~~ custom index page css ~~~~~ */
 
 #communityDayNutcracker {
 	width:100%;
 	height:90vh;
-	background-image: url('http://www.nbmaa.org/images/front-page-images/janet-lage-trashed-dyslexic-love.jpg');
+	background-image: url("http://www.nbmaa.org/images/front-page-images/art-of-wine-and-food-2016.jpg");
 	background-position: center top;
 	background-size: cover;
 	background-repeat: no-repeat;
@@ -822,11 +830,21 @@ a.classroom-button{
 
 #communityDayNutcrackerText {
 	position: relative;
-	color:white;
-	width: 400px;
-	max-width: 95%;
-	margin:0 auto;
-	top:38vh;
+	width:350px;
+	left:33vw;
+	top:5vh;
+	padding:0;
+    background-color: transparent;
+   	-moz-border-radius: 0px;
+	-webkit-border-radius: 0px;
+	border-radius:0px; /* future proofing */
+	-khtml-border-radius: 0px; /* for old Konqueror browsers */
+	box-sizing:border-box;
+}
+
+#communityDayNutcracker img {
+	display:block;
+	margin:0 0 20px 0;
 }
 
 #communityDayNutcrackerText p {
@@ -859,10 +877,10 @@ a.classroom-button{
 }
 
 #communityDayButton {
-	background-color: rgba(288, 288, 288, .9);
-	padding:8px;
-	color:black;
-	margin:12px 0;
+	background-color: rgba(29, 55, 94, .9);
+	padding:14px 8px;
+	color:white;
+	margin:40px 0;
 	text-decoration:none;
 	display: block;
 	position: relative;
@@ -871,34 +889,31 @@ a.classroom-button{
 }
 
 #communityDayButton:hover {
-	background-color: rgba(288, 288, 288, 1);
+	background-color: rgba(29, 55, 94, 1);
 }
 
 #index h1 {
 	display: none;
 }
 
+#communityDayNutcrackerText h4 {
+	line-height: 1.5em;
+}
+
+#communityDayNutcrackerText h3 {
+	line-height: 1.2em;
+}
+
 @media screen and (max-height: 974px) {
 
 	#communityDayNutcrackerText {
-		top:37vh;
-	}
 
-}
-
-@media screen and (max-height: 850px) {
-
-	#communityDayNutcrackerText {
-		top:33vh;
 	}
 
 }
 
 @media screen and (max-height: 787px) {
 
-	#communityDayNutcrackerText {
-		top:22vh;
-	}
 
 	#communityDayNutcrackerText p {
 		font-size:.9em;
@@ -925,21 +940,27 @@ a.classroom-button{
 		font-size:1.5em;
 	}
 
+	#communityDayNutcracker img {
+		margin-bottom:0;
+	}
+
+	#communityDayNutcrackerText h4 , #communityDayNutcrackerText p {
+ 	   display:none;
+ 	}
+
 }
 
-@media screen and (max-height: 737px) {
+@media screen and (max-width: 700px) {
 
 	#communityDayNutcrackerText {
-		top:40vh;
+		margin:0 auto;
+		left: auto;
+
 	}
 
 }
 
 @media screen and (max-height: 678px) {
-
-	#communityDayNutcrackerText {
-		top:22vh;
-	}
 
 	#communityDayNutcrackerText p {
 		font-size:.5em;
@@ -967,10 +988,18 @@ a.classroom-button{
 	}
 
 	#communityDayButton {
-		font-size:.75em;
+		font-size:.5em;
 		padding:8px;
-		margin:12px auto;
-		width:100px;
+		margin:12px 0;
+		width:auto;
+		display: inline-block;
+	}
+}
+
+@media screen and (max-width: 500px) {
+
+	#communityDayNutcrackerText {
+		width:75%;
 	}
 
 }
@@ -1011,11 +1040,6 @@ a.classroom-button{
 	width:28.143712574%; 
 	margin:0 7.784431137% 0 8.982035928%;
 	float:left;
-}
-
-#calendar .rightColumn {
-	width:46.107784431%;
-	float: left;
 }
 
 .calendarElement {
@@ -1112,21 +1136,6 @@ a.classroom-button{
 
 /* ~~~~~ Calendar ~~~~~~~ */
 
-.calendarWrapper {
-	width:294px;
-}
-
-.calendar, .oldCalendar, .newCalendar  {
-	width:240px;
-	overflow:auto;
-	font-size: 16px;
-	line-height: 33px;
-	margin:0 12px;
-	position: relative;
-	float:left;
-
-}
-
 .calSquare {
 	float:left;
 	width:33px;
@@ -1148,39 +1157,6 @@ a.classroom-button{
 	cursor:pointer;
 }
 
-
-.calendarWrapper .leftArrow{
-	border-top: 15px solid transparent;
-	border-bottom: 15px solid transparent; 
-	border-right:15px solid rgba(255, 255, 255, .2);	
-}
-
-.calendarWrapper .leftArrow:hover{
-	border-right:15px solid rgba(255, 255, 255, .3);	
-}
-
-.calendarWrapper .rightArrow{
-	border-top: 15px solid transparent;
-	border-bottom: 15px solid transparent; 
-	border-left:15px solid rgba(255, 255, 255, .2);
-}
-
-.calendarWrapper .rightArrow:hover{
-	border-left:15px solid rgba(255, 255, 255, .3);
-}
-
-
-.calendarWrapper .container {
-	float:left;
-	overflow: hidden;
-	display: inline-block;
-}
-
-.calendarWrapper .leftArrow, .calendarWrapper .rightArrow {
-	margin:118px 0 0 0;
-	float:left;
-}
-
 .menuItem:hover, .menuItem .leftArrow:hover, .menuItem .rightArrow:hover {
 	cursor:pointer;
 }
@@ -1189,10 +1165,11 @@ a.classroom-button{
 	text-align: center;
 }
 
-.calendar h5, .oldCalendar h5 , .newCalendar h5{
+.calendar h5{
 	display: inline-block;
 	width:200px;
 	text-align: center;
+	border-bottom: 1px solid #b8b8b8;
 }
 
 .calSquare input[type='checkbox'], .keyword input[type='checkbox']  {
@@ -1206,7 +1183,17 @@ a.classroom-button{
 .keyword {
 	width:100%;
 	line-height: 33px;
-	margin:31px 0 0 0;
+	margin:0;
+	display: block;
+    padding: 10px 0 10px 04.444444444%;
+    -moz-border-top-left-radius: 2px;
+    -webkit-border-top-left-radius: 2px;
+    border-top-left-radius: 2px;
+    -khtml-border-top-left-radius: 2px;
+    -moz-border-top-right-radius: 2px;
+    -webkit-border-top-right-radius: 2px;
+    border-top-right-radius: 2px;
+    -khtml-border-top-right-radius: 2px;
 }
 
 .keyword label, .keyword input[type='submit'], #selectMonth {
@@ -1221,13 +1208,6 @@ a.classroom-button{
 	float:left;
 	font-size: 14px;
 	line-height: 1.2em;
-}
-
-#selectMonth {
-	float:none;
-	margin:0 0 0 27px;
-	text-align: center;
-	width:232px;
 }
 
 .keyword input[type='submit'] {
@@ -1248,31 +1228,100 @@ a.classroom-button{
 
 .keyword label:hover, #selectMonth:hover{
 	cursor: pointer;
-	background-color: rgba(255, 255, 255, .3);
+	background-color: rgba(0, 0, 0, .3);
 }
 
-.keyword #calendarGo label{
-	display: none;
-	background-color: rgba(71, 222, 142, 1);
-	float: none;
-	clear: both;
-	text-align: center;
-	margin:0;
+
+
+.parentKeyword {
+	border-bottom: 1px solid #b8b8b8;
+    padding: 30px 0 7px 04.444444444%;
+    margin: 0 28.888888888% 15px 0;
+    width: 95.5%;
+    /* un comment to match only 2 columns...
+    width: 66.666666666%; */
+}
+
+/*~~~ font awesome icon ~~~*/
+.parentKeyword i.fa {
+	color:rgba(0, 0, 0, .5);
 }
 
 /* ~~~~~ sideNav Calendar ~~~~~~~ */
 
 #sideNavCalendar {
-	height:301px;
-	overflow: scroll;
+	width:248px;
+	height:270px;
+	overflow-x:hidden;
+	overflow-y:scroll;
 	border:1px solid rgba(0, 0, 0, .1);
 	margin:0 0 10px 0;
 	position: relative;
 }
 
-.calendar {
-	height:301px;
+#calendar .subNav {
+	padding: 0;
+}
+
+#calendar .date {
+	background-color: rgba(255, 255, 255, 1);
 	position: relative;
+}
+
+.calendar {
+	width:240px;
+	overflow:auto;
+	font-size: 16px;
+	line-height: 33px;
+	margin:0;
+	position: relative;
+	float:left;
+	padding:0 8px;
+	height:270px;
+	position:relative;
+}
+
+.calendarInstruction {
+	font-size:.8em;
+	color:rgba(0, 0, 0, .8);
+}
+
+#noEvents {
+	text-align: center;
+	padding:0 0 35px 0;
+}
+
+/* ~~~~~ used by calendar-subNav.js ~~~~ */
+
+.keywords ul li ul {
+	display: none;
+}
+
+.rotateArrow {
+    -moz-transition: all .1s linear;
+    -webkit-transition: all .1s linear;
+    transition: all .1s linear;
+}
+
+.rotateArrow.down {
+    -ms-transform:rotate(180deg);
+    -moz-transform:rotate(180deg);
+    -webkit-transform:rotate(180deg);
+    transform:rotate(180deg);
+}
+
+.calendar .selected, .keywords .selected {
+	background-color: rgba(0, 0, 0, .1);
+}
+
+.calendar .filled:hover, .keyword:hover {
+	background-color: rgba(0, 0, 0, .15);
+	cursor:pointer;
+}
+
+.calendar .month:hover, .parentKeyword {
+	color:rgba(0, 0, 0, .7);
+	cursor:pointer;
 }
 
 /* ~~~~~ Contact Page ~~~~~~~ */
@@ -1296,7 +1345,7 @@ a.classroom-button{
 }
 
 .department .contact .ext:before {
-	content: "(860) 229-0257 ext. ";
+	content: "(860) 229-0257, ext. ";
 }
 
 /* ~~~~~ Nor'Easter Page ~~~~~~~ */
@@ -1536,6 +1585,72 @@ a.classroom-button{
 	cursor: pointer;
 }
 
+/* ~~~~~ member update email form ~~~~~ */
+
+#membersUpdateEmail label, #membersUpdateEmail input {
+	display:block;
+}
+
+#membersUpdateEmail form {
+	max-width:85%;
+	margin: 0 auto;
+}
+
+#membersUpdateEmail input {
+	font-size:1.3em;
+	width:100%;
+	padding:4px;
+	border:none;
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	border-radius: 2px; /* future proofing */
+	-khtml-border-radius: 2px; /* for old Konqueror browsers */
+}
+
+#membersUpdateEmailSubmit, #changeEmailSubmit, .emailUpdateButton{
+	background-color: rgba(81, 95, 106, .8);
+	color:white;
+	padding:8px 20px;
+	margin:10px 0 0 10px;
+	display: inline-block;
+	text-decoration: none;
+	-moz-border-radius: 2px;
+	-webkit-border-radius: 2px;
+	border-radius: 2px; /* future proofing */
+	-khtml-border-radius: 2px; /* for old Konqueror browsers */
+}
+
+#membersUpdateEmailSubmit:hover, #changeEmailSubmit:hover, .emailUpdateButton:hover{
+	background-color: rgba(81, 95, 106, 1);
+	cursor: pointer;
+}
+
+#formSuccess {
+	width:85%;
+	margin:0 auto;
+}
+
+#thanksSuccess {
+	background-color:rgba(255, 255, 255, 1);
+	padding:8px;
+	box-sizing:border-box;
+	margin:0 0 20px 0;
+}
+
+/* ~~~~~ pop-up bar on the park ~~~~~ */
+.cocktail {
+margin:5px auto;
+text-align:center;
+padding:10px;
+background-color:rgba(255, 255, 255, .75);
+box-sizing:border-box;
+display:inline-block;
+}
+
+.cocktail img{
+width:100%;
+}
+
 /* ~~~~~ mobilize rules ~~~~~ */
 
 @media screen and (max-width: 1175px) {
@@ -1571,7 +1686,7 @@ a.classroom-button{
 		margin: 0 0 0 01.19760479%;
 	}
 
-	#exhibition .rightColumn, #event .rightColumn, #static .rightColumn, #classroom .rightColumn, #lobby .rightColumn {
+	#exhibition .rightColumn, #event .rightColumn, #static .rightColumn, #classroom .rightColumn, #lobby .rightColumn, #calendar .rightColumn {
    		width: 61.676646706%;
    	}
 
@@ -1585,15 +1700,6 @@ a.classroom-button{
 
 	.mainSection {
 	    top: 304.65px;
-	}
-
-	#calendar .leftColumn {
-		width:26.946107784%;
-		margin-left: 01.19760479%;
-	}
-
-	#calendar .rightColumn {
-	    width: 62.874251497%;
 	}
 
 	header nav > a, .menuItem > a{
@@ -1638,10 +1744,6 @@ a.classroom-button{
 
 	.subNav {
 		padding-top:0;
-	}
-
-	#calendarCurrentExhibitions {
-		display: none;
 	}
 
 	#about > img {
@@ -1769,23 +1871,6 @@ a.classroom-button{
 		padding:10px;
 	}
 
-	.calendarWrapper {
-		width:264px;
-		position: relative;
-		margin:0 auto;
-	}
-
-	.calendarWrapper .leftArrow, .calendarWrapper .rightArrow{
-		margin: 0;
-		float:none;
-		position: absolute;
-		z-index: 5000;
-	}
-
-	.calendarWrapper .rightArrow {
-		right:10px;
-	}
-
 	#selectMonth {
 		margin: 10px auto 20px auto;
 	}
@@ -1840,6 +1925,12 @@ a.classroom-button{
 	    -khtml-border-radius: 0;
 	}
 
+	#sideNavCalendar {
+		-webkit-overflow-scrolling: touch;
+		margin:0 auto;
+	}
+
+
 	/* ~~~~~ front page grand opening styles ~~~~~ */
 
 	#openingContainer {
@@ -1879,7 +1970,7 @@ a.classroom-button{
 		box-sizing:border-box;
 	}
 
-	#index #navAnnouncement {
+	#navAnnouncement {
 		display: none;
 	}
 
@@ -1920,7 +2011,7 @@ a.classroom-button{
 
 	#calendar .leftColumn, #calendar .rightColumn {
 		width:97.604790419%;
-		padding:0 1.19760479% 0 1.19760479%;
+		padding:12px 1.19760479% 0 1.19760479%;
 		margin:0;
 	}
 
