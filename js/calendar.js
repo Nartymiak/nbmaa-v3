@@ -134,7 +134,7 @@
 			markClicked($(this));
 		});
 
-		$('.filter .calInput').on("click", function(){
+		$('.keyword .calInput').on("click", function(){
 			markClicked($(this));
 		});
 

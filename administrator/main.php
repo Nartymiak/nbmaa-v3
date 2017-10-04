@@ -20,6 +20,9 @@
 		case "event":
 			$adminWindow = new EventAdminPage($urlDetail);
 			break;
+		case "static-page":
+			$adminWindow = new StaticAdminPage($urlDetail);
+			break;
 		default:
 			$adminWindow = new MainAdminPage();
 	}

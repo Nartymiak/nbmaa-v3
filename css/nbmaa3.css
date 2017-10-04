@@ -71,9 +71,15 @@ img {
 	src: url(../fonts/MrsEavRom.ttf);
 }
 
-/* ~~~ fonts ~~~*/
+/* ~~~ typography ~~~*/
+
+body {
+	letter-spacing: .6px;
+}
+
+
 body, #calendar .rightColumn a,  #calendar .leftColumn a{
-	color:#473d36;
+	color: rgba(71, 61, 54, 1);
 	font-family: 'Lato', sans-serif;
 	font-weight: 100;
 	-webkit-text-stroke: 0.5px;
@@ -100,12 +106,21 @@ header a {
 	font-size: 14px;
 }
 
+nav .navCategoryLinks a{
+	text-transform: uppercase;
+	line-height: 1.5em;
+}
+
+nav .exhibitionLink h6 {
+	line-height: 1.3em;
+}
+
 .dropDown a, .dropDown {
 	color:#ffffff;
 }
 
 .rightColumn h2, .leftColumn h2 {
-	color:#473d36;
+	color: rgba(71, 61, 54, 1);
 	line-height: 1.3em;
 }
 
@@ -114,16 +129,16 @@ header a {
  	line-height: 1.3em;
  }
 
-p {
+p, li {
 	line-height: 1.7em;
 }
 
-.rightColumn p.tombstone {
+.rightColumn p.tombstone, nav .exhibitionLink .dropDown .left .title {
 	font-size: 10px;
 }
 
 .subNav a, footer a{
-	color: #473d36;
+	color: rgba(71, 61, 54, 1);
 	text-decoration: none;
 }
 
@@ -134,11 +149,21 @@ footer {
 
 strong {
 	font-weight: 700;
+	color: rgba(71, 61, 54, .8);
 }
 
 em {
 	font-style: italic;
 	font-weight: inherit;
+}
+
+.rightColumn h3 {
+	font-weight: 700;
+	line-height: 2em;
+}
+
+.rightColumn ol, .rightColumn ul {
+	list-style: disc inside;
 }
 
 /* ~~~~~~~~~~~~ */
@@ -156,12 +181,13 @@ body {
 	z-index: 9999;
 	background: url(../images/11-col-grid.png) center center;
 	background-repeat: no-repeat;
+	pointer-events: none;
 }
 
 
 .wrapper {
 	width:85%;
-	max-width: 1002px; /* 11 columns (858px), 12 margins (144px) ||  column = 78px, margin = 12px */ 
+	max-width: 1002px; /* 11 columns (858px), 12 margins (144px) = 1002px ||  column = 78px, margin = 12px */ 
 	margin:0 auto;
 	position: relative;
 }
@@ -182,9 +208,12 @@ h1{
 
 header .logo {
 	width:240px;
-	margin:0 0 0 1.19760479%;
+	margin:0 1.19760479% 0 0;
 	position: absolute;
 	z-index: 10;
+	-webkit-box-shadow: 0px 0px 4px 0px rgba(0,0,0,0.35);
+	-moz-box-shadow: 0px 0px 4px 0px rgba(0,0,0,0.35);
+	box-shadow: 0px 0px 4px 0px rgba(0,0,0,0.35);
 }
 
 header  a {
@@ -217,22 +246,99 @@ nav .arrowUp {
 	z-index:9;
 }
 
-nav .dropDown .left {
+nav .dropDown .logoSpace, nav .dropDown .left, nav .dropDown .middle, nav .dropDown .right {
 	float:left;
+}
+
+nav .navCategory {
+	color: rgba(245, 245, 245, .5);
+	text-transform: uppercase;
+	border-bottom: 1px solid rgba(255, 255, 255, .5);
+	height:42px;
+	line-height: 42px;
+	margin: 0 0 16px 0;
+}
+
+nav .navCategory i{
+	margin:0 5px 0 0;
+	font-size: 17px;
+}
+
+nav .navCategoryLinks a{
+	display: block;
+	margin: 0 0 12px 0;
+}
+
+nav .dropDown .logoSpace {
 	width:25.748502994%;
-	margin:0 01.19760479% 0 0;	
+	margin:0 0 0 01.19760479%;	
 	height:10px;
 }
 
-nav .dropDown .middle {
-	width:34.730538922%;
-	margin:0 01.19760479%;	
+nav .visitLink .dropDown .left, nav .visitLink .dropDown .middle, nav .visitLink .dropDown .right, 
+	.educationLink .dropDown .left, nav .educationLink .dropDown .middle, nav .educationLink .dropDown .right,
+	.supportLink .dropDown .left, nav .supportLink .dropDown .middle, nav .supportLink .dropDown .right{
+	width:16.766467065%;
+	margin:0 0 0 01.19760479%;	
+}
+
+nav .exhibitionLink .dropDown .left {
+	width:43.71257485%;
+	margin:0 0 0 01.19760479%;
+	overflow-x:visible; 
+}
+
+nav .exhibitionLink .dropDown .left .image{
+	width:58.904109589%;
+	height: 200px;
+	overflow: hidden;
+	background-position: 50% 50%;
+	background-size: cover;
+	background-repeat: no-repeat;
+	-webkit-box-shadow: 0px 0px 4px 0px rgba(0,0,0,0.35);
+	-moz-box-shadow: 0px 0px 4px 0px rgba(0,0,0,0.35);
+	box-shadow: 0px 0px 4px 0px rgba(0,0,0,0.35);
 	float:left;
 }
 
-nav .dropDown .right {
-	width:25.748502994%;
+nav .exhibitionLink .dropDown .left img {
+	margin: 100px 0 0 0;
+	top:-200px;
+	position: relative;
+}
+
+nav .exhibitionLink .dropDown .left .exhibitonCaption{
+	width:37%;
+	margin: 4px 0 0 0%;
 	float:left;
+	overflow-x:visible; 
+}
+
+nav .exhibitionLink .dropDown .left .exhibitonCaption .inner{
+	
+	padding:16px 0 10px 16px;
+	width:215%;
+	background-color: rgba(0, 0, 0, .25);
+}
+
+nav .exhibitionLink .dropDown .left .navCategoryLinks {
+	margin: 0 0 0 2.739726027%;
+	width:37%;
+	float:left;
+}
+
+nav .exhibitionLink .dropDown .right {
+	width:16.766467065%;
+	margin:0 0 0 01.19760479%;
+}
+
+nav .calendarLink .dropDown .middle {
+	width:34.730538922%;
+	margin:0 01.19760479%;	
+}
+
+nav .calendarLink .dropDown .right {
+	width:25.748502994%;
 }
 
 nav .menuItem {
@@ -274,7 +380,7 @@ footer .right { /* only applies to right column in footer */
 	width:16.766467065%;
 	float:left;
 	padding:41px 0 0 0; /* should be 35px 0 0 0 so can line up with right column header... */
-	margin:0 17.964071856% 0 10.179640718%;
+	margin:0 8.982035928% 0 10.179640718%;
 }
 
 .subNav h3 {
@@ -326,24 +432,36 @@ footer .right { /* only applies to right column in footer */
 }
 
 #exhibition .rightColumn, #event .rightColumn {
-	width:43.71257485%;
+	width:52.694610778%;
 	background-color:#f5f5f5;
 	float:left;
 	padding: 35px 1.19760479% 0 1.19760479%;
-
 }
 
 #exhibition .rightColumn img, #event .rightColumn img{
 	padding:20px 0 8px 0;
 }
 
+.rightColumn h2 {
+	padding:0 0 10px 0;
+}
+
 .bodyContent p {
-	padding:10px 0;
+	padding:0 0 10px 0;
+}
+
+.bodyContent h3 {
+	padding:10px 0 0 0;
 }
 
 .rightColumn p.tombstone {
 	padding: 0 0 10px 0;
 }
+
+.bodyContent ol, .bodyContent ul {
+	margin:0 0 10px 0;
+}
+
 
 
 /* ~~~~~ calendar page ~~~~~ */
@@ -509,7 +627,7 @@ footer .right { /* only applies to right column in footer */
 	text-align: center;
 }
 
-.calSquare input[type='checkbox'], .filter input[type='checkbox']  {
+.calSquare input[type='checkbox'], .keyword input[type='checkbox']  {
 	display: none;
 }
 
@@ -517,13 +635,13 @@ footer .right { /* only applies to right column in footer */
 	position: relative;
 }
 
-.filter {
+.keyword {
 	width:100%;
 	line-height: 33px;
 	margin:31px 0 0 0;
 }
 
-.filter label, .filter input[type='submit'] {
+.keyword label, .keyword input[type='submit'] {
 	display:block;
 	background-color: rgba(255, 255, 255, .1);
 	-moz-border-radius: 2px;
@@ -536,7 +654,7 @@ footer .right { /* only applies to right column in footer */
 	width:42%;
 }
 
-.filter input[type='submit'] {
+.keyword input[type='submit'] {
 	background-color: rgba(255, 255, 255, 1);
 	line-height: 33px;
 	border:none;
@@ -547,12 +665,12 @@ footer .right { /* only applies to right column in footer */
 	box-sizing:inherit;
 }
 
-.filter input[type='submit']:hover {
+.keyword input[type='submit']:hover {
 	cursor: pointer;
 	background-color: rgba(255, 255, 255, .9);
 }
 
-.filter label:hover{
+.keyword label:hover{
 	cursor: pointer;
 	background-color: rgba(255, 255, 255, .3);
 }

@@ -102,6 +102,30 @@
   
   }
 
+  function queryStaticPage($url){
+
+    $conn = pdo_connect();
+
+    //Prepare the statement.
+    $statement = $conn->prepare(" SELECT  S.StaticPageID, S.Title, S.Body, S.ImgFilePath, S.ImgCaption, S.Link
+                                  FROM    STATIC_PAGE S
+                                  WHERE   S.Link = :link");
+    //Bind the Value, binding parameters should be used when the same query is run repeatedly with different parameters.
+    $statement->bindValue(":link", $url, PDO::PARAM_STR);
+    //Execute the query
+    $statement->execute();
+
+    //Fetch all of the results.
+    $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+    //$result now contains the entire resultset from the query.
+
+    //$result contain
+    $result = $result[0];
+
+    return $result;
+
+  }
+
   // VIP! Do not use when accepting parameters from a user <form> or url
   // returns the tuple from specified table and value
   function queryReference($table, $attribute, $value){
@@ -125,18 +149,31 @@
 
   // VIP! Do not use when accepting parameters from a user <form> or url
   // returns the tuple from specified table and value
-  function queryReferenceWithLimit($table, $attribute, $value, $limit){
+  function queryReferencePortion($table, $attribute, $value, $order, $start, $limit){
     
     $conn = pdo_connect();
 
-    $sql = 'SELECT  * 
-            FROM    '.$table. ' 
-            WHERE '.$attribute. ' = :value
-            LIMIT :limit';
+    if($order != null){
+
+      $sql = 'SELECT  * 
+              FROM      '.$table. ' 
+              WHERE     '.$attribute. ' = :value
+              ORDER BY  '.$order. '
+              LIMIT     :start, :limit';
+    
+    } else {
+
+      $sql = 'SELECT  * 
+              FROM      '.$table. ' 
+              WHERE     '.$attribute. ' = :value
+              LIMIT     :start, :limit';
+
+    }
 
     $statement = $conn->prepare($sql);
 
     $statement->bindValue(":value", $value, PDO::PARAM_STR);
+    $statement->bindValue(":start", $start, PDO::PARAM_INT);
     $statement->bindValue(":limit", $limit, PDO::PARAM_INT);
 
     $statement->execute();
@@ -145,6 +182,7 @@
     $result = $statement->fetchAll(PDO::FETCH_ASSOC);
     //$result now contains the entire resultset from the query.
     
+    $conn = null;
     return $result;
   }
 
@@ -158,24 +196,24 @@
     $result = array();
 
     //if user selected a month or nothing only
-    if($_POST['days']==null && $_POST['filter'] == null){
+    if($_POST['days']==null && $_POST['keyword'] == null){
       
       $result = queryCalendarPageEventsByMonth();
     
-    // if user selected days and not filters
-    } else if($_POST['days']!=null && $_POST['filter'] == null) {
+    // if user selected days and not keywords
+    } else if($_POST['days']!=null && $_POST['keyword'] == null) {
 
       $result = queryCalendarPageEventsByDays();
       
-    // if user selected filters and not days
-    } else if($_POST['days']==null && $_POST['filter'] != null){
+    // if user selected keywords and not days
+    } else if($_POST['days']==null && $_POST['keyword'] != null){
 
-      $result = queryCalendarPageEventsByFilters();
+      $result = queryCalendarPageEventsByKeywords();
 
-    //if user selects filters and days
-    } else if($_POST['days']!=null && $_POST['filter'] != null) {
+    //if user selects keywords and days
+    } else if($_POST['days']!=null && $_POST['keyword'] != null) {
 
-      $result = queryCalendarPageEventsByFilters();
+      $result = queryCalendarPageEventsByKeywords();
 
       // now remove elements that were not selected by day by the user
       foreach($result as $key=>$tuple){
@@ -206,7 +244,7 @@
 
     $conn = pdo_connect();
 
-    $sql = 'SELECT * FROM EXHIBITION WHERE :today BETWEEN StartDate AND EndDate ORDER BY StartDate';
+    $sql = 'SELECT * FROM EXHIBITION WHERE :today BETWEEN StartDate AND EndDate ORDER BY Rank';
 
     $statement = $conn->prepare($sql);
 
@@ -221,8 +259,8 @@
     return $result;
   }
 
-  function queryFilters(){
-      $query = 'SELECT CategoryID, Title FROM CATEGORY ORDER BY DisplayOrder';
+  function queryKeywords(){
+      $query = 'SELECT KeywordID, Word FROM KEYWORD ORDER BY DisplayOrder';
       $conn = db_connect();
 
       $result = @$conn->query($query);
@@ -241,15 +279,15 @@
       return $result;    
   }
 
-  function queryEventTypesByFilters(){
+  function queryEventTypesByKeywords(){
 
     $returnResult = array();
     
     $conn = db_connect();
 
-    foreach ($_POST['filter'] as $filter){
+    foreach ($_POST['keyword'] as $keyword){
       
-      $query = 'SELECT EventTypeID FROM CATEGORY_EVENT_TYPE WHERE CategoryID = ' .$filter. '';
+      $query = 'SELECT EventTypeID FROM KEYWORD_EVENT_TYPE WHERE KeywordID = ' .$keyword. '';
       
       $result = @$conn->query($query);
       if (!$result) {
@@ -351,7 +389,7 @@
   }
 
   // helper function for queryCalendarPageEvents()
-  function queryCalendarPageEventsByFilters() {
+  function queryCalendarPageEventsByKeywords() {
 
     $result = array();
     
@@ -372,7 +410,7 @@
 
     }
 
-    $eventTypes = queryEventTypesByFilters();
+    $eventTypes = queryEventTypesByKeywords();
 
     if( $eventTypes != null){
 
@@ -417,7 +455,7 @@
     return $result;
   }
 
-  function adminQuery() {
+  function adminQuery($type) {
 
     $result = array();
 
@@ -427,16 +465,27 @@
     // create the connection
     $conn = pdo_connect();
 
-    $sql = "SELECT    E.EventID as EventID, E.Link, E.Title as EventTitle, ET.Title as TypeTitle, MAX(StartDate)
-            FROM      EVENT_DATE_TIMES ED, EVENT E, EVENT_TYPE ET
-            WHERE     E.EventTypeID = ET.EventTypeID AND ED.EventID = E.EventID
-            GROUP BY E.Title
-            ORDER BY StartDate
-            ";
+    
+    switch ($type) {
+
+      case "event":
+        $sql = "SELECT    E.EventID as EventID, E.Link, E.Title as EventTitle, ET.Title as TypeTitle, MAX(StartDate)
+                FROM      EVENT_DATE_TIMES ED, EVENT E, EVENT_TYPE ET
+                WHERE     E.EventTypeID = ET.EventTypeID AND ED.EventID = E.EventID
+                GROUP BY  E.Title
+                ORDER BY  StartDate
+                ";
+      break;
+
+      case "static":
+        $sql = "SELECT    StaticPageID, Title, CreatedOn, ChangedOn, Link
+                FROM      STATIC_PAGE
+                ";
+      break;
+    }
 
     // prepare the statement object
     $statement = $conn->prepare($sql);
-
 
     $statement->execute();
 
@@ -444,6 +493,95 @@
 
     return $result;
   }
+
+  function queryNav(){
+      $query = 'SELECT Title FROM NAV';
+      $conn = db_connect();
+
+      $result = @$conn->query($query);
+      if (!$result) {
+        return false;
+      }
+      
+      $num_cats = @$result->num_rows;
+      
+      if ($num_cats == 0) {
+        return false;
+      }
+      
+      $result = db_result_to_array($result);
+      
+      return $result;    
+  }
+
+
+  function querySubNav($link){
+
+    $fromFooter = FALSE;
+
+    // create the connection
+    $conn = pdo_connect();
+
+    $sql = 'SELECT    Title, Link, NavCategoryLinkID
+              FROM    NAV_CATEGORY_LINK
+              WHERE   Link = :link';
+
+    // prepare the statement object
+    $statement = $conn->prepare($sql);
+
+    $statement->bindValue(":link", $link, PDO::PARAM_STR);
+
+    $statement->execute();
+
+    //Fetch all of the results.
+    $navCatResult = $statement->fetchAll(PDO::FETCH_ASSOC);
+    //$result now contains the entire resultset from the query.
+
+    if(sizeof($navCatResult) == 0){
+
+      $sql = 'SELECT  Title, Link, NavCategoryLinkID
+              FROM    SUBNAV_LINK
+              WHERE   Link = :link';
+
+      // prepare the statement object
+      $statement = $conn->prepare($sql);
+
+      $statement->bindValue(":link", $link, PDO::PARAM_STR);
+
+      $statement->execute();
+
+      //Fetch all of the results.
+      $subNavResult = $statement->fetchAll(PDO::FETCH_ASSOC);
+      //$result now contains the entire resultset from the query.
+    
+      $sql = '  SELECT  Title, Link
+                FROM    SUBNAV_LINK
+                WHERE   NavCategoryLinkID =' .$subNavResult[0]['NavCategoryLinkID'];
+
+      // *HACK* check size because subNavResult contains nothing if a link with no subNav links from the footer is using this method
+      if(sizeof($subNavResult) == 0){ $fromFooter = TRUE; }
+
+    } else {
+
+      $sql = '  SELECT  Title, Link
+                FROM    SUBNAV_LINK
+                WHERE   NavCategoryLinkID =' .$navCatResult[0]['NavCategoryLinkID'];
+    }
+
+    // prepare the statement object
+    $statement = $conn->prepare($sql);
+
+    if($fromFooter == FALSE){   $statement->execute(); }
+
+    //Fetch all of the results.
+    $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+    //$result now contains the entire resultset from the query.
+
+    
+    return $result;
+  }
+
+
 
 
 ?>

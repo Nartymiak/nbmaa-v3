@@ -319,6 +319,8 @@
 	        return $PKAttributes;
       	}
      	
+      	// adds elements from a spreadsheet to the database by filtering
+      	// then calling insertDb
       	private function add($database) {
 
       		// loop through tuple objects
@@ -327,12 +329,16 @@
 	      		// insertDB() and exists() take a filter array which is filled with strings representing
 	      		// attributes in the table that can be diferent (or are not to be compared)
 	      		$existFilter = array('ExhibitionReferenceNo','EventReferenceNo','ArtistReferenceNo', 'ReceptionReferenceNo', 'BodyContent');
-	      		$insertFilter= array('ExhibitionReferenceNo','EventReferenceNo','ArtistReferenceNo', 'ReceptionReferenceNo', 'GalleryID', 'EmployeeID', 'DepartmentID', 'CategoryID');
+	      		$insertFilter= array('ExhibitionReferenceNo','EventReferenceNo','ArtistReferenceNo', 'ReceptionReferenceNo', 'GalleryID', 
+	      							 'EmployeeID', 'DepartmentID', 'KeywordID', 'StaticPageID', 'DepartmentReferenceNo', 'SubNavLinkID', 'NavID'
+	      							);
 	      		$artworkFilter = array('ArtworkReferenceNo');
 	      		$artworkExistFilter = array('ArtworkReferenceNo', 'Title');
 	      		$eventTypeFilter = array('EventTypeID');
 	      		$eventExistFilter = array('StartDate', 'EndDate', 'StartTime', 'EndTime', 'Canceled(bool)', 'Description','RegistrationFull(bool)');
 	      		$eventInsertFilter = array('StartDate', 'EndDate', 'StartTime', 'EndTime', 'Canceled(bool)', 'RegistrationFull(bool)');
+	      		$navCategoryFilter = array('NavCategoryID');
+	      		$navCategoryLinkFilter = array('NavCategoryLinkID');
 
       			if($table->getTableName()=='EVENT'){
       				$existFilter = array_merge($existFilter, $eventExistFilter);
@@ -346,7 +352,14 @@
 
       			if($table->getTableName() == 'EVENT_TYPE'){
       				$insertFilter = array_merge($insertFilter, $eventTypeFilter);
+      			}
 
+      			if($table->getTableName() == 'NAV_CATEGORY'){
+      				$insertFilter = array_merge($insertFilter, $navCategoryFilter);
+      			}
+
+      			if($table->getTableName() == 'NAV_CATEGORY_LINK'){
+      				$insertFilter = array_merge($insertFilter, $navCategoryLinkFilter);
       			}
 
       			foreach ($table->getTuples() as $tuple){
@@ -354,7 +367,6 @@
 
 	      			if(!$id){
 	      				$id = $this->insertDb($tuple->getTableName(), $tuple->getTuple(), $insertFilter, $isrefTable=FALSE);
-	      				//echo "<h3>No Match found</h3>";
 	      			}
 	    			elseif ($id){
 	      				echo "<br>exists, heres the id: ". $id." <br>";
@@ -373,19 +385,23 @@
       		// this array defines the relationships between the spread sheet's reference columns and tables
       		// the major keys are tables that are referenced by the tables represented in the minor keys
       		// the minor keys hold arrays that are the reference names in the spread sheet array.
-      		$dbReferenceTables = array( 'ARTWORK'	=>	array('ARTIST_ARTWORKS'=>array('ArtistReferenceNo'), 'EXHIBITION_ARTWORKS'=>array('ExhibitionReferenceNo')),
-      									'VIDEO'		=>	array('ARTIST_VIDEOS'=>array('ArtistReferenceNo'), 'EVENT_VIDEOS'=>array('EventReferenceNo'), 'EXHIBITION_VIDEOS'=>array('ExhibitionReferenceNo')),
-      									'ARTIST'	=>	array('EXHIBITION_ARTISTS'=>array('ExhibitionReferenceNo')),
-      									'SPONSOR'	=> 	array('EVENT_SPONSORS'=>array('EventReferenceNo'), 'EXHIBITION_SPONSORS'=>array('ExhibitionReferenceNo')),
-      									'EVENT'		=>	array('EVENT_ARTISTS'=>array('ArtistReferenceNo'), 'EVENT_DATE_TIMES'=>array('StartDate','EndDate','StartTime','EndTime'), 'EXHIBITION_EVENTS'=>array('ExhibitionReferenceNo')),
-      									'CURATOR'	=> 	array('EXHIBITION_CURATORS'=>array('ExhibitionReferenceNo')),
-      									'RECEPTION' =>	array('EXHIBITION_RECEPTIONS'=>array('ExhibitionReferenceNo'))
-      								);
+      		$dbReferenceTables = array( 'ARTWORK'		=>	array('ARTIST_ARTWORKS'=>array('ArtistReferenceNo'), 'EXHIBITION_ARTWORKS'=>array('ExhibitionReferenceNo')),
+      									'VIDEO'			=>	array('ARTIST_VIDEOS'=>array('ArtistReferenceNo'), 'EVENT_VIDEOS'=>array('EventReferenceNo'), 'EXHIBITION_VIDEOS'=>array('ExhibitionReferenceNo')),
+      									'ARTIST'		=>	array('EXHIBITION_ARTISTS'=>array('ExhibitionReferenceNo')),
+      									'SPONSOR'		=> 	array('EVENT_SPONSORS'=>array('EventReferenceNo'), 'EXHIBITION_SPONSORS'=>array('ExhibitionReferenceNo')),
+      									'EVENT'			=>	array('EVENT_ARTISTS'=>array('ArtistReferenceNo'), 'EVENT_DATE_TIMES'=>array('StartDate','EndDate','StartTime','EndTime'), 'EXHIBITION_EVENTS'=>array('ExhibitionReferenceNo')),
+      									'CURATOR'		=> 	array('EXHIBITION_CURATORS'=>array('ExhibitionReferenceNo')),
+      									'RECEPTION' 	=>	array('EXHIBITION_RECEPTIONS'=>array('ExhibitionReferenceNo')),
+      									'EMPLOYEE' 		=> 	array('DEPARTMENT_EMPLOYEES'=>array('DepartmentReferenceNo')),
+       								);
 
       		// use this array to swap out spreadsheet column names with actual db attribute names
       		$refIDAttributes = array(	'ArtistReferenceNo' => 'ArtistID',
       									'EventReferenceNo' => 'EventID',
-      									'ExhibitionReferenceNo' => 'ExhibitionID');
+      									'ExhibitionReferenceNo' => 'ExhibitionID',
+      									'EmployeeReferenceNo' => 'EmployeeID',
+      									'NavCategoryReferenceNo' => 'NavCategoryID',
+      									'DepartmentReferenceNo' => 'DepartmentID');
       		
       		
       		// loop through the above db reference tables array
@@ -442,7 +458,11 @@
 			      							if($attribute==$refAttribute && $data!=""){
 				      							
 					      						// if so create a tuple to be passed to insert()
+			      								$tuple->display();
+					      						echo "tuple pk attribute: " .$tuple->getPKAttribute(). "<br>";
+					      						echo "tuple pk: " .$tuple->getPK(). "<br>";
 						      					$DBtuple = array(	$refIDAttributes[$refAttribute]=>$data,
+						      									// get the primary key from the associated table
 						      									$tuple->getPKAttribute()=>$tuple->getPK()
 						      								);
 						      					// write to the db
@@ -581,6 +601,7 @@
 
 		      		$query = 'INSERT INTO ' .$tableName. ' ( '.$this->PKattributes[$tableName]. ', ' .$attributeString. ')
 		      				  VALUES ( NULL, '.$valueString.' )';
+		      				  echo "not query " .$query. "<br><br><br>";
 
 				}else {
 
@@ -594,7 +615,7 @@
 				$id = insert($query);
 
 				return $id;
-			}
+			} 
 		}
 	}
 ?>
